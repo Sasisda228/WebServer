@@ -1,0 +1,78 @@
+/* Hero.module.css */
+.hero {
+  position: relative;
+  width: 100%;
+  padding: 40px 0;
+  background: #081025;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.content {
+  text-align: center;
+  z-index: 2;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(90deg, #6e45e2 0%, #88d3ce 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #495057;
+  margin-bottom: 24px;
+}
+
+.ctaButton {
+  padding: 12px 32px;
+  border-radius: 50px;
+  background: linear-gradient(90deg, #6e45e2 0%, #88d3ce 100%);
+  color: white;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(110, 69, 226, 0.3);
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(110, 69, 226, 0.4);
+}
+
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    gap: 24px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+}

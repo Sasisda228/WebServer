@@ -1,0 +1,85 @@
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.1rem;
+  width: 80%;
+  justify-items: center;
+  padding: 0.5rem 0 2rem 0;
+  animation: fadeInGrid 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInGrid {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.noProductsMessage {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 1.3rem;
+  color: #e0e6f7;
+  margin: 3rem 0;
+  padding: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(35, 36, 58, 0.8) 0%,
+    rgba(24, 24, 27, 0.8) 100%
+  );
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.loader {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #60a5fa;
+  font-size: 1.1rem;
+  padding: 1.5rem 0 0.5rem 0;
+  min-height: 2.5rem;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  animation: fadeInLoader 0.5s;
+}
+
+@keyframes fadeInLoader {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.error {
+  grid-column: 1 / -1;
+  color: #f87171;
+  background: #23243a;
+  border-radius: 0.7rem;
+  padding: 1.2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 600px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.7rem;
+    padding: 0.3rem 0 1.5rem 0;
+  }
+  .noProductsMessage {
+    font-size: 1.1rem;
+    margin: 2rem 0;
+    padding: 1.2rem;
+  }
+  .loader {
+    font-size: 1rem;
+    padding: 1rem 0 0.3rem 0;
+  }
+}

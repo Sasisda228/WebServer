@@ -1,0 +1,303 @@
+.header {
+  position: fixed;
+  top: -1px;
+  left: -1px;
+  width: 101%;
+  z-index: 999;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 16px 0;
+  border-bottom: 1px solid #2929435d;
+  box-shadow: -3px -3px 20px #371b72;
+  background: #141220;
+  overflow: hidden; /* Ensure overlay stays inside */
+}
+/* 
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #13112050;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.header > * {
+  position: relative;
+  z-index: 2;
+} */
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 30px;
+}
+
+/* Панель действий */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.searchButton,
+.notificationButton {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 20px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.searchButton:hover,
+.notificationButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #00a1e4;
+}
+
+/* Профиль */
+.profileDropdown {
+  position: relative;
+}
+
+.profileAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.dropdownContent {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #192234;
+  border: 2px solid #181818;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: none;
+  flex-direction: column;
+  overflow: visible;
+  gap: 8px;
+}
+
+.dropdownContent li {
+  list-style: none;
+}
+
+.dropdownContent a {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.dropdownContent a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.profileDropdown:hover .dropdownContent {
+  display: flex;
+}
+
+/* Поле поиска */
+.searchBar {
+  padding: 0 16px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 0;
+}
+
+.searchBar.active {
+  height: 56px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 16px;
+  background: #181818;
+  border: 2px solid #2c3a4b;
+  border-radius: 8px;
+  color: #fff;
+  font-family: "RUSOONE", sans-serif;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  border-color: #00a1e4;
+  box-shadow: 0 0 0 2px rgba(0, 161, 228, 0.2);
+}
+
+/* Категории */
+.categoryBar {
+  display: flex;
+  overflow-x: auto;
+  padding: 8px 16px;
+  gap: 12px;
+  scrollbar-width: none;
+}
+
+.categoryBar::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryButton {
+  flex: 0 0 auto;
+  background: rgba(0, 161, 228, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: #fff;
+  font-family: "RUSOONE", sans-serif;
+  font-size: 14px;
+  padding: 8px 16px;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.categoryButton:hover {
+  background: rgba(0, 161, 228, 0.2);
+  transform: scale(0.98);
+}
+
+.categoryButton.active {
+  background: #222;
+  color: #081025;
+  font-weight: bold;
+}
+
+/* Анимации */
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.glitch {
+  position: relative;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  display: inline-block;
+  cursor: pointer;
+  /* Glitch base color */
+  text-shadow: 2px 0 #00fff9, -2px 0 #ff005a;
+  animation: glitch-skew 1.2s infinite linear alternate-reverse;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  color: #fff;
+  background: transparent;
+  clip: rect(0, 900px, 0, 0);
+}
+
+.glitch::before {
+  text-shadow: 2px 0 #00fff9;
+  animation: glitch-top 1.2s infinite linear alternate-reverse;
+  top: 0;
+}
+
+.glitch::after {
+  text-shadow: -2px 0 #ff005a;
+  animation: glitch-bottom 1.2s infinite linear alternate-reverse;
+  top: 0;
+}
+
+@keyframes glitch-skew {
+  0% {
+    transform: skew(0deg);
+  }
+  20% {
+    transform: skew(-2deg);
+  }
+  40% {
+    transform: skew(2deg);
+  }
+  60% {
+    transform: skew(-1deg);
+  }
+  80% {
+    transform: skew(1deg);
+  }
+  100% {
+    transform: skew(0deg);
+  }
+}
+
+@keyframes glitch-top {
+  0% {
+    clip: rect(0, 900px, 0, 0);
+    transform: translate(-2px, -2px);
+  }
+  10% {
+    clip: rect(0, 900px, 10px, 0);
+    transform: translate(-2px, 2px);
+  }
+  20% {
+    clip: rect(0, 900px, 20px, 0);
+    transform: translate(2px, -2px);
+  }
+  30% {
+    clip: rect(0, 900px, 30px, 0);
+    transform: translate(2px, 2px);
+  }
+  100% {
+    clip: rect(0, 900px, 0, 0);
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glitch-bottom {
+  0% {
+    clip: rect(0, 900px, 0, 0);
+    transform: translate(2px, 2px);
+  }
+  10% {
+    clip: rect(10px, 900px, 100px, 0);
+    transform: translate(2px, -2px);
+  }
+  20% {
+    clip: rect(20px, 900px, 200px, 0);
+    transform: translate(-2px, 2px);
+  }
+  30% {
+    clip: rect(30px, 900px, 300px, 0);
+    transform: translate(-2px, -2px);
+  }
+  100% {
+    clip: rect(0, 900px, 0, 0);
+    transform: translate(0, 0);
+  }
+}

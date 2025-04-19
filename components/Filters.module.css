@@ -1,0 +1,420 @@
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 1.5rem;
+  z-index: 40;
+  background: #371b70;
+  color: #fff;
+  border-radius: 50%;
+  padding: 1rem 1.2rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+  border: none;
+  cursor: pointer;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(24, 24, 27, 0.85);
+  transition: opacity 0.3s;
+}
+.overlayVisible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.overlayHidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.overlayInvisible {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modalBase {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 2rem;
+  z-index: 51;
+  background: #141220;
+  color: #fff;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  min-height: 80vh;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.3s;
+  will-change: transform;
+  touch-action: none;
+}
+@keyframes slide-in-bottom-to-top {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes slide-out-top-to-bottom {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+.modalIn {
+  animation: slide-in-bottom-to-top 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.modalOut {
+  animation: slide-out-top-to-bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.modalDragging {
+  transition: none !important;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  position: relative;
+}
+.modalDragHandle {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 6px;
+  border-radius: 3px;
+  background: #333c4d;
+  opacity: 0.5;
+  margin-bottom: 0.5rem;
+}
+.modalTitle {
+  flex: 1;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+.closeButton {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 2rem;
+  cursor: pointer;
+  margin-left: 1rem;
+  transition: color 0.2s;
+}
+.closeButton:hover {
+  color: #fff;
+}
+
+.modalContent {
+  overflow-y: auto;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  max-height: 60vh;
+}
+
+.accordionSection {
+  margin-bottom: 1rem;
+}
+.accordionButton {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #141527;
+  border-radius: 0.75rem;
+  border: none;
+  color: #c7c7c7;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 0.2rem;
+}
+.accordionContent {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  background: #141527;
+  border-radius: 0 0 0.75rem 0.75rem;
+  transition: max-height 0.5s, opacity 0.5s;
+  padding: 0;
+}
+.accordionContentOpen {
+  max-height: 400px;
+  opacity: 1;
+  padding: 1rem 1rem 0.5rem 1rem;
+}
+
+.sectionInner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-bottom: 0.5rem;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.radioInput {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: #371b70;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.checkboxInput {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: #371b70;
+}
+
+.styledSlider {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #371b70 0%, #2d2187 100%);
+  outline: none;
+  transition: background 0.3s;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  accent-color: #371b70;
+}
+.styledSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #371b70;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.styledSlider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #371b70;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.styledSlider::-ms-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #371b70;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.styledSlider:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #371b7055;
+}
+.sliderValue {
+  font-size: 1rem;
+  color: #b3b3b3;
+  margin-top: 0.2rem;
+}
+.sliderTicks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #b3b3b3;
+  margin-top: 0.2rem;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  gap: 1rem;
+}
+.resetButton {
+  background: #23232b;
+  color: #fff;
+  padding: 0.7rem 2rem;
+  border-radius: 0.7rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: background 0.2s;
+}
+.resetButton:hover {
+  background: #353545;
+}
+.applyButton {
+  background: #371b70;
+  color: #fff;
+  padding: 0.7rem 2rem;
+  border-radius: 0.7rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
+  transition: background 0.2s;
+}
+
+/* ...existing styles... */
+
+/* Custom Checkbox */
+.customCheckboxLabel {
+  position: relative;
+  padding-left: 2.1rem;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1rem;
+}
+.customCheckboxInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 1.2rem;
+  width: 1.2rem;
+  left: 0.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+.customCheckboxCheck {
+  position: absolute;
+  left: 0.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1.2rem;
+  width: 1.2rem;
+  background: #23232b;
+  border: 2px solid #2d2187;
+  border-radius: 0.4rem;
+  transition: background 0.2s, border 0.2s;
+  box-sizing: border-box;
+  z-index: 1;
+}
+.customCheckboxInput:checked ~ .customCheckboxCheck {
+  background: linear-gradient(90deg, #2d2187 0%, #60a5fa 100%);
+  border-color: #2d2187;
+}
+.customCheckboxCheck:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.customCheckboxInput:checked ~ .customCheckboxCheck:after {
+  display: block;
+}
+.customCheckboxCheck:after {
+  left: 0.35rem;
+  top: 0.1rem;
+  width: 0.3rem;
+  height: 0.6rem;
+  border: solid #fff;
+  border-width: 0 0.18rem 0.18rem 0;
+  transform: rotate(45deg);
+  content: "";
+  position: absolute;
+}
+
+/* Custom Radio */
+.customRadioLabel {
+  position: relative;
+  padding-left: 2.1rem;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1rem;
+}
+.customRadioInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 1.2rem;
+  width: 1.2rem;
+  left: 0.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+.customRadioCheck {
+  position: absolute;
+  left: 0.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1.2rem;
+  width: 1.2rem;
+  background: #23232b;
+  border: 2px solid #2d2187;
+  border-radius: 50%;
+  transition: background 0.2s, border 0.2s;
+  box-sizing: border-box;
+  z-index: 1;
+}
+.customRadioInput:checked ~ .customRadioCheck {
+  background: linear-gradient(90deg, #2d2187 0%, #60a5fa 100%);
+  border-color: #2d2187;
+}
+.customRadioCheck:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.customRadioInput:checked ~ .customRadioCheck:after {
+  display: block;
+}
+.customRadioCheck:after {
+  left: 0.35rem;
+  top: 0.35rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #fff;
+  content: "";
+  position: absolute;
+}
+
+/* Modal drag bounce animation (for bounce-back) */
+@keyframes modal-bounce {
+  0% {
+    transform: translateY(var(--dragY, 0));
+  }
+  70% {
+    transform: translateY(calc(var(--dragY, 0) - 20px));
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* ...rest of your existing styles... */

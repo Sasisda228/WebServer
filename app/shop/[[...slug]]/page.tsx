@@ -1,0 +1,32 @@
+"use client";
+
+import { Filters, Pagination, Products } from "@/components";
+import styles from "./ShopPage.module.css";
+
+// improve readability of category text, for example category text "smart-watches" will be "smart watches"
+
+const ShopPage = (slug: any) => {
+  return (
+    <div className={styles.root}>
+      <div className={styles.container}>
+        <div className={styles.grid}>
+          <div>
+            <div className={styles.divider}></div>
+
+            <div className={styles.titleWrapper}>
+              <h1 className={styles.title}>
+                <span className={styles.titleGradient}>47STORE</span>
+                <br />
+              </h1>
+            </div>
+            <Filters />
+            <Products slug={slug} />
+            <Pagination />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ShopPage;

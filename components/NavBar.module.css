@@ -1,0 +1,131 @@
+/* Общие стили */
+.navContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #141220;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  padding: 4px 0;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3);
+}
+.categoryButton {
+  color: #888;
+}
+.bottomNav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 56px;
+}
+
+.navItemWrapper {
+  flex: 1;
+  max-width: 100px;
+  padding: 0 8px;
+  position: relative;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #888;
+  text-decoration: none;
+  padding: 8px 0;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  cursor: pointer;
+}
+
+.navIcon {
+  font-size: 24px;
+  margin-bottom: 4px;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.navLabel {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+.navItem.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #86233a;
+}
+
+.navItem.active .navIcon,
+.navItem.active .navLabel {
+  color: #86233a !important;
+}
+
+.navItem:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
+}
+
+.navItem:hover:not(.active) .navIcon {
+  transform: scale(1.1);
+  color: #86233a;
+}
+
+/* Выпадающий список категорий */
+.categoryDropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #181818;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: fadeInUp 0.3s ease;
+}
+
+.categoryList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.categoryItem {
+  padding: 8px 16px;
+  transition: all 0.3s;
+}
+
+.categoryItem a {
+  color: #fff;
+  text-decoration: none;
+  font-family: "RUSOONE", sans-serif;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.categoryItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.categoryItem a:hover {
+  color: #86233a;
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

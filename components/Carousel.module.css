@@ -1,0 +1,65 @@
+.carouselSection {
+  width: 100%;
+  max-width: 110vw;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  position: relative;
+}
+
+.carouselTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 18px;
+  text-align: left;
+  padding-left: 18px;
+  letter-spacing: 0.01em;
+}
+
+.swiper {
+  min-height: 70%;
+  width: 100vw;
+  padding-bottom: 50px;
+  background: transparent;
+  overflow: visible;
+}
+
+.slide {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: auto;
+  background: transparent;
+}
+
+/* Кастомные буллеты пагинации */
+.carouselSection :global(.custom-bullet) {
+  background: #fff;
+  opacity: 0.4;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin: 0 3px !important;
+  transition: all 0.2s;
+}
+.carouselSection :global(.custom-bullet-active) {
+  background: #00a1e4;
+  opacity: 1;
+  width: 22px;
+  border-radius: 6px;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 480px) {
+  .carouselTitle {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    padding-left: 10px;
+  }
+  .swiper {
+    padding-bottom: 18px;
+  }
+}
