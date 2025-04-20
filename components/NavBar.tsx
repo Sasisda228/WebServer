@@ -63,6 +63,7 @@ export default function NavBar() {
     const newRoute = `/shop/${category.toLowerCase()}`;
     setActiveItem(newRoute); // Обновляем активную вкладку
     router.push(newRoute); // Use Next.js router for navigation
+    console.log("route to" + newRoute);
   };
 
   return (
