@@ -1,6 +1,7 @@
 "use client";
 import { DashboardSidebar } from "@/components";
 import MultiImageUpload from "@/components/MultiImageUpload";
+import axios from "axios";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,27 +26,23 @@ const DashboardProductDetails = ({
 
   // functionality for deleting product
   const deleteProduct = async () => {
-    const requestOptions = {
-      method: "DELETE",
-    };
-    fetch(`http://212.67.12.199:3001/api/products/${id}`, requestOptions)
-      .then((response) => {
-        if (response.status !== 204) {
-          if (response.status === 400) {
-            toast.error(
-              "Cannot delete the product because of foreign key constraint"
-            );
-          } else {
-            throw Error("There was an error while deleting product");
-          }
+    try {
+      const response = await axios.delete(`/api/products/${id}`);
+      if (response.status !== 204) {
+        if (response.status === 400) {
+          toast.error(
+            "Cannot delete the product because of foreign key constraint"
+          );
         } else {
-          toast.success("Product deleted successfully");
-          router.push("/admin/products");
+          throw new Error("There was an error while deleting product");
         }
-      })
-      .catch(() => {
-        toast.error("There was an error while deleting product");
-      });
+      } else {
+        toast.success("Product deleted successfully");
+        router.push("/admin/products");
+      }
+    } catch (error) {
+      toast.error("There was an error while deleting product");
+    }
   };
 
   // functionality for updating product
@@ -53,7 +50,7 @@ const DashboardProductDetails = ({
     if (
       product?.title === "" ||
       product?.slug === "" ||
-      product?.price.toString() === "" ||
+      product?.price?.toString() === "" ||
       product?.manufacturer === "" ||
       product?.description === ""
     ) {
@@ -61,61 +58,49 @@ const DashboardProductDetails = ({
       return;
     }
 
-    const requestOptions = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product),
-    };
-    fetch(`http://212.67.12.199:3001/api/products/${id}`, requestOptions)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw Error("There was an error while updating product");
-        }
-      })
-      .then(() => toast.success("Product successfully updated"))
-      .catch(() => {
-        toast.error("There was an error while updating product");
+    try {
+      const response = await axios.put(`/api/products/${id}`, product, {
+        headers: { "Content-Type": "application/json" },
       });
+      if (response.status === 200) {
+        toast.success("Product successfully updated");
+      } else {
+        throw new Error("There was an error while updating product");
+      }
+    } catch (error) {
+      toast.error("There was an error while updating product");
+    }
   };
-
-  // functionality for uploading main image file
 
   // fetching main product data including other product images
   const fetchProductData = async () => {
-    fetch(`http://212.67.12.199:3001/api/products/${id}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setProduct(data);
-      });
+    try {
+      const res = await axios.get(`/api/products/${id}`);
+      setProduct(res.data);
 
-    const imagesData = await fetch(
-      `http://212.67.12.199:3001/api/images/${id}`,
-      {
-        cache: "no-store",
-      }
-    );
-    const images = await imagesData.json();
-    setOtherImages(() => images);
+      const imagesRes = await axios.get(`/api/images/${id}`, {
+        headers: { "Cache-Control": "no-store" },
+      });
+      setOtherImages(imagesRes.data);
+    } catch (error) {
+      toast.error("Failed to fetch product data");
+    }
   };
 
   // fetching all product categories. It will be used for displaying categories in select category input
   const fetchCategories = async () => {
-    fetch(`http://212.67.12.199:3001/api/categories`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setCategories(data);
-      });
+    try {
+      const res = await axios.get(`/api/categories`);
+      setCategories(res.data);
+    } catch (error) {
+      toast.error("Failed to fetch categories");
+    }
   };
 
   useEffect(() => {
     fetchCategories();
     fetchProductData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
@@ -290,14 +275,17 @@ const DashboardProductDetails = ({
                   title="Удалить фото"
                   onClick={async () => {
                     if (confirm("Удалить это фото?")) {
-                      const res = await fetch(
-                        `http://212.67.12.199:3001/api/images/${image.imageID}`,
-                        { method: "DELETE" }
-                      );
-                      if (res.status === 204) {
-                        toast.success("Фото удалено");
-                        fetchProductData();
-                      } else {
+                      try {
+                        const res = await axios.delete(
+                          `/api/images/${image.imageID}`
+                        );
+                        if (res.status === 204) {
+                          toast.success("Фото удалено");
+                          fetchProductData();
+                        } else {
+                          toast.error("Ошибка при удалении фото");
+                        }
+                      } catch (error) {
                         toast.error("Ошибка при удалении фото");
                       }
                     }
