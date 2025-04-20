@@ -16,7 +16,7 @@ export default async function Layout({
 
   let email: string = await session?.user?.email;
 
-  const res = await fetch(`http://212.67.12.199:3001/api/users/email/${email}`);
+  const res = await fetch(`${process.env.API_URL}/api/users/email/${email}`);
   const data = await res.json();
   // redirecting user to the home page if not admin
   if (data.role === "user") {
