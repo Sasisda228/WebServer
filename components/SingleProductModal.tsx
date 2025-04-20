@@ -8,6 +8,7 @@ import {
   StockAvailabillity,
   UrgencyText,
 } from "@/components";
+import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -65,23 +66,32 @@ export default function SingleProductModal({
   useEffect(() => {
     if (!open) return;
     setLoading(true);
-    Promise.all([
-      fetch(`http://212.67.12.199:3001/api/slugs/${productSlug}`).then((r) =>
-        r.json()
-      ),
-    ])
-      .then(async ([productData]) => {
+
+    // Replace fetch with axios
+    (async () => {
+      try {
+        // You may want to use a relative URL like `/api/slugs/${productSlug}` if you have a proxy set up
+        const productRes = await axios.get(
+          `http://212.67.12.199:3001/api/slugs/${productSlug}`
+        );
+        const productData = productRes.data;
         setProduct(productData);
+
         if (productData?.id) {
-          const imgs = await fetch(
+          const imgsRes = await axios.get(
             `http://212.67.12.199:3001/api/images/${productData.id}`
-          ).then((r) => r.json());
-          setImages(imgs);
+          );
+          setImages(imgsRes.data);
         } else {
           setImages([]);
         }
-      })
-      .finally(() => setLoading(false));
+      } catch (err) {
+        setProduct(null);
+        setImages([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [productSlug, open]);
 
   // Close on ESC
