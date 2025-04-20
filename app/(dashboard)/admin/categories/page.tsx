@@ -12,7 +12,7 @@ const DashboardCategory = () => {
   // getting all categories to be displayed on the all categories page
   useEffect(() => {
     axios
-      .get(`http://212.67.12.199:3001/api/categories`)
+      .get("/api/categories")
       .then((res) => {
         setCategories(res.data);
       })
