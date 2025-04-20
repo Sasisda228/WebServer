@@ -4,7 +4,7 @@ import { isValidEmailAddressFormat, isValidNameOrLastname } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 interface OrderProduct {
@@ -52,7 +52,7 @@ const AdminSingleOrder = () => {
   useEffect(() => {
     const fetchOrderData = async () => {
       const response = await fetch(
-        `http://localhost:3001/api/orders/${params?.id}`
+        `http://212.67.12.199:3001/api/orders/${params?.id}`
       );
       const data: Order = await response.json();
       setOrder(data);
@@ -60,7 +60,7 @@ const AdminSingleOrder = () => {
 
     const fetchOrderProducts = async () => {
       const response = await fetch(
-        `http://localhost:3001/api/order-product/${params?.id}`
+        `http://212.67.12.199:3001/api/order-product/${params?.id}`
       );
       const data: OrderProduct[] = await response.json();
       setOrderProducts(data);
@@ -98,7 +98,7 @@ const AdminSingleOrder = () => {
         return;
       }
 
-      fetch(`http://localhost:3001/api/orders/${order?.id}`, {
+      fetch(`http://212.67.12.199:3001/api/orders/${order?.id}`, {
         method: "PUT", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -126,11 +126,11 @@ const AdminSingleOrder = () => {
     };
 
     fetch(
-      `http://localhost:3001/api/order-product/${order?.id}`,
+      `http://212.67.12.199:3001/api/order-product/${order?.id}`,
       requestOptions
     ).then((response) => {
       fetch(
-        `http://localhost:3001/api/orders/${order?.id}`,
+        `http://212.67.12.199:3001/api/orders/${order?.id}`,
         requestOptions
       ).then((response) => {
         toast.success("Order deleted successfully");
@@ -347,7 +347,11 @@ const AdminSingleOrder = () => {
           {orderProducts?.map((product) => (
             <div className="flex items-center gap-x-4" key={product?.id}>
               <Image
-                src={product?.product?.mainImage ? `/${product?.product?.mainImage}` : "/product_placeholder.jpg"}
+                src={
+                  product?.product?.mainImage
+                    ? `/${product?.product?.mainImage}`
+                    : "/product_placeholder.jpg"
+                }
                 alt={product?.product?.title}
                 width={50}
                 height={50}

@@ -12,14 +12,16 @@
 import { nanoid } from "nanoid";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 
 const DashboardProductTable = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/products?mode=admin", {cache: "no-store"})
+    fetch("http://212.67.12.199:3001/api/products?mode=admin", {
+      cache: "no-store",
+    })
       .then((res) => {
         return res.json();
       })

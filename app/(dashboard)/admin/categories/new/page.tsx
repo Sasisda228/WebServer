@@ -1,6 +1,6 @@
 "use client";
 import { DashboardSidebar } from "@/components";
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { convertCategoryNameToURLFriendly } from "../../../../../utils/categoryFormating";
 
@@ -19,7 +19,7 @@ const DashboardNewCategoryPage = () => {
         }),
       };
       // sending API request for creating new cateogry
-      fetch(`http://localhost:3001/api/categories`, requestOptions)
+      fetch(`http://212.67.12.199:3001/api/categories`, requestOptions)
         .then((response) => {
           if (response.status === 201) {
             return response.json();

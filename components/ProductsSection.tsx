@@ -13,7 +13,7 @@ import ProductItem from "./ProductItem";
 
 const ProductsSection = async () => {
   // sending API request for getting all products
-  const data = await fetch("http://localhost:3001/api/products");
+  const data = await fetch("http://212.67.12.199:3001/api/products");
   const products = await data.json();
   return (
     <div className="bg-blue-500 border-t-4 border-white">

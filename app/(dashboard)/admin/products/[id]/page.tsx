@@ -28,7 +28,7 @@ const DashboardProductDetails = ({
     const requestOptions = {
       method: "DELETE",
     };
-    fetch(`http://localhost:3001/api/products/${id}`, requestOptions)
+    fetch(`http://212.67.12.199:3001/api/products/${id}`, requestOptions)
       .then((response) => {
         if (response.status !== 204) {
           if (response.status === 400) {
@@ -66,7 +66,7 @@ const DashboardProductDetails = ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(product),
     };
-    fetch(`http://localhost:3001/api/products/${id}`, requestOptions)
+    fetch(`http://212.67.12.199:3001/api/products/${id}`, requestOptions)
       .then((response) => {
         if (response.status === 200) {
           return response.json();
@@ -84,7 +84,7 @@ const DashboardProductDetails = ({
 
   // fetching main product data including other product images
   const fetchProductData = async () => {
-    fetch(`http://localhost:3001/api/products/${id}`)
+    fetch(`http://212.67.12.199:3001/api/products/${id}`)
       .then((res) => {
         return res.json();
       })
@@ -92,16 +92,19 @@ const DashboardProductDetails = ({
         setProduct(data);
       });
 
-    const imagesData = await fetch(`http://localhost:3001/api/images/${id}`, {
-      cache: "no-store",
-    });
+    const imagesData = await fetch(
+      `http://212.67.12.199:3001/api/images/${id}`,
+      {
+        cache: "no-store",
+      }
+    );
     const images = await imagesData.json();
     setOtherImages(() => images);
   };
 
   // fetching all product categories. It will be used for displaying categories in select category input
   const fetchCategories = async () => {
-    fetch(`http://localhost:3001/api/categories`)
+    fetch(`http://212.67.12.199:3001/api/categories`)
       .then((res) => {
         return res.json();
       })
@@ -288,7 +291,7 @@ const DashboardProductDetails = ({
                   onClick={async () => {
                     if (confirm("Удалить это фото?")) {
                       const res = await fetch(
-                        `http://localhost:3001/api/images/${image.imageID}`,
+                        `http://212.67.12.199:3001/api/images/${image.imageID}`,
                         { method: "DELETE" }
                       );
                       if (res.status === 204) {

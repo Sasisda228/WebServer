@@ -2,7 +2,7 @@
 import { CustomButton, DashboardSidebar } from "@/components";
 import { nanoid } from "nanoid";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { formatCategoryName } from "../../../../utils/categoryFormating";
 
 const DashboardCategory = () => {
@@ -10,7 +10,7 @@ const DashboardCategory = () => {
 
   // getting all categories to be displayed on the all categories page
   useEffect(() => {
-    fetch("http://localhost:3001/api/categories")
+    fetch("http://212.67.12.199:3001/api/categories")
       .then((res) => {
         return res.json();
       })

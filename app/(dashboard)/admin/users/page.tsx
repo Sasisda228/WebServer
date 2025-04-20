@@ -2,14 +2,14 @@
 import { CustomButton, DashboardSidebar } from "@/components";
 import { nanoid } from "nanoid";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const DashboardUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     // sending API request for all users
-    fetch("http://localhost:3001/api/users")
+    fetch("http://212.67.12.199:3001/api/users")
       .then((res) => {
         return res.json();
       })

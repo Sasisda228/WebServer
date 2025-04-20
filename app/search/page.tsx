@@ -7,7 +7,7 @@ interface Props {
 // sending api request for search results for a given search text
 const SearchPage = async ({ searchParams: { search } }: Props) => {
   const data = await fetch(
-    `http://localhost:3001/api/search?query=${search || ""}`
+    `http://212.67.12.199:3001/api/search?query=${search || ""}`
   );
 
   const products = await data.json();

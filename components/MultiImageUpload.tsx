@@ -23,7 +23,7 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
     formData.append("productID", String(productId));
 
     try {
-      const response = await fetch("http://localhost:3001/api/images", {
+      const response = await fetch("http://212.67.12.199:3001/api/images", {
         method: "POST",
         body: formData,
       });

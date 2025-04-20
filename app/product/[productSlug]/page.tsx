@@ -36,13 +36,13 @@ const TAB_CONTENT: Record<string, string> = {
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   // Fetch product
   const data = await fetch(
-    `http://localhost:3001/api/slugs/${params.productSlug}`
+    `http://212.67.12.199:3001/api/slugs/${params.productSlug}`
   );
   const product = await data.json();
 
   // Fetch images
   const imagesData = await fetch(
-    `http://localhost:3001/api/images/${product.id}`
+    `http://212.67.12.199:3001/api/images/${product.id}`
   );
   const images = await imagesData.json();
 

@@ -66,7 +66,7 @@ export default function SingleProductModal({
     if (!open) return;
     setLoading(true);
     Promise.all([
-      fetch(`http://localhost:3001/api/slugs/${productSlug}`).then((r) =>
+      fetch(`http://212.67.12.199:3001/api/slugs/${productSlug}`).then((r) =>
         r.json()
       ),
     ])
@@ -74,7 +74,7 @@ export default function SingleProductModal({
         setProduct(productData);
         if (productData?.id) {
           const imgs = await fetch(
-            `http://localhost:3001/api/images/${productData.id}`
+            `http://212.67.12.199:3001/api/images/${productData.id}`
           ).then((r) => r.json());
           setImages(imgs);
         } else {

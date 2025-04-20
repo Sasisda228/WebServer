@@ -1,9 +1,8 @@
 'use server'
 
-import { revalidateTag } from "next/cache";
 
-export async function deleteWishItem(id: string){
-  await fetch(`http://localhost:3001/api/wishlist/${id}`, {
+export async function deleteWishItem(id: string) {
+  await fetch(`http://212.67.12.199:3001/api/wishlist/${id}`, {
     method: "DELETE",
   });
 }

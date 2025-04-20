@@ -1,9 +1,9 @@
 "use client";
 import { SectionTitle, WishItem } from "@/components";
-import React, { useEffect, useState } from "react";
-import { useWishlistStore } from "../_zustand/wishlistStore";
 import { nanoid } from "nanoid";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useWishlistStore } from "../_zustand/wishlistStore";
 
 
 
@@ -12,9 +12,12 @@ const WishlistPage = () => {
   const {wishlist, setWishlist}= useWishlistStore();
 
   const getWishlistByUserId = async (id: string) => {
-    const response = await fetch(`http://localhost:3001/api/wishlist/${id}`, {
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `http://212.67.12.199:3001/api/wishlist/${id}`,
+      {
+        cache: "no-store",
+      }
+    );
     const wishlist = await response.json();
 
     const productArray: {
@@ -33,9 +36,12 @@ const WishlistPage = () => {
 
   const getUserByEmail = async () => {
     if (session?.user?.email) {
-      fetch(`http://localhost:3001/api/users/email/${session?.user?.email}`, {
-        cache: "no-store",
-      })
+      fetch(
+        `http://212.67.12.199:3001/api/users/email/${session?.user?.email}`,
+        {
+          cache: "no-store",
+        }
+      )
         .then((response) => response.json())
         .then((data) => {
           getWishlistByUserId(data?.id);
