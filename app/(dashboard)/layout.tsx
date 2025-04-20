@@ -1,3 +1,4 @@
+import axios from "axios";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 
@@ -16,8 +17,8 @@ export default async function Layout({
 
   let email: string = await session?.user?.email;
 
-  const res = await fetch(`${process.env.API_URL}/api/users/email/${email}`);
-  const data = await res.json();
+  const res = await axios.get(`/api/users/email/${email}`);
+  const data = res.data;
   // redirecting user to the home page if not admin
   if (data.role === "user") {
     redirect("/");

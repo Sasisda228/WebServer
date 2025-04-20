@@ -1,5 +1,6 @@
 "use client";
 import { DashboardSidebar } from "@/components";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -21,46 +22,39 @@ const DashboardSingleCategory = ({
   const router = useRouter();
 
   const deleteCategory = async () => {
-    const requestOptions = {
-      method: "DELETE",
-    };
-    // sending API request for deleting a category
-    fetch(`${process.env.API_URL}/api/categories/${id}`, requestOptions)
-      .then((response) => {
-        if (response.status === 204) {
-          toast.success("Category deleted successfully");
-          router.push("/admin/categories");
-        } else {
-          throw Error("There was an error deleting a category");
-        }
-      })
-      .catch(() => {
-        toast.error("There was an error deleting category");
-      });
+    try {
+      const response = await axios.delete(`/api/categories/${id}`);
+      if (response.status === 204) {
+        toast.success("Category deleted successfully");
+        router.push("/admin/categories");
+      } else {
+        throw new Error("There was an error deleting a category");
+      }
+    } catch (error) {
+      toast.error("There was an error deleting category");
+    }
   };
 
   const updateCategory = async () => {
     if (categoryInput.name.length > 0) {
-      const requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: convertCategoryNameToURLFriendly(categoryInput.name),
-        }),
-      };
-      // sending API request for updating a category
-      fetch(`${process.env.API_URL}/api/categories/${id}`, requestOptions)
-        .then((response) => {
-          if (response.status === 200) {
-            return response.json();
-          } else {
-            throw Error("Error updating a category");
+      try {
+        const response = await axios.put(
+          `/api/categories/${id}`,
+          {
+            name: convertCategoryNameToURLFriendly(categoryInput.name),
+          },
+          {
+            headers: { "Content-Type": "application/json" },
           }
-        })
-        .then(() => toast.success("Category successfully updated"))
-        .catch(() => {
-          toast.error("There was an error while updating a category");
-        });
+        );
+        if (response.status === 200) {
+          toast.success("Category successfully updated");
+        } else {
+          throw new Error("Error updating a category");
+        }
+      } catch (error) {
+        toast.error("There was an error while updating a category");
+      }
     } else {
       toast.error("For updating a category you must enter all values");
       return;
@@ -68,15 +62,16 @@ const DashboardSingleCategory = ({
   };
 
   useEffect(() => {
-    // sending API request for getting single categroy
-    fetch(`${process.env.API_URL}/api/categories/${id}`)
+    // sending API request for getting single category
+    axios
+      .get(`/api/categories/${id}`)
       .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
         setCategoryInput({
-          name: data?.name,
+          name: res.data?.name,
         });
+      })
+      .catch(() => {
+        toast.error("Failed to fetch category details");
       });
   }, [id]);
 
