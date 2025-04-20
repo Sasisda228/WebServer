@@ -25,7 +25,7 @@ const DashboardSingleCategory = ({
       method: "DELETE",
     };
     // sending API request for deleting a category
-    fetch(`http://212.67.12.199:3001/api/categories/${id}`, requestOptions)
+    fetch(`${process.env.API_URL}/api/categories/${id}`, requestOptions)
       .then((response) => {
         if (response.status === 204) {
           toast.success("Category deleted successfully");
@@ -34,7 +34,7 @@ const DashboardSingleCategory = ({
           throw Error("There was an error deleting a category");
         }
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("There was an error deleting category");
       });
   };
@@ -49,7 +49,7 @@ const DashboardSingleCategory = ({
         }),
       };
       // sending API request for updating a category
-      fetch(`http://212.67.12.199:3001/api/categories/${id}`, requestOptions)
+      fetch(`${process.env.API_URL}/api/categories/${id}`, requestOptions)
         .then((response) => {
           if (response.status === 200) {
             return response.json();
@@ -57,8 +57,8 @@ const DashboardSingleCategory = ({
             throw Error("Error updating a category");
           }
         })
-        .then((data) => toast.success("Category successfully updated"))
-        .catch((error) => {
+        .then(() => toast.success("Category successfully updated"))
+        .catch(() => {
           toast.error("There was an error while updating a category");
         });
     } else {
@@ -69,7 +69,7 @@ const DashboardSingleCategory = ({
 
   useEffect(() => {
     // sending API request for getting single categroy
-    fetch(`http://212.67.12.199:3001/api/categories/${id}`)
+    fetch(`${process.env.API_URL}/api/categories/${id}`)
       .then((res) => {
         return res.json();
       })
