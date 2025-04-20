@@ -18,7 +18,7 @@ export default async function Layout({
   let email: string = session?.user?.email;
 
   // Use absolute URL for server-side axios call
-  const baseUrl = "http://212.67.12.199:3001";
+  const baseUrl = "http://212.67.12.199:3000";
   const res = await axios.get(`${baseUrl}/api/users/email/${email}`);
   const data = res.data;
   // redirecting user to the home page if not admin
