@@ -7,7 +7,7 @@
 // Input parameters: { slug }: any
 // Output: products grid
 // *********************
-
+"use client";
 import ProductItem from "./ProductItem";
 
 const Products = async ({ slug }: any) => {
