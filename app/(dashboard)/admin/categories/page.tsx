@@ -1,5 +1,6 @@
 "use client";
 import { CustomButton, DashboardSidebar } from "@/components";
+import axios from "axios";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -10,12 +11,14 @@ const DashboardCategory = () => {
 
   // getting all categories to be displayed on the all categories page
   useEffect(() => {
-    fetch(`${process.env.API_URL}/api/categories`)
+    axios
+      .get(`${process.env.API_URL}/api/categories`)
       .then((res) => {
-        return res.json();
+        setCategories(res.data);
       })
-      .then((data) => {
-        setCategories(data);
+      .catch((error) => {
+        // Optionally handle error here
+        console.error("Failed to fetch categories:", error);
       });
   }, []);
 
