@@ -38,7 +38,7 @@ const Products = async ({ slug }: any) => {
 
   // sending API request with filtering, sorting and pagination for getting all products
   const data = await fetch(
-    `http://192.168.0.173:3001/api/products?filters[price][$lte]=${
+    `https://212.67.12.199:3001/api/products?filters[price][$lte]=${
       slug?.searchParams?.price || 3000
     }&filters[rating][$gte]=${
       Number(slug?.searchParams?.rating) || 0
