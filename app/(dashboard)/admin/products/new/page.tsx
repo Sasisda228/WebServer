@@ -1,6 +1,7 @@
 "use client";
 import { DashboardSidebar } from "@/components";
 import { convertCategoryNameToURLFriendly as convertSlugToURLFriendly } from "@/utils/categoryFormating";
+import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -38,20 +39,11 @@ const AddNewProduct = () => {
       return;
     }
 
-    const requestOptions: any = {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product),
-    };
-    fetch(`http://212.67.12.199:3001/api/products`, requestOptions)
-      .then((response) => {
-        if (response.status === 201) {
-          return response.json();
-        } else {
-          throw Error("There was an error while creating product");
-        }
-      })
-      .then((data) => {
+    try {
+      const response = await axios.post("/api/products", product, {
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.status === 201) {
         toast.success("Product added successfully");
         setProduct({
           title: "",
@@ -63,10 +55,12 @@ const AddNewProduct = () => {
           slug: "",
           categoryId: "",
         });
-      })
-      .catch((error) => {
-        toast.error("There was an error while creating product");
-      });
+      } else {
+        throw new Error("There was an error while creating product");
+      }
+    } catch (error) {
+      toast.error("There was an error while creating product");
+    }
   };
 
   const uploadFile = async (file: any) => {
@@ -74,39 +68,32 @@ const AddNewProduct = () => {
     formData.append("uploadedFile", file);
 
     try {
-      const response = await fetch("http://212.67.12.199:3001/api/main-image", {
-        method: "POST",
-        body: formData,
+      const response = await axios.post("/api/main-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        // Optionally handle uploaded file response
       } else {
-        console.error("File upload unsuccessfull");
+        console.error("File upload unsuccessful");
       }
     } catch (error) {
-      console.error("Error happend while sending request:", error);
+      console.error("Error happened while sending request:", error);
     }
   };
 
   const fetchCategories = async () => {
-    fetch(`http://212.67.12.199:3001/api/categories`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setCategories(data);
-        setProduct({
-          title: "",
-          price: 0,
-          manufacturer: "",
-          inStock: 1,
-          mainImage: "",
-          description: "",
-          slug: "",
-          categoryId: data[0]?.id,
-        });
-      });
+    try {
+      const res = await axios.get("/api/categories");
+      const data = res.data;
+      setCategories(data);
+      setProduct((prev) => ({
+        ...prev,
+        categoryId: data[0]?.id || "",
+      }));
+    } catch (error) {
+      toast.error("Failed to fetch categories");
+    }
   };
 
   useEffect(() => {
