@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 
@@ -15,12 +14,10 @@ export default async function Layout({
     redirect("/");
   }
 
-  let email: string = session?.user?.email;
+  let email: string = await session?.user?.email;
 
-  // Use absolute URL for server-side axios call
-  const baseUrl = "http://212.67.12.199:3000";
-  const res = await axios.get(`${baseUrl}/api/users/email/${email}`);
-  const data = res.data;
+  const res = await fetch(`http://212.67.12.199:3001/api/users/email/${email}`);
+  const data = await res.json();
   // redirecting user to the home page if not admin
   if (data.role === "user") {
     redirect("/");
