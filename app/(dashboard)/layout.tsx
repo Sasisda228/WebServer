@@ -15,9 +15,11 @@ export default async function Layout({
     redirect("/");
   }
 
-  let email: string = await session?.user?.email;
+  let email: string = session?.user?.email;
 
-  const res = await axios.get(`/api/users/email/${email}`);
+  // Use absolute URL for server-side axios call
+  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+  const res = await axios.get(`${baseUrl}/api/users/email/${email}`);
   const data = res.data;
   // redirecting user to the home page if not admin
   if (data.role === "user") {
