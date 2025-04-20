@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useRef } from "react";
 import toast from "react-hot-toast";
 
@@ -23,11 +24,12 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
     formData.append("productID", String(productId));
 
     try {
-      const response = await fetch("http://212.67.12.199:3001/api/images", {
-        method: "POST",
-        body: formData,
+      const response = await axios.post("/api/images", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      if (response.ok) {
+      if (response.status === 200) {
         toast.success("Images uploaded!");
         onUploadSuccess();
         if (inputRef.current) inputRef.current.value = "";
