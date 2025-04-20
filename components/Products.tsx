@@ -1,3 +1,4 @@
+"use client";
 // *********************
 // Role of the component: Showing products on the shop page with applied filter and sort
 // Name of the component: Products.tsx
@@ -7,7 +8,7 @@
 // Input parameters: { slug }: any
 // Output: products grid
 // *********************
-"use client";
+import axios from "axios";
 import ProductItem from "./ProductItem";
 
 const Products = async ({ slug }: any) => {
@@ -37,30 +38,25 @@ const Products = async ({ slug }: any) => {
   }
 
   // sending API request with filtering, sorting and pagination for getting all products
-  const data = await fetch(
-    `${process.env.API_URL}/api/products?filters[price][$lte]=${
-      slug?.searchParams?.price || 3000
-    }&filters[rating][$gte]=${
-      Number(slug?.searchParams?.rating) || 0
-    }&filters[inStock][$${stockMode}]=1&${
-      slug?.params?.slug?.length > 0
-        ? `filters[category][$equals]=${slug?.params?.slug}&`
-        : ""
-    }sort=${slug?.searchParams?.sort}&page=${page}`
-  );
+  let products: Product[] = [];
+  try {
+    const response = await axios.get(
+      `/api/products?filters[price][$lte]=${
+        slug?.searchParams?.price || 3000
+      }&filters[rating][$gte]=${
+        Number(slug?.searchParams?.rating) || 0
+      }&filters[inStock][$${stockMode}]=1&${
+        slug?.params?.slug?.length > 0
+          ? `filters[category][$equals]=${slug?.params?.slug}&`
+          : ""
+      }sort=${slug?.searchParams?.sort}&page=${page}`
+    );
+    products = response.data;
+  } catch (error) {
+    // Optionally handle error here
+    products = [];
+  }
 
-  const products = await data.json();
-
-  /*
-    const req = await fetch(
-    `http://localhost:1337/api/products?populate=*&filters[price][$lte]=${
-      searchParams?.price || 1000
-    }${searchParams.women === "true" ? "&filters[category][$eq]=women" : ""}${searchParams.womenNewEdition === "true" ? "&filters[category][$eq]=women%20new%20edition" : ""}&filters[rating][$gte]=${
-      searchParams?.rating || 1
-    }`
-  );
-  const products = await req.json();
-  */
   return (
     <div className="grid grid-cols-3 justify-items-center gap-x-2 gap-y-5 max-[1300px]:grid-cols-3 max-lg:grid-cols-2 max-[500px]:grid-cols-2">
       {products.length > 0 ? (
