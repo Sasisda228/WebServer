@@ -27,7 +27,10 @@ const DashboardNewCategoryPage = () => {
           setCategoryInput({
             name: "",
           });
-        } else      } catch (error) {
+        } else {
+          throw new Error("There was an error while creating category");
+        }
+      } catch (error) {
         toast.error("There was an error while creating category");
       }
     } else {
