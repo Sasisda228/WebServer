@@ -1,3 +1,4 @@
+"use client";
 // *********************
 // Role of the component: Product table component on admin dashboard page
 // Name of the component: DashboardProductTable.tsx
@@ -8,7 +9,7 @@
 // Output: products table
 // *********************
 
-"use client";
+import axios from "axios";
 import { nanoid } from "nanoid";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,14 +20,16 @@ const DashboardProductTable = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    fetch("http://212.67.12.199:3001/api/products?mode=admin", {
-      cache: "no-store",
-    })
-      .then((res) => {
-        return res.json();
+    axios
+      .get("/api/products?mode=admin", {
+        headers: { "Cache-Control": "no-store" },
       })
-      .then((data) => {
-        setProducts(data);
+      .then((res) => {
+        setProducts(res.data);
+      })
+      .catch(() => {
+        // Optionally handle error here
+        setProducts([]);
       });
   }, []);
 
@@ -80,7 +83,11 @@ const DashboardProductTable = () => {
                           <Image
                             width={48}
                             height={48}
-                            src={product?.mainImage ? `/${product?.mainImage}` : "/product_placeholder.jpg"}
+                            src={
+                              product?.mainImage
+                                ? `/${product?.mainImage}`
+                                : "/product_placeholder.jpg"
+                            }
                             alt="Avatar Tailwind CSS Component"
                             className="w-auto h-auto"
                           />
@@ -96,12 +103,15 @@ const DashboardProductTable = () => {
                   </td>
 
                   <td>
-                    { product?.inStock ? (<span className="badge badge-success text-white badge-sm">
-                      In stock
-                    </span>) : (<span className="badge badge-error text-white badge-sm">
-                      Out of stock
-                    </span>) }
-                    
+                    {product?.inStock ? (
+                      <span className="badge badge-success text-white badge-sm">
+                        In stock
+                      </span>
+                    ) : (
+                      <span className="badge badge-error text-white badge-sm">
+                        Out of stock
+                      </span>
+                    )}
                   </td>
                   <td>${product?.price}</td>
                   <th>
