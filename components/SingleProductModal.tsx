@@ -71,16 +71,12 @@ export default function SingleProductModal({
     (async () => {
       try {
         // You may want to use a relative URL like `/api/slugs/${productSlug}` if you have a proxy set up
-        const productRes = await axios.get(
-          `http://212.67.12.199:3001/api/slugs/${productSlug}`
-        );
+        const productRes = await axios.get(`/api/slugs/${productSlug}`);
         const productData = productRes.data;
         setProduct(productData);
 
         if (productData?.id) {
-          const imgsRes = await axios.get(
-            `http://212.67.12.199:3001/api/images/${productData.id}`
-          );
+          const imgsRes = await axios.get(`/api/images/${productData.id}`);
           setImages(imgsRes.data);
         } else {
           setImages([]);
