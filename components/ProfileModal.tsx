@@ -75,7 +75,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
 
     try {
       // sending API request for registering user
-      const res = await fetch("/apiV3/register", {
+      const res = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

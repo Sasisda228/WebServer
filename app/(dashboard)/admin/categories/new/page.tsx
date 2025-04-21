@@ -14,7 +14,7 @@ const DashboardNewCategoryPage = () => {
     if (categoryInput.name.length > 0) {
       try {
         const response = await axios.post(
-          "/api/categories",
+          "/apiv3/categories",
           {
             name: convertCategoryNameToURLFriendly(categoryInput.name),
           },

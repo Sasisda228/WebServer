@@ -23,7 +23,7 @@ const DashboardSingleCategory = ({
 
   const deleteCategory = async () => {
     try {
-      const response = await axios.delete(`/api/categories/${id}`);
+      const response = await axios.delete(`/apiv3/categories/${id}`);
       if (response.status === 204) {
         toast.success("Category deleted successfully");
         router.push("/admin/categories");
@@ -39,7 +39,7 @@ const DashboardSingleCategory = ({
     if (categoryInput.name.length > 0) {
       try {
         const response = await axios.put(
-          `/api/categories/${id}`,
+          `/apiv3/categories/${id}`,
           {
             name: convertCategoryNameToURLFriendly(categoryInput.name),
           },
@@ -64,7 +64,7 @@ const DashboardSingleCategory = ({
   useEffect(() => {
     // sending API request for getting single category
     axios
-      .get(`/api/categories/${id}`)
+      .get(`/apiv3/categories/${id}`)
       .then((res) => {
         setCategoryInput({
           name: res.data?.name,

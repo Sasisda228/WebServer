@@ -12,7 +12,7 @@ const DashboardCategory = () => {
   // getting all categories to be displayed on the all categories page
   useEffect(() => {
     axios
-      .get("/api/categories")
+      .get("/apiv3/categories")
       .then((res) => {
         setCategories(res.data);
       })

@@ -40,7 +40,7 @@ const AddNewProduct = () => {
     }
 
     try {
-      const response = await axios.post("/api/products", product, {
+      const response = await axios.post("/apiv3/products", product, {
         headers: { "Content-Type": "application/json" },
       });
       if (response.status === 201) {
@@ -68,7 +68,7 @@ const AddNewProduct = () => {
     formData.append("uploadedFile", file);
 
     try {
-      const response = await axios.post("/api/main-image", formData, {
+      const response = await axios.post("/apiv3/main-image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -84,7 +84,7 @@ const AddNewProduct = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("/api/categories");
+      const res = await axios.get("/apiv3/categories");
       const data = res.data;
       setCategories(data);
       setProduct((prev) => ({

@@ -27,7 +27,7 @@ const DashboardProductDetails = ({
   // functionality for deleting product
   const deleteProduct = async () => {
     try {
-      const response = await axios.delete(`/api/products/${id}`);
+      const response = await axios.delete(`/apiv3/products/${id}`);
       if (response.status !== 204) {
         if (response.status === 400) {
           toast.error(
@@ -59,7 +59,7 @@ const DashboardProductDetails = ({
     }
 
     try {
-      const response = await axios.put(`/api/products/${id}`, product, {
+      const response = await axios.put(`/apiv3/products/${id}`, product, {
         headers: { "Content-Type": "application/json" },
       });
       if (response.status === 200) {
@@ -75,10 +75,10 @@ const DashboardProductDetails = ({
   // fetching main product data including other product images
   const fetchProductData = async () => {
     try {
-      const res = await axios.get(`/api/products/${id}`);
+      const res = await axios.get(`/apiv3/products/${id}`);
       setProduct(res.data);
 
-      const imagesRes = await axios.get(`/api/images/${id}`, {
+      const imagesRes = await axios.get(`/apiv3/images/${id}`, {
         headers: { "Cache-Control": "no-store" },
       });
       setOtherImages(imagesRes.data);
@@ -90,7 +90,7 @@ const DashboardProductDetails = ({
   // fetching all product categories. It will be used for displaying categories in select category input
   const fetchCategories = async () => {
     try {
-      const res = await axios.get(`/api/categories`);
+      const res = await axios.get(`/apiv3/categories`);
       setCategories(res.data);
     } catch (error) {
       toast.error("Failed to fetch categories");
@@ -277,7 +277,7 @@ const DashboardProductDetails = ({
                     if (confirm("Удалить это фото?")) {
                       try {
                         const res = await axios.delete(
-                          `/api/images/${image.imageID}`
+                          `/apiv3/images/${image.imageID}`
                         );
                         if (res.status === 204) {
                           toast.success("Фото удалено");
