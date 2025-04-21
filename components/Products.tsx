@@ -8,7 +8,6 @@
 // Input parameters: { slug }: any
 // Output: products grid
 // *********************
-
 import axios from "axios"
 import ProductItem from "./ProductItem"
 
@@ -69,12 +68,6 @@ const Products = async ({ slug }: any) => {
           No products found for specified query
         </h3>
       )}
-    </div>
-  );
-};
-
-export default Products;
- )}
     </div>
   );
 };
