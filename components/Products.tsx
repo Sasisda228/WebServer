@@ -8,10 +8,8 @@
 // Input parameters: { slug }: any
 // Output: products grid
 // *********************
-import axios from "axios";
-import ProductItem from "./ProductItem";
-import styles from "./Products.module.css";
-
+import axios from "axios"
+import ProductItem from "./Proimport st;l"
 const Products = async ({ slug }: any) => {
   // getting all data from URL slug and preparing everything for sending GET request
   const inStockNum = slug?.searchParams?.inStock === "true" ? 1 : 0;
@@ -59,13 +57,14 @@ const Products = async ({ slug }: any) => {
   }
 
   return (
-    <div className={styles.productsGrid}>
+    <div className="grid grid-cols-3 justify-items-center gap-x-2 gap-y-5 max-[1300px]:grid-cols-3 max-lg:grid-cols-2 max-[500px]:grid-cols-2">
       {products.length > 0 ? (
         products.map((product: Product) => (
           <ProductItem key={product.id} product={product} />
         ))
       ) : (
-        <h3 className={styles.noProducts}>
+        <h3 className="text-3xl mt-5 text-center w-full col-span-full max-[1000px]:text-2xl max-[500px]:text-lg">
+-span-full max-[1000px]:text-2xl max-[500px]:text-lg">
           No products found for specified query
         </h3>
       )}
