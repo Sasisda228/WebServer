@@ -41,7 +41,7 @@ const Products = async ({ slug }: any) => {
   let products: Product[] = [];
   try {
     const response = await axios.get(
-      `/api/products?filters[price][$lte]=${
+      `/apiv3/products?filters[price][$lte]=${
         slug?.searchParams?.price || 3000
       }&filters[rating][$gte]=${
         Number(slug?.searchParams?.rating) || 0
