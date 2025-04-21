@@ -1,6 +1,7 @@
 "use client";
 import pageStyles from "@/app/product/[productSlug]/page.module.css";
 import { isValidEmailAddressFormat } from "@/lib/utils";
+import axios from "axios";
 import { motion } from "framer-motion";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -75,16 +76,18 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
 
     try {
       // sending API request for registering user
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const res = await axios.post(
+        "/api/register",
+        {
           email,
           password,
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (res.status === 400) {
         toast.error("This email is already registered");
@@ -95,10 +98,15 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         toast.success("Registration successful");
         router.push("/login");
       }
-    } catch (error) {
-      toast.error("Error, try again");
-      setError("Error, try again");
-      console.log(error);
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        toast.error("This email is already registered");
+        setError("The email already in use");
+      } else {
+        toast.error("Error, try again");
+        setError("Error, try again");
+        console.log(error);
+      }
     }
   };
   // Close on overlay click
