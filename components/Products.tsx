@@ -8,6 +8,7 @@
 // Input parameters: { slug }: any
 // Output: products grid
 // *********************
+
 import axios from "axios"
 import ProductItem from "./ProductItem"
 
