@@ -9,7 +9,8 @@
 // Output: products grid
 // *********************
 import axios from "axios"
-import ProductItem from "./Proimport st;l"
+import ProductItem from "./ProductItem"
+
 const Products = async ({ slug }: any) => {
   // getting all data from URL slug and preparing everything for sending GET request
   const inStockNum = slug?.searchParams?.inStock === "true" ? 1 : 0;
@@ -64,10 +65,15 @@ const Products = async ({ slug }: any) => {
         ))
       ) : (
         <h3 className="text-3xl mt-5 text-center w-full col-span-full max-[1000px]:text-2xl max-[500px]:text-lg">
--span-full max-[1000px]:text-2xl max-[500px]:text-lg">
           No products found for specified query
         </h3>
       )}
+    </div>
+  );
+};
+
+export default Products;
+ )}
     </div>
   );
 };
