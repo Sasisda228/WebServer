@@ -4,13 +4,14 @@
 // Role of the component: Button for adding and removing product to the wishlist on the single product page
 // Name of the component: AddToWishlistBtn.tsx
 // Developer: Aleksandar Kuzmanovic
-// Version: 1.0
+// Version: 1.1 (axios refactor)
 // Component call: <AddToWishlistBtn product={product} slug={slug}  />
 // Input parameters: AddToWishlistBtnProps interface
 // Output: Two buttons with adding and removing from the wishlist functionality
 // *********************
 
 import { useWishlistStore } from "@/app/_zustand/wishlistStore";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -21,44 +22,55 @@ interface AddToWishlistBtnProps {
   slug: string;
 }
 
-const AddToWishlistBtn = ({ product, slug }: AddToWishlistBtnProps) => {
-  const { data: session, status } = useSession();
+const AddToWishlistBtn = ({ product }: AddToWishlistBtnProps) => {
+  const { data: session } = useSession();
   const { addToWishlist, removeFromWishlist, wishlist } = useWishlistStore();
   const [isProductInWishlist, setIsProductInWishlist] = useState<boolean>();
 
+  // Получить userId по email
+  const getUserIdByEmail = async (email: string): Promise<string | null> => {
+    try {
+      const res = await axios.get(`/apiv3/users/email/${email}`, {
+        headers: { Accept: "application/json, text/plain, */*" },
+      });
+      return res.data?.id || null;
+    } catch (error) {
+      return null;
+    }
+  };
+
   const addToWishlistFun = async () => {
-    // getting user by email so I can get his user id
     if (session?.user?.email) {
-      // sending fetch request to get user id because we will need it for saving wish item
-      fetch(
-        `http://212.67.12.199:3001/api/users/email/${session?.user?.email}`,
-        {
-          cache: "no-store",
-        }
-      )
-        .then((response) => response.json())
-        .then((data) =>
-          fetch("http://212.67.12.199:3001/api/wishlist", {
-            method: "POST",
+      try {
+        const userId = await getUserIdByEmail(session.user.email);
+        if (!userId) throw new Error("User not found");
+
+        await axios.post(
+          "/apiv3/wishlist",
+          {
+            productId: product?.id,
+            userId: userId,
+          },
+          {
             headers: {
               Accept: "application/json, text/plain, */*",
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ productId: product?.id, userId: data?.id }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              addToWishlist({
-                id: product?.id,
-                title: product?.title,
-                price: product?.price,
-                image: product?.mainImage,
-                slug: product?.slug,
-                stockAvailabillity: product?.inStock,
-              });
-              toast.success("Product added to the wishlist");
-            })
+          }
         );
+
+        addToWishlist({
+          id: product?.id,
+          title: product?.title,
+          price: product?.price,
+          image: product?.mainImage,
+          slug: product?.slug,
+          stockAvailabillity: product?.inStock,
+        });
+        toast.success("Product added to the wishlist");
+      } catch (error) {
+        toast.error("Failed to add product to the wishlist");
+      }
     } else {
       toast.error("You need to be logged in to add a product to the wishlist");
     }
@@ -66,58 +78,43 @@ const AddToWishlistBtn = ({ product, slug }: AddToWishlistBtnProps) => {
 
   const removeFromWishlistFun = async () => {
     if (session?.user?.email) {
-      // sending fetch request to get user id because we will need to delete wish item
-      fetch(
-        `http://212.67.12.199:3001/api/users/email/${session?.user?.email}`,
-        {
-          cache: "no-store",
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          return fetch(
-            `http://212.67.12.199:3001/api/wishlist/${data?.id}/${product?.id}`,
-            {
-              method: "DELETE",
-            }
-          );
-        })
-        .then((response) => {
-          removeFromWishlist(product?.id);
-          toast.success("Product removed from the wishlist");
-        });
+      try {
+        const userId = await getUserIdByEmail(session.user.email);
+        if (!userId) throw new Error("User not found");
+
+        await axios.delete(`/apiv3/wishlist/${userId}/${product?.id}`);
+
+        removeFromWishlist(product?.id);
+        toast.success("Product removed from the wishlist");
+      } catch (error) {
+        toast.error("Failed to remove product from the wishlist");
+      }
     }
   };
 
   const isInWishlist = async () => {
-    // sending fetch request to get user id because we will need it for cheching whether the product is in wishlist
     if (session?.user?.email) {
-      fetch(
-        `http://212.67.12.199:3001/api/users/email/${session?.user?.email}`,
-        {
-          cache: "no-store",
+      try {
+        const userId = await getUserIdByEmail(session.user.email);
+        if (!userId) {
+          setIsProductInWishlist(false);
+          return;
         }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          // checking is product in wishlist
-          return fetch(
-            `http://212.67.12.199:3001/api/wishlist/${data?.id}/${product?.id}`
-          );
-        })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data[0]?.id) {
-            setIsProductInWishlist(() => true);
-          } else {
-            setIsProductInWishlist(() => false);
-          }
-        });
+        const res = await axios.get(`/apiv3/wishlist/${userId}/${product?.id}`);
+        if (Array.isArray(res.data) && res.data[0]?.id) {
+          setIsProductInWishlist(true);
+        } else {
+          setIsProductInWishlist(false);
+        }
+      } catch (error) {
+        setIsProductInWishlist(false);
+      }
     }
   };
 
   useEffect(() => {
     isInWishlist();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user?.email, wishlist]);
 
   return (
