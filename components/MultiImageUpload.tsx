@@ -24,7 +24,7 @@ const MultiImageUpload: React.FC<MultiImageUploadProps> = ({
     formData.append("productID", String(productId));
 
     try {
-      const response = await axios.post("/api/images", formData, {
+      const response = await axios.post("/apiv3/images", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

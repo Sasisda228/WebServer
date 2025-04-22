@@ -71,25 +71,25 @@ const AddNewProduct = () => {
       const response = await axios.post("/apiv3/main-image", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       if (response.status === 200) {
-        // Optionally handle uploaded file response
+        // Можно обработать ответ, если нужно
+        // const data = response.data;
       } else {
-        console.error("File upload unsuccessful");
+        console.error("File upload unsuccessfull");
       }
     } catch (error) {
-      console.error("Error happened while sending request:", error);
+      console.error("Error happend while sending request:", error);
     }
   };
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("/apiv3/categories");
-      const data = res.data;
+      const response = await axios.get("/apiv3/categories");
+      const data = response.data;
       setCategories(data);
       setProduct((prev) => ({
         ...prev,
-        categoryId: data[0]?.id || "",
+        categoryId: data[0]?.id,
       }));
     } catch (error) {
       toast.error("Failed to fetch categories");
