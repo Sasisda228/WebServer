@@ -21,7 +21,7 @@ const DashboardProductTable = () => {
 
   useEffect(() => {
     axios
-      .get("/api/products?mode=admin", {
+      .get("/apiv3/products?mode=admin", {
         headers: { "Cache-Control": "no-store" },
       })
       .then((res) => {
