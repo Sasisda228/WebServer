@@ -10,6 +10,7 @@
   --radius: 18px;
   --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --font-main: "Inter", "Segoe UI", Arial, sans-serif;
+  background: #141220;
 }
 :root {
   --acme-canvas-color: oklch(0.967 0.003 264.542);
