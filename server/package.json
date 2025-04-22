@@ -18,6 +18,7 @@
     "multer": "^1.4.5-lts.2",
     "mysql": "^2.18.1",
     "nanoid": "^5.0.6",
-    "prisma": "^5.12.1"
+    "prisma": "^5.12.1",
+    "react-responsive": "^10.0.1"
   }
 }

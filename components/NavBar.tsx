@@ -1,13 +1,10 @@
 "use client";
+import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-import {
-  MdExplore,
-  MdHome,
-  MdOutlineVideoLibrary,
-  MdPersonOutline,
-} from "react-icons/md";
+import { MdExplore, MdHome } from "react-icons/md";
+import { useMediaQuery } from "react-responsive";
+import CategoryBar from "./CategoryBar.tsx";
 import styles from "./NavBar.module.css";
 import ProfileModal from "./ProfileModal";
 
@@ -20,8 +17,6 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Главная", route: "/", icon: MdHome },
   { label: "Каталог", route: "/shop", icon: MdExplore },
-  { label: "Видео", route: "/videos", icon: MdOutlineVideoLibrary },
-  { label: "Профиль", route: "/profile", icon: MdPersonOutline },
 ];
 
 const categories = ["Rifles", "Pistols", "Sights", "Bullets"];
@@ -30,100 +25,158 @@ export default function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
   const [activeItem, setActiveItem] = useState(pathname);
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const navRef = useRef<HTMLUListElement>(null);
-  const [modalOpen, SetModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const navRef = useRef<HTMLDivElement>(null);
+
+  // Update active item and selected category when pathname changes
   useEffect(() => {
     setActiveItem(pathname);
+
+    // Extract category from pathname if in shop section
+    if (pathname.startsWith("/shop/")) {
+      const category = pathname.split("/")[2];
+      if (category) {
+        // Capitalize first letter
+        const formattedCategory =
+          category.charAt(0).toUpperCase() + category.slice(1);
+        setSelectedCategory(formattedCategory);
+      }
+    } else {
+      setSelectedCategory(null);
+    }
   }, [pathname]);
 
-  // Обработчик клика по вкладке
+  // Handle navigation item click
   const handleItemClick = (
     route: string,
     e: React.MouseEvent<HTMLDivElement>
   ) => {
-    e.preventDefault(); // Предотвращаем стандартное поведение ссылки
-    if (route === "/profile") {
-      SetModalOpen(!modalOpen);
-    } else if (route === "/shop") {
-      console.log("route to" + route);
-
-      setIsCategoryOpen(!isCategoryOpen); // Открываем/закрываем список категорий
-    } else {
-      setIsCategoryOpen(false); // Закрываем список категорий
-      setSelectedCategory(null); // Сбрасываем выбранную категорию
-      setActiveItem(route); // Обновляем активную вкладку
-      router.push(route); // Use Next.js router for navigation
-    }
+    e.preventDefault();
+    setActiveItem(route);
+    router.push(route);
   };
 
-  // Обработчик выбора категории
-  const handleCategoryClick = (category: string) => {
-    setIsCategoryOpen(false); // Закрываем список категорий
-    setSelectedCategory(category); // Сохраняем выбранную категорию
-    const newRoute = `/shop/${category.toLowerCase()}`;
-    setActiveItem(newRoute); // Обновляем активную вкладку
-    router.push(newRoute); // Use Next.js router for navigation
+  // Handle logo click to open profile modal
+  const handleLogoClick = () => {
+    setModalOpen(true);
   };
 
   return (
     <>
-      <nav className={styles.navContainer}>
-        <ul ref={navRef} className={styles.bottomNav}>
-          {navItems.map((item) => {
-            const Icon = item.icon;
+      {/* Category Bar - appears when in shop section */}
+      <CategoryBar categories={categories} currentCategory={selectedCategory} />
 
-            // Определяем текст для кнопки
-            const buttonLabel =
-              item.route === "/shop" && selectedCategory
-                ? selectedCategory
-                : item.label;
+      <nav
+        className={`${styles.navContainer} ${isMobile ? styles.mobileNav : ""}`}
+        ref={navRef}
+      >
+        <div className={styles.navContent}>
+          {/* Left navigation item (Home) */}
+          <div className={styles.navSide}>
+            {navItems.slice(0, 1).map((item) => {
+              const Icon = item.icon;
+              const isActive =
+                item.route === "/"
+                  ? activeItem === "/"
+                  : activeItem.startsWith(item.route);
 
-            // Проверка активности вкладки
-            const isActive =
-              item.route === "/" // Для главной страницы
-                ? activeItem === "/"
-                : activeItem.startsWith(item.route);
-
-            return (
-              <li key={item.route} className={styles.navItemWrapper}>
-                <div
+              return (
+                <motion.div
+                  key={item.route}
                   className={`${styles.navItem} ${
                     isActive ? styles.active : ""
                   }`}
                   onClick={(e) => handleItemClick(item.route, e)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   <Icon className={styles.navIcon} />
-                  <span className={styles.navLabel}>{buttonLabel}</span>
-                </div>
+                  <span className={styles.navLabel}>{item.label}</span>
+                  {isActive && (
+                    <motion.div
+                      className={styles.activeIndicator}
+                      layoutId="activeIndicator"
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                      }}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
 
-                {/* Выпадающий список категорий */}
-                {item.route === "/shop" && isCategoryOpen && (
-                  <div className={styles.categoryDropdown}>
-                    <ul className={styles.categoryList}>
-                      {categories.map((category, index) => (
-                        <li key={index} className={styles.categoryItem}>
-                          <button
-                            type="button"
-                            className={styles.categoryButton}
-                            onClick={() => handleCategoryClick(category)}
-                          >
-                            {category}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+          {/* Center logo */}
+          <motion.div
+            className={styles.logoContainer}
+            onClick={handleLogoClick}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className={styles.glitchLogo}>
+              <span className={styles.glitch} data-text="47">
+                47
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Right navigation item (Catalog) */}
+          <div className={styles.navSide}>
+            {navItems.slice(1).map((item) => {
+              const Icon = item.icon;
+              const buttonLabel =
+                item.route === "/shop" && selectedCategory
+                  ? selectedCategory
+                  : item.label;
+              const isActive =
+                item.route === "/"
+                  ? activeItem === "/"
+                  : activeItem.startsWith(item.route);
+
+              return (
+                <div key={item.route} className={styles.navItemWrapper}>
+                  <motion.div
+                    className={`${styles.navItem} ${
+                      isActive ? styles.active : ""
+                    }`}
+                    onClick={(e) => handleItemClick(item.route, e)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Icon className={styles.navIcon} />
+                    <span className={styles.navLabel}>{buttonLabel}</span>
+                    {isActive && (
+                      <motion.div
+                        className={styles.activeIndicator}
+                        layoutId="activeIndicator"
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                        }}
+                      />
+                    )}
+                  </motion.div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </nav>
-      {modalOpen && (
-        <ProfileModal open={modalOpen} onClose={() => SetModalOpen(false)} />
-      )}
+
+      {/* Profile modal */}
+      <AnimatePresence>
+        {modalOpen && (
+          <ProfileModal open={modalOpen} onClose={() => setModalOpen(false)} />
+        )}
+      </AnimatePresence>
     </>
   );
 }
