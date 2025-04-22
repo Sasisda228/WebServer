@@ -1,4 +1,3 @@
-import { Header } from "@/components";
 import NavBar from "@/components/NavBar";
 import Providers from "@/Providers";
 import SessionProvider from "@/utils/SessionProvider";
@@ -25,7 +24,7 @@ export default async function RootLayout({
     <html lang="en" data-theme="light">
       <body className={inter.className}>
         <SessionProvider session={session}>
-          <Header />
+          {/* <Header /> */}
           <Providers>{children}</Providers>
           <NavBar />
         </SessionProvider>
