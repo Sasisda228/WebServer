@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import styles from "./ProductCard.module.css";
 const UploadcareImage = dynamic(
-  () => import("@uploadcare/nextjs-loader").then((mod) => mod.UploadcareImage),
+  () => import("@uploadcare/nextjs-loader").then((mod) => mod.default),
   {
     ssr: false, // Important: Usually, image loaders might need client-side JS
     // Optional: Add a placeholder while the component loads
