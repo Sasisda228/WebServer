@@ -3,7 +3,7 @@ import { DashboardSidebar } from "@/components";
 import { convertCategoryNameToURLFriendly as convertSlugToURLFriendly } from "@/utils/categoryFormating";
 import UploadcareImage from "@uploadcare/nextjs-loader";
 import "@uploadcare/react-uploader/core.css";
-import { Widget } from "@uploadcare/react-widget";
+import { FileInfo, Widget } from "@uploadcare/react-widget"; // Import FileInfo type from the package
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -15,14 +15,6 @@ interface Category {
 }
 
 // Интерфейс для информации о группе файлов Uploadcare
-interface UploadcareGroupInfo {
-  id: string;
-  cdnUrl: string;
-  count: number;
-  isImage: boolean;
-  isStored: boolean;
-  uuid: string;
-}
 
 const AddNewProduct = () => {
   const [product, setProduct] = useState<{
@@ -67,9 +59,6 @@ const AddNewProduct = () => {
     setIsLoading(true);
 
     // Если есть альбом, используем его URL как основной источник изображений
-    const imagesToSave = albumGroupId
-      ? [`https://ucarecdn.com/${albumGroupId}/`]
-      : productImages;
 
     try {
       toast.success("Product added successfully");
@@ -123,19 +112,23 @@ const AddNewProduct = () => {
   }, []);
 
   // Обработчик загрузки группы изображений через Uploadcare
-  const handleGroupUpload = (groupInfo: UploadcareGroupInfo) => {
+  const handleGroupUpload = (fileInfo: FileInfo) => {
     setUploadingImages(false);
 
-    if (!groupInfo || !groupInfo.uuid) {
-      console.error("Не удалось получить информацию о группе");
+    // Check if this is a group upload (has uuid)
+    if (!fileInfo || !fileInfo.uuid) {
+      console.error("Failed to get file information");
       return;
     }
 
-    // Сохраняем ID группы (альбома)
-    setAlbumGroupId(groupInfo.uuid);
+    // For group uploads, the uuid will contain the group ID
+    const groupId = fileInfo.uuid;
 
-    // Загружаем информацию о файлах в группе
-    fetchAlbumImages(groupInfo.uuid);
+    // Save the group ID (album)
+    setAlbumGroupId(groupId);
+
+    // Load information about files in the group
+    fetchAlbumImages(groupId);
   };
 
   // Загрузка информации о файлах в группе (альбоме)
