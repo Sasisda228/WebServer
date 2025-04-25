@@ -40,10 +40,8 @@ const AddNewProduct = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadingImages, setUploadingImages] = useState<boolean>(false);
-  const [productImages, setProductImages] = useState<string[]>([]);
   const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
   const [albumImages, setAlbumImages] = useState<string[]>([]);
-  const [, setImageCount] = useState(0);
   const addProduct = async () => {
     // Валидация полей
     if (
@@ -76,7 +74,6 @@ const AddNewProduct = () => {
       });
 
       // Очищаем изображения и альбом
-      setProductImages([]);
       setAlbumGroupId(null);
       setAlbumImages([]);
     } catch (error) {
@@ -135,26 +132,32 @@ const AddNewProduct = () => {
   const fetchAlbumImages = async (groupId: string) => {
     try {
       // Используем Uploadcare REST API для получения информации о группе
-      const response = await axios.get(
+      const response = await fetch(
         `https://api.uploadcare.com/groups/${groupId}/`,
         {
           headers: {
             Accept: "application/vnd.uploadcare-v0.5+json",
             Authorization: `Uploadcare.Simple ${
               process.env.NEXT_PUBLIC_UPLOADCARE_KEY || "75ae123269ffcd1362e6"
-            }:`,
+            }:${
+              process.env.NEXT_PUBLIC_UPLOADCARE_SECRET ||
+              "dabbafb5c211c86840bc"
+            }`,
           },
         }
       );
 
-      const data = response.data;
-      print();
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
       // Извлекаем URL всех файлов в группе
       if (data.files && Array.isArray(data.files)) {
         const imageUrls = data.files.map(
           (file: any) => file.original_file_url || file.cdn_url
         );
-        setImageCount(data.files_count);
         setAlbumImages(imageUrls);
       }
     } catch (error) {
