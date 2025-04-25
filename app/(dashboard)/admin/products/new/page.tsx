@@ -3,10 +3,18 @@ import { DashboardSidebar } from "@/components";
 import { convertCategoryNameToURLFriendly as convertSlugToURLFriendly } from "@/utils/categoryFormating";
 import UploadcareImage from "@uploadcare/nextjs-loader";
 import "@uploadcare/react-uploader/core.css";
-import { FileInfo, Widget } from "@uploadcare/react-widget"; // Import FileInfo type from the package
+import { FileInfo } from "@uploadcare/react-widget";
 import axios from "axios";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+const Widget = dynamic(
+  () => import("@uploadcare/react-widget").then((mod) => mod.Widget),
+  {
+    ssr: false,
+    loading: () => <p>Loading image uploader...</p>,
+  }
+);
 
 // Типы данных для работы с Prisma
 interface Category {

@@ -8,9 +8,8 @@
 // Output: Minimal, animated dark-themed pagination component
 // *********************
 
-"use client";
-import React from "react";
 import { usePaginationStore } from "@/app/_zustand/paginationStore";
+import React from "react";
 import styles from "./Pagination.module.css";
 
 const Pagination: React.FC = () => {
