@@ -1,4 +1,5 @@
 // TeamAdvantages.tsx
+"use client";
 
 import { motion, useAnimation, useInView } from "framer-motion";
 import { useEffect, useRef } from "react";
