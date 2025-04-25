@@ -1,7 +1,8 @@
 "use client";
 import { DashboardSidebar } from "@/components";
 import UploadcareImage from "@uploadcare/nextjs-loader";
-import "@uploadcare/react-uploader/core.css";
+// Remove the incorrect CSS import as it's not needed for react-widget
+// import "@uploadcare/react-uploader/core.css";
 import { Widget } from "@uploadcare/react-widget";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -16,14 +17,32 @@ interface DashboardProductDetailsProps {
   params: { id: string };
 }
 
-// Интерфейс для информации о группе файлов Uploadcare
-interface UploadcareGroupInfo {
-  id: string;
-  cdnUrl: string;
-  count: number;
-  isImage: boolean;
-  isStored: boolean;
-  uuid: string;
+// Updated interface to match the FileInfo type from Uploadcare Widget
+interface FileInfo {
+  uuid?: string;
+  name?: string;
+  size?: number;
+  isImage?: boolean;
+  isStored?: boolean;
+  cdnUrl?: string;
+  cdnUrlModifiers?: string;
+  originalUrl?: string;
+  originalImageInfo?: {
+    width: number;
+    height: number;
+    format: string;
+    datetimeOriginal?: string;
+    gpsLatitude?: number;
+    gpsLongitude?: number;
+    dpi?: [number, number];
+    colorMode?: string;
+    orientation?: number;
+    sequence?: boolean;
+  };
+  mimeType?: string;
+  isReady?: boolean;
+  count?: number; // For group uploads
+  id?: string;    // For group uploads
 }
 
 interface Category {
@@ -186,20 +205,24 @@ const DashboardProductDetails = ({
     }
   };
 
-  // Обработчик загрузки группы изображений через Uploadcare
-  const handleGroupUpload = (groupInfo: UploadcareGroupInfo) => {
+  // Updated handler to match the FileInfo type expected by the Widget component
+  const handleGroupUpload = (fileInfo: FileInfo) => {
     setUploadingImages(false);
 
-    if (!groupInfo || !groupInfo.uuid) {
-      console.error("Не удалось получить информацию о группе");
+    // Check if this is a group upload (has uuid and is a group)
+    if (!fileInfo || !fileInfo.uuid) {
+      console.error("Failed to get file information");
       return;
     }
 
-    // Сохраняем ID группы (альбома)
-    setAlbumGroupId(groupInfo.uuid);
+    // For group uploads, the uuid will contain the group ID
+    const groupId = fileInfo.uuid;
 
-    // Загружаем информацию о файлах в группе
-    fetchAlbumImages(groupInfo.uuid);
+    // Save the group ID (album)
+    setAlbumGroupId(groupId);
+
+    // Load information about files in the group
+    fetchAlbumImages(groupId);
   };
 
   // Обработчик удаления альбома
@@ -438,7 +461,7 @@ const DashboardProductDetails = ({
                     Album Preview({albumImages.length}):
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {/* Если у нас есть отдельные URL изображений из альбома */}
+                    {/* Если у нас есть отдельные URL изоб��ажений из альбома */}
                     {albumImages.length > 0
                       ? albumImages.map((imageUrl, index) => (
                           <div key={index} className="relative">
