@@ -1,6 +1,5 @@
 "use client";
-import { SectionTitle, WishItem } from "@/components";
-import { nanoid } from "nanoid";
+import { SectionTitle } from "@/components";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useWishlistStore } from "../_zustand/wishlistStore";
@@ -8,8 +7,8 @@ import { useWishlistStore } from "../_zustand/wishlistStore";
 
 
 const WishlistPage = () => {
-  const { data: session, status } = useSession();
-  const {wishlist, setWishlist}= useWishlistStore();
+  const { data: session } = useSession();
+  const { wishlist, setWishlist } = useWishlistStore();
 
   const getWishlistByUserId = async (id: string) => {
     const response = await fetch(
@@ -24,13 +23,22 @@ const WishlistPage = () => {
       id: string;
       title: string;
       price: number;
-      image: string;
-      slug:string
+      images: string[];
+      slug: string;
       stockAvailabillity: number;
     }[] = [];
-    
-    wishlist.map((item:any) => productArray.push({id: item?.product?.id, title: item?.product?.title, price: item?.product?.price, image: item?.product?.mainImage, slug: item?.product?.slug, stockAvailabillity: item?.product?.inStock}));
-    
+
+    wishlist.map((item: any) =>
+      productArray.push({
+        id: item?.product?.id,
+        title: item?.product?.title,
+        price: item?.product?.price,
+        images: item?.product?.images,
+        slug: item?.product?.slug,
+        stockAvailabillity: item?.product?.inStock,
+      })
+    );
+
     setWishlist(productArray);
   };
 
@@ -73,18 +81,18 @@ const WishlistPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {wishlist &&
+                {/* {wishlist &&
                   wishlist?.map((item) => (
-                    <WishItem
-                      id={item?.id}
-                      title={item?.title}
-                      price={item?.price}
-                      image={item?.image}
-                      slug={item?.slug}
-                      stockAvailabillity={item?.stockAvailabillity}
-                      key={nanoid()}
-                    />
-                  ))}
+                    // <WishItem
+                    //   id={item?.id}
+                    //   title={item?.title}
+                    //   price={item?.price}
+                    //   images={item?.images}
+                    //   slug={item?.slug}
+                    //   stockAvailabillity={item?.stockAvailabillity}
+                    //   key={nanoid()}
+                    // />
+                  ))} */}
               </tbody>
             </table>
           </div>
