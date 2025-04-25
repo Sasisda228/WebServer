@@ -1,0 +1,100 @@
+/* components/TeamAdvantages/Modal.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный фон */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Поверх остального контента */
+  padding: 20px; /* Отступы для мобильных */
+}
+
+.modalContent {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 650px; /* Максимальная ширина окна */
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  position: relative;
+  max-height: 85vh; /* Максимальная высота */
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.modalHeader h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #343a40;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #adb5bd;
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+  color: #343a40;
+}
+
+.modalBody {
+  overflow-y: auto; /* Прокрутка, если контент не помещается */
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #495057;
+}
+
+.modalBody p {
+  margin-bottom: 15px;
+}
+
+.modalBody ul {
+  list-style: disc;
+  padding-left: 25px;
+  margin-bottom: 15px;
+}
+
+.modalBody li {
+  margin-bottom: 8px;
+}
+
+/* Стили для скроллбара (опционально) */
+.modalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 10px;
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+```

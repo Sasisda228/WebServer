@@ -1,187 +1,124 @@
-/* TeamAdvantages.module.css */
+/* components/TeamAdvantages/TeamAdvantages.module.css */
 .section {
-  padding: 40px 16px;
-  background: #141220;
-  position: relative;
-  overflow: hidden;
-  height: 160%;
+  padding: 80px 20px;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  overflow: hidden; /* Предотвращает выход свечения за пределы */
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  position: relative;
+  text-align: center;
 }
 
 .title {
-  font-size: 28px;
+  font-size: 2.8rem;
   font-weight: 700;
-  text-align: center;
-  margin-bottom: 40px;
-  color: #fff;
-  font-family: "RUSOONE", sans-serif;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 50px;
+  color: #212529;
 }
 
 .highlight {
-  background: linear-gradient(90deg, #86233a, #261d5d);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  position: relative;
-  display: inline-block;
+  color: #007bff; /* Или ваш фирменный цвет */
 }
 
-.highlight::after {
-  content: "";
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #86233a 0%, #261d5d 100%);
-  border-radius: 2px;
-  z-index: -1;
-}
-
-.grid {
+.buttonsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Адаптивная сетка */
+  gap: 30px;
+  margin-bottom: 50px;
 }
 
-.card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.advantageButton {
+  background-color: #ffffff;
   border-radius: 16px;
-  padding: 24px 16px;
+  padding: 25px;
+  text-align: left;
+  border: 1px solid #e9ecef;
+  cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(8px);
-  z-index: 1;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 161, 228, 0.1);
-}
-
-.iconWrapper {
-  width: 48px;
-  height: 48px;
-  background: rgba(0, 161, 228, 0.1);
-  border-radius: 12px;
+.buttonIcon {
+  font-size: 2.5rem; /* Размер иконки */
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #e6f2ff 0%, #d0e7ff 100%); /* Градиентный фон для иконки */
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  border-radius: 12px;
+  color: #0056b3;
 }
 
-.icon {
-  font-size: 24px;
-  color: #00a1e4;
+.buttonText {
+  flex-grow: 1;
 }
 
-.cardTitle {
-  font-size: 18px;
+.buttonTitle {
+  font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 8px;
-  color: #fff;
+  color: #343a40;
 }
 
-.cardDescription {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.4;
+.buttonDescription {
+  font-size: 0.95rem;
+  color: #6c757d;
+  line-height: 1.5;
 }
 
-.glow {
+/* Эффект свечения (опционально) */
+.buttonGlow {
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(0, 161, 228, 0.1) 0%,
-    transparent 60%
-  );
+  background: radial-gradient(circle, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0) 70%);
   opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: -1;
+  transition: opacity 0.4s ease;
+  pointer-events: none; /* Не мешает кликам */
+  z-index: 0;
 }
 
-.card:hover .glow {
+.advantageButton:hover .buttonGlow {
   opacity: 1;
 }
 
+.advantageButton:hover {
+  transform: translateY(-5px);
+  border-color: #cce5ff;
+  box-shadow: 0px 10px 30px rgba(0, 123, 255, 0.1);
+}
+
 .footer {
-  text-align: center;
-  margin-top: 32px;
-}
-
-.footerText {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 20px;
-}
-
-.ctaButton {
-  position: relative;
-  background: linear-gradient(90deg, #86233a, #261d5d);
-  border: none;
-  border-radius: 50px;
-  padding: 14px 32px;
-  color: white;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 0px 32px 0 #371b727a;
-  margin-bottom: 60px;
-}
-
-.ctaButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 161, 228, 0.4);
-}
-
-.buttonGlow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.8) 0%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.ctaButton:hover .buttonGlow {
-  opacity: 0.3;
+    margin-top: 40px;
+    color: #6c757d;
+    font-size: 1rem;
 }
 
 /* Адаптация для мобильных */
-@media (max-width: 640px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 768px) {
   .title {
-    font-size: 24px;
-    margin-bottom: 32px;
+    font-size: 2.2rem;
   }
-
-  .card {
-    padding: 20px 16px;
+  .buttonsGrid {
+    grid-template-columns: 1fr; /* Одна колонка на мобильных */
+    gap: 20px;
+  }
+  .advantageButton {
+    padding: 20px;
+  }
+  .buttonTitle {
+    font-size: 1.2rem;
   }
 }
+```
