@@ -27,8 +27,7 @@ const sectionsData: SectionInfo[] = [
   {
     id: "team",
     title: "47Team",
-    shortDescription:
-      "Профессиональная разработка сайтов, приложений и сложных систем.",
+    shortDescription: " ",
     icon: "💻",
     modalTitle: "Команда 47Team",
     modalContent: (
@@ -54,8 +53,7 @@ const sectionsData: SectionInfo[] = [
   {
     id: "club",
     title: "47Club",
-    shortDescription:
-      "Эксклюзивный контент: видео, статьи и инсайды индустрии.",
+    shortDescription: " ",
     icon: "🎬",
     modalTitle: "Закрытый Клуб 47Club",
     modalContent: (
@@ -79,8 +77,7 @@ const sectionsData: SectionInfo[] = [
   {
     id: "store",
     title: "47Store",
-    shortDescription:
-      "Официальный мерч и тематические товары высокого качества.",
+    shortDescription: " ",
     icon: "🛒",
     modalTitle: "Магазин 47Store",
     modalContent: (
@@ -102,7 +99,7 @@ const sectionsData: SectionInfo[] = [
   {
     id: "help",
     title: "47Help",
-    shortDescription: "Поддержка, консультации и ответы на ваши вопросы.",
+    shortDescription: " ",
     icon: "❓",
     modalTitle: "Поддержка 47Help",
     modalContent: (
@@ -253,7 +250,7 @@ const TeamAdvantages: React.FC = () => {
             variants={itemVariants}
             custom={0}
           >
-            Экосистема <span className={styles.highlight}>47</span>
+            Мы - <span className={styles.highlight}>47</span>
           </motion.h2>
 
           <div className={styles.buttonsGrid}>
