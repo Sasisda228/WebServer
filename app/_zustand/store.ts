@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export type ProductInCart = {
   id: string;
   title: string;
   price: number;
-  image: string;
+  image: string[];
   amount: number;
 };
 
@@ -47,8 +47,7 @@ export const useProductStore = create<State & Actions>()(
         });
       },
       clearCart: () => {
-        set((state: any) => {
-          
+        set(() => {
           return {
             products: [],
             allQuantity: 0,

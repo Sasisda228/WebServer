@@ -24,7 +24,7 @@ const AddToCartSingleProductBtn = ({
       id: product?.id.toString(),
       title: product?.title,
       price: product?.price,
-      image: product?.mainImage,
+      image: product?.images,
       amount: quantityCount,
     });
     calculateTotals();
