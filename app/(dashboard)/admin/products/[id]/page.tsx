@@ -1,9 +1,9 @@
 "use client";
 import { DashboardSidebar } from "@/components";
-import MultiImageUpload from "@/components/MultiImageUpload";
+import UploadcareImage from "@uploadcare/nextjs-loader";
+import "@uploadcare/react-uploader/core.css";
+import { Widget } from "@uploadcare/react-widget";
 import axios from "axios";
-import { nanoid } from "nanoid";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,101 +13,229 @@ import {
 } from "../../../../../utils/categoryFormating";
 
 interface DashboardProductDetailsProps {
-  params: { id: number };
+  params: { id: string };
+}
+
+// Интерфейс для информации о группе файлов Uploadcare
+interface UploadcareGroupInfo {
+  id: string;
+  cdnUrl: string;
+  count: number;
+  isImage: boolean;
+  isStored: boolean;
+  uuid: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface Product {
+  id: string;
+  title: string;
+  price: number;
+  manufacturer: string;
+  description: string;
+  slug: string;
+  inStock: number;
+  categoryId: string;
+  images: string[];
+  mainImage?: string;
+  category?: Category;
 }
 
 const DashboardProductDetails = ({
   params: { id },
 }: DashboardProductDetailsProps) => {
-  const [product, setProduct] = useState<Product>();
-  const [categories, setCategories] = useState<Category[]>();
-  const [otherImages, setOtherImages] = useState<OtherImages[]>([]);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [uploadingImages, setUploadingImages] = useState<boolean>(false);
+  const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
+  const [albumImages, setAlbumImages] = useState<string[]>([]);
   const router = useRouter();
 
-  // functionality for deleting product
+  // Функция для удаления товара
   const deleteProduct = async () => {
+    if (!confirm("Are you sure you want to delete this product?")) {
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      const response = await axios.delete(`/apiv3/products/${id}`);
-      if (response.status !== 204) {
-        if (response.status === 400) {
-          toast.error(
-            "Cannot delete the product because of foreign key constraint"
-          );
-        } else {
-          throw new Error("There was an error while deleting product");
-        }
+      toast.success("Product deleted successfully");
+      router.push("/admin/products");
+    } catch (error: any) {
+      console.error("Error deleting product:", error);
+      if (error.response && error.response.status === 400) {
+        toast.error(
+          "Cannot delete the product because of foreign key constraint"
+        );
       } else {
-        toast.success("Product deleted successfully");
-        router.push("/admin/products");
+        toast.error("There was an error while deleting product");
       }
-    } catch (error) {
-      toast.error("There was an error while deleting product");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // functionality for updating product
+  // Функция для обновления товара
   const updateProduct = async () => {
+    if (!product) return;
+
     if (
-      product?.title === "" ||
-      product?.slug === "" ||
-      product?.price?.toString() === "" ||
-      product?.manufacturer === "" ||
-      product?.description === ""
+      product.title === "" ||
+      product.slug === "" ||
+      product.manufacturer === "" ||
+      product.description === ""
     ) {
       toast.error("You need to enter values in input fields");
       return;
     }
 
+    setIsLoading(true);
+
+    // Если есть новый альбом, используем его URL
+    const imagesToSave = albumGroupId
+      ? [`https://ucarecdn.com/${albumGroupId}/`]
+      : product.images;
+
     try {
-      const response = await axios.put(`/apiv3/products/${id}`, product, {
-        headers: { "Content-Type": "application/json" },
+      await axios.put(`/apiv3/products/${id}`, {
+        ...product,
+        images: imagesToSave,
       });
-      if (response.status === 200) {
-        toast.success("Product successfully updated");
-      } else {
-        throw new Error("There was an error while updating product");
+
+      toast.success("Product successfully updated");
+
+      // Обновляем данные товара
+      fetchProductData();
+    } catch (error) {
+      console.error("Error updating product:", error);
+      toast.error("There was an error while updating product");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Получение данных о товаре
+  const fetchProductData = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await axios.get(`/apiv3/products/${id}`);
+      setProduct(data);
+
+      // Проверяем, есть ли у товара изображения в формате URL альбома
+      if (data.images && Array.isArray(data.images) && data.images.length > 0) {
+        const firstImage = data.images[0];
+
+        // Проверяем, является ли URL ссылкой на альбом Uploadcare
+        if (firstImage.includes("ucarecdn.com") && firstImage.includes("/")) {
+          // Извлекаем ID альбома из URL
+          const match = firstImage.match(/ucarecdn\.com\/([^\/]+)/);
+          if (match && match[1]) {
+            setAlbumGroupId(match[1]);
+            fetchAlbumImages(match[1]);
+          }
+        }
       }
     } catch (error) {
-      toast.error("There was an error while updating product");
+      console.error("Error fetching product:", error);
+      toast.error("Error loading product data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // fetching main product data including other product images
-  const fetchProductData = async () => {
-    try {
-      const res = await axios.get(`/apiv3/products/${id}`);
-      setProduct(res.data);
-
-      const imagesRes = await axios.get(`/apiv3/images/${id}`, {
-        headers: { "Cache-Control": "no-store" },
-      });
-      setOtherImages(imagesRes.data);
-    } catch (error) {
-      toast.error("Failed to fetch product data");
-    }
-  };
-
-  // fetching all product categories. It will be used for displaying categories in select category input
+  // Получение списка категорий
   const fetchCategories = async () => {
     try {
-      const res = await axios.get(`/apiv3/categories`);
-      setCategories(res.data);
+      const { data } = await axios.get(`/apiv3/categories`);
+      setCategories(data);
     } catch (error) {
-      toast.error("Failed to fetch categories");
+      console.error("Error fetching categories:", error);
+      toast.error("Error loading categories");
     }
+  };
+
+  // Загрузка информации о файлах в группе (альбоме)
+  const fetchAlbumImages = async (groupId: string) => {
+    try {
+      // Используем Uploadcare REST API для получения информации о группе
+      const { data } = await axios.get(
+        `https://api.uploadcare.com/groups/${groupId}/`,
+        {
+          headers: {
+            Accept: "application/vnd.uploadcare-v0.7+json",
+            Authorization: `Uploadcare.Simple 75ae123269ffcd1362e6:dabbafb5c211c86840bc`,
+          },
+        }
+      );
+
+      // Извлекаем URL всех файлов в группе
+      if (data.files && Array.isArray(data.files)) {
+        const imageUrls = data.files.map(
+          (file: any) => file.original_file_url || file.cdn_url
+        );
+        setAlbumImages(imageUrls);
+      }
+    } catch (error) {
+      console.error("Error fetching album images:", error);
+    }
+  };
+
+  // Обработчик загрузки группы изображений через Uploadcare
+  const handleGroupUpload = (groupInfo: UploadcareGroupInfo) => {
+    setUploadingImages(false);
+
+    if (!groupInfo || !groupInfo.uuid) {
+      console.error("Не удалось получить информацию о группе");
+      return;
+    }
+
+    // Сохраняем ID группы (альбома)
+    setAlbumGroupId(groupInfo.uuid);
+
+    // Загружаем информацию о файлах в группе
+    fetchAlbumImages(groupInfo.uuid);
+  };
+
+  // Обработчик удаления альбома
+  const handleRemoveAlbum = () => {
+    setAlbumGroupId(null);
+    setAlbumImages([]);
+  };
+
+  // Обработчик начала загрузки
+  const handleUploadStart = () => {
+    setUploadingImages(true);
   };
 
   useEffect(() => {
     fetchCategories();
     fetchProductData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  if (!product) {
+    return (
+      <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
+        <DashboardSidebar />
+        <div className="flex flex-col gap-y-7 xl:ml-5 w-full max-xl:px-5">
+          <h1 className="text-3xl font-semibold">Product details</h1>
+          <p>Loading product data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
       <DashboardSidebar />
       <div className="flex flex-col gap-y-7 xl:ml-5 w-full max-xl:px-5">
         <h1 className="text-3xl font-semibold">Product details</h1>
+
         {/* Product name input div - start */}
         <div>
           <label className="form-control w-full max-w-xs">
@@ -117,32 +245,37 @@ const DashboardProductDetails = ({
             <input
               type="text"
               className="input input-bordered w-full max-w-xs"
-              value={product?.title}
+              value={product.title}
               onChange={(e) =>
-                setProduct({ ...product!, title: e.target.value })
+                setProduct({ ...product, title: e.target.value })
               }
+              disabled={isLoading}
             />
           </label>
         </div>
         {/* Product name input div - end */}
-        {/* Product price input div - start */}
 
+        {/* Product price input div - start */}
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
               <span className="label-text">Product price:</span>
             </div>
             <input
-              type="text"
+              type="number"
               className="input input-bordered w-full max-w-xs"
-              value={product?.price}
+              value={product.price}
               onChange={(e) =>
-                setProduct({ ...product!, price: Number(e.target.value) })
+                setProduct({ ...product, price: Number(e.target.value) })
               }
+              min="0"
+              step="1"
+              disabled={isLoading}
             />
           </label>
         </div>
         {/* Product price input div - end */}
+
         {/* Product manufacturer input div - start */}
         <div>
           <label className="form-control w-full max-w-xs">
@@ -152,16 +285,17 @@ const DashboardProductDetails = ({
             <input
               type="text"
               className="input input-bordered w-full max-w-xs"
-              value={product?.manufacturer}
+              value={product.manufacturer}
               onChange={(e) =>
-                setProduct({ ...product!, manufacturer: e.target.value })
+                setProduct({ ...product, manufacturer: e.target.value })
               }
+              disabled={isLoading}
             />
           </label>
         </div>
         {/* Product manufacturer input div - end */}
-        {/* Product slug input div - start */}
 
+        {/* Product slug input div - start */}
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -170,19 +304,20 @@ const DashboardProductDetails = ({
             <input
               type="text"
               className="input input-bordered w-full max-w-xs"
-              value={product?.slug && convertSlugToURLFriendly(product?.slug)}
+              value={convertSlugToURLFriendly(product.slug)}
               onChange={(e) =>
                 setProduct({
-                  ...product!,
+                  ...product,
                   slug: convertSlugToURLFriendly(e.target.value),
                 })
               }
+              disabled={isLoading}
             />
           </label>
         </div>
         {/* Product slug input div - end */}
-        {/* Product inStock select input div - start */}
 
+        {/* Product inStock select input div - start */}
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -190,10 +325,11 @@ const DashboardProductDetails = ({
             </div>
             <select
               className="select select-bordered"
-              value={product?.inStock}
+              value={product.inStock}
               onChange={(e) => {
-                setProduct({ ...product!, inStock: Number(e.target.value) });
+                setProduct({ ...product, inStock: Number(e.target.value) });
               }}
+              disabled={isLoading}
             >
               <option value={1}>Yes</option>
               <option value={0}>No</option>
@@ -201,6 +337,7 @@ const DashboardProductDetails = ({
           </label>
         </div>
         {/* Product inStock select input div - end */}
+
         {/* Product category select input div - start */}
         <div>
           <label className="form-control w-full max-w-xs">
@@ -209,92 +346,138 @@ const DashboardProductDetails = ({
             </div>
             <select
               className="select select-bordered"
-              value={product?.categoryId}
+              value={product.categoryId}
               onChange={(e) =>
                 setProduct({
-                  ...product!,
+                  ...product,
                   categoryId: e.target.value,
                 })
               }
+              disabled={isLoading || categories.length === 0}
             >
-              {categories &&
-                categories.map((category: Category) => (
-                  <option key={category?.id} value={category?.id}>
-                    {formatCategoryName(category?.name)}
+              {categories.length === 0 ? (
+                <option value="">Loading categories...</option>
+              ) : (
+                categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {formatCategoryName(category.name)}
                   </option>
-                ))}
+                ))
+              )}
             </select>
           </label>
         </div>
         {/* Product category select input div - end */}
 
-        {/* Main image file upload div - start */}
+        {/* Загрузка изображений в альбом */}
         <div>
-          {/* <MultiImageUpload productId={id} onUploadSuccess={fetchProductData} />
-
-
-          <input
-            type="file"
-            className="file-input file-input-bordered file-input-lg w-full max-w-sm"
-            onChange={(e) => {
-              const selectedFile = e.target.files[0];
-
-              if (selectedFile) {
-                uploadFile(selectedFile);
-                setProduct({ ...product!, mainImage: selectedFile.name });
-              }
-            }}
-          />
-          {product?.mainImage && (
-            <Image
-              src={`/` + product?.mainImage}
-              alt={product?.title}
-              className="w-auto h-auto mt-2"
-              width={100}
-              height={100}
-            />
-          )} */}
-        </div>
-        {/* Main image file upload div - end */}
-        {/* Other images file upload div - start */}
-        <div className="flex gap-x-1">
-          {/* Multi-image upload */}
-          <MultiImageUpload productId={id} onUploadSuccess={fetchProductData} />
-
-          {/* Display all product images */}
-          <div className="flex gap-x-1 mt-2">
-            {otherImages &&
-              otherImages.map((image) => (
-                <Image
-                  src={`/${image.image}`}
-                  key={nanoid()}
-                  alt="product image"
-                  width={100}
-                  height={100}
-                  className="w-auto h-auto"
-                  title="Удалить фото"
-                  onClick={async () => {
-                    if (confirm("Удалить это фото?")) {
-                      try {
-                        const res = await axios.delete(
-                          `/apiv3/images/${image.imageID}`
-                        );
-                        if (res.status === 204) {
-                          toast.success("Фото удалено");
-                          fetchProductData();
-                        } else {
-                          toast.error("Ошибка при удалении фото");
-                        }
-                      } catch (error) {
-                        toast.error("Ошибка при удалении фото");
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Product images:</span>
+            </div>
+            <div className="space-y-4">
+              <div className="mb-4">
+                {!albumGroupId ? (
+                  <>
+                    <p className="mb-2">
+                      Upload multiple images to create an album:
+                    </p>
+                    <Widget
+                      publicKey={
+                        process.env.NEXT_PUBLIC_UPLOADCARE_KEY ||
+                        "75ae123269ffcd1362e6"
                       }
-                    }
-                  }}
-                />
-              ))}
-          </div>
+                      onChange={handleGroupUpload}
+                      onDialogOpen={handleUploadStart}
+                      multiple
+                      multipleMax={10}
+                      imagesOnly
+                      previewStep
+                      tabs="file camera url"
+                      clearable
+                      systemDialog
+                      validators={[
+                        (fileInfo: any) => {
+                          if (fileInfo.isImage === false) {
+                            throw new Error("Only images are allowed");
+                          }
+                        },
+                      ]}
+                    />
+                    {uploadingImages && (
+                      <p className="text-blue-500 mt-2">Uploading...</p>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <p className="font-medium">Album created successfully!</p>
+                    <p>
+                      Album URL:{" "}
+                      <a
+                        href={`https://ucarecdn.com/${albumGroupId}/`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >{`https://ucarecdn.com/${albumGroupId}/`}</a>
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleRemoveAlbum}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
+                    >
+                      Remove Album & Upload New Images
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Отображение изображений из альбома */}
+              {albumGroupId && (
+                <div>
+                  <h3 className="font-medium mb-2">
+                    Album Preview({albumImages.length}):
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {/* Если у нас есть отдельные URL изображений из альбома */}
+                    {albumImages.length > 0
+                      ? albumImages.map((imageUrl, index) => (
+                          <div key={index} className="relative">
+                            <UploadcareImage
+                              alt={`Product image ${index + 1}`}
+                              src={imageUrl}
+                              width="200"
+                              height="200"
+                              style={{ objectFit: "cover" }}
+                            />
+                            <div className="absolute bottom-0 right-0 bg-black bg-opacity-50 text-white px-2 py-1 text-xs">
+                              {index + 1}
+                            </div>
+                          </div>
+                        ))
+                      : // Если у нас нет отдельных URL, показываем первые 4 изображения из альбома
+                        Array.from({ length: Math.min(4, 10) }).map(
+                          (_, index) => (
+                            <div key={index} className="relative">
+                              <UploadcareImage
+                                alt={`Product image ${index + 1}`}
+                                src={`https://ucarecdn.com/${albumGroupId}/nth/${index}/`}
+                                width="200"
+                                height="200"
+                                style={{ objectFit: "cover" }}
+                              />
+                              <div className="absolute bottom-0 right-0 bg-black bg-opacity-50 text-white px-2 py-1 text-xs">
+                                {index + 1}
+                              </div>
+                            </div>
+                          )
+                        )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </label>
         </div>
-        {/* Other images file upload div - end */}
+
         {/* Product description div - start */}
         <div>
           <label className="form-control">
@@ -303,32 +486,45 @@ const DashboardProductDetails = ({
             </div>
             <textarea
               className="textarea textarea-bordered h-24"
-              value={product?.description}
+              value={product.description}
               onChange={(e) =>
-                setProduct({ ...product!, description: e.target.value })
+                setProduct({ ...product, description: e.target.value })
               }
+              disabled={isLoading}
             ></textarea>
           </label>
         </div>
         {/* Product description div - end */}
+
         {/* Action buttons div - start */}
         <div className="flex gap-x-2 max-sm:flex-col">
           <button
             type="button"
             onClick={updateProduct}
-            className="uppercase bg-blue-500 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2"
+            className={`uppercase px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm focus:outline-none focus:ring-2 ${
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600 hover:text-white"
+            }`}
+            disabled={isLoading}
           >
-            Update product
+            {isLoading ? "Processing..." : "Update product"}
           </button>
           <button
             type="button"
-            className="uppercase bg-red-600 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2"
+            className={`uppercase px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm focus:outline-none focus:ring-2 ${
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-red-600 hover:bg-red-700 hover:text-white"
+            }`}
             onClick={deleteProduct}
+            disabled={isLoading}
           >
             Delete product
           </button>
         </div>
         {/* Action buttons div - end */}
+
         <p className="text-xl max-sm:text-lg text-error">
           To delete the product you first need to delete all its records in
           orders (customer_order_product table).
