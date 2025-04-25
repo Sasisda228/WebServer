@@ -1,5 +1,12 @@
 "use client";
-import SingleProductModal from "@/components/SingleProductModal"; // путь поправьте под ваш проект
+const SingleProductModal = dynamic(
+  () => import("@/components/SingleProductModal"),
+  {
+    ssr: false, // Modals are client-side interactive elements
+    // Optional: Add loading state if needed, but often not necessary for modals
+    // loading: () => <p>Loading details...</p>
+  }
+);
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
