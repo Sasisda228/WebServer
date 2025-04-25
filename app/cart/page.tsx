@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  CustomButton,
-  QuantityInput,
-  QuantityInputCart,
-  SectionTitle,
-} from "@/components";
-import Image from "next/image";
-import React from "react";
-import { FaCheck, FaClock, FaCircleQuestion, FaXmark } from "react-icons/fa6";
-import { useProductStore } from "../_zustand/store";
+import { QuantityInputCart, SectionTitle } from "@/components";
+import UploadcareImage from "@uploadcare/nextjs-loader";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { FaCheck, FaCircleQuestion, FaClock, FaXmark } from "react-icons/fa6";
+import { useProductStore } from "../_zustand/store";
 
 const CartPage = () => {
   const { products, removeFromCart, calculateTotals, total } =
@@ -22,7 +16,28 @@ const CartPage = () => {
     calculateTotals();
     toast.success("Product removed from the cart");
   };
+  // Helper function to get the display image URL for a product
+  function getProductImageUrl(product: { images: string[] }): string | null {
+    if (!product.images || product.images.length === 0) return null;
+    const firstImage = product.images[0];
 
+    // Check if it's an Uploadcare album URL
+    if (
+      firstImage.startsWith("https://ucarecdn.com/") &&
+      firstImage.match(/^https:\/\/ucarecdn\.com\/[^/]+\/?$/)
+    ) {
+      // Extract groupId and return the first image from the album
+      const match = firstImage.match(/ucarecdn\.com\/([^/]+)/);
+      if (match && match[1]) {
+        const groupId = match[1];
+        // Show the first image in the album (nth/0/)
+        return `https://ucarecdn.com/${groupId}/nth/0/`;
+      }
+    }
+
+    // Otherwise, just return the first image URL
+    return firstImage;
+  }
   return (
     <div className="bg-white">
       <SectionTitle title="Cart Page" path="Home | Cart" />
@@ -44,13 +59,19 @@ const CartPage = () => {
                 {products.map((product) => (
                   <li key={product.id} className="flex py-6 sm:py-10">
                     <div className="flex-shrink-0">
-                      <Image
-                        width={192}
-                        height={192}
-                        src={product?.image ? `/${product.image}` : "/product_placeholder.jpg"}
-                        alt="laptop image"
-                        className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
-                      />
+                      {getProductImageUrl(product) ? (
+                        <UploadcareImage
+                          alt={`Product image`}
+                          src={getProductImageUrl(product)!}
+                          width={200}
+                          height={200}
+                          sizes="(max-width: 600px) 100vw, 180px"
+                        />
+                      ) : (
+                        <div className="w-[200px] h-[200px] bg-gray-100 flex items-center justify-center text-gray-400">
+                          No Image
+                        </div>
+                      )}
                     </div>
 
                     <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
