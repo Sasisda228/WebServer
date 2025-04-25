@@ -57,8 +57,21 @@ const AddNewProduct = () => {
     setIsLoading(true);
 
     // Если есть альбом, используем его URL как основной источник изображений
+    const imagesToSave = albumGroupId
+      ? [`https://ucarecdn.com/${albumGroupId}/`]
+      : [];
 
     try {
+      // Используем axios для отправки данных
+      await axios.post(`/apiv3/products`, {
+        ...product,
+        // Убедимся, что числовые поля передаются как числа
+        price: Number(product.price),
+        inStock: Number(product.inStock),
+        // Передаем URL альбома или пустой массив
+        images: imagesToSave,
+      });
+
       toast.success("Product added successfully");
 
       // Очищаем форму для нового товара
