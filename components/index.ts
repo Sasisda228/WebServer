@@ -43,4 +43,4 @@ export { default as StatsElement } from "./StatsElement";
 export { default as StockAvailabillity } from "./StockAvailabillity";
 export { default as IntroducingSection } from "./TeamAdvantages";
 export { default as UrgencyText } from "./UrgencyText";
-export { default as WishItem } from "./WishItem";
+// export { default as WishItem } from "./WishItem";
