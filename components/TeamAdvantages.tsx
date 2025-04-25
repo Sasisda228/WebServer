@@ -27,7 +27,7 @@ const sectionsData: SectionInfo[] = [
   {
     id: "team",
     title: "47Team",
-    shortDescription: " ",
+    shortDescription: "О наших труженниках",
     icon: "💻",
     modalTitle: "Команда 47Team",
     modalContent: (
@@ -53,7 +53,7 @@ const sectionsData: SectionInfo[] = [
   {
     id: "club",
     title: "47Club",
-    shortDescription: " ",
+    shortDescription: "Мемы, рилсы, обзоры",
     icon: "🎬",
     modalTitle: "Закрытый Клуб 47Club",
     modalContent: (
@@ -76,8 +76,8 @@ const sectionsData: SectionInfo[] = [
   },
   {
     id: "store",
-    title: "47Store",
-    shortDescription: " ",
+    title: "47Help",
+    shortDescription: "Если терзают вопросы",
     icon: "🛒",
     modalTitle: "Магазин 47Store",
     modalContent: (
@@ -98,8 +98,8 @@ const sectionsData: SectionInfo[] = [
   },
   {
     id: "help",
-    title: "47Help",
-    shortDescription: " ",
+    title: "47Info",
+    shortDescription: "Если есть трудности",
     icon: "❓",
     modalTitle: "Поддержка 47Help",
     modalContent: (
