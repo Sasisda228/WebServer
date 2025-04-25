@@ -1,5 +1,5 @@
 // components/TeamAdvantages/TeamAdvantages.tsx
-"use client"; // Необходимо для useState (модальное окно) и useEffect/useRef (анимация)
+"use client";
 
 import {
   AnimatePresence,
@@ -8,9 +8,10 @@ import {
   useInView,
 } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
-import styles from "./TeamAdvantages.module.css"; // Основные стили секции и кнопок
-import modalStyles from "./TeamAdvantagesModal.module.css"; // Стили для модального окна
+import styles from "./TeamAdvantages.module.css"; // Основные стили
+import modalStyles from "./TeamAdvantagesModal.module.css"; // Стили модалки
 
+// ... (Интерфейсы SectionInfo, ModalProps и массив sectionsData остаются ТЕМИ ЖЕ) ...
 // Интерфейс для данных секции
 interface SectionInfo {
   id: "team" | "club" | "store" | "help";
@@ -21,7 +22,7 @@ interface SectionInfo {
   modalContent: React.ReactNode; // Содержимое модального окна может быть JSX
 }
 
-// Статические данные для секций
+// Статические данные для секций (можно оставить как есть или обновить текст)
 const sectionsData: SectionInfo[] = [
   {
     id: "team",
@@ -60,7 +61,7 @@ const sectionsData: SectionInfo[] = [
     modalContent: (
       <>
         <p>
-          47Club — это сообщество ��ля тех, кто ценит качественный и уникальный
+          47Club — это сообщество ля тех, кто ценит качественный и уникальный
           контент.
         </p>
         <p>
@@ -91,7 +92,7 @@ const sectionsData: SectionInfo[] = [
         <p>
           Мы предлагаем качественный мерч с символикой 47 (одежда, аксессуары),
           а также тщательно отобранные товары, связанные с оружейной тематикой,
-          тактич��ским снаряжением и выживанием. Вся продукция проходит строгий
+          тактичским снаряжением и выживанием. Вся продукция проходит строгий
           контроль качества.
         </p>
         <p>Следите за новинками и специальными предложениями!</p>
@@ -162,9 +163,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
       }
     };
     if (isOpen) {
+      // Блокируем скролл фона при открытом модальном окне
+      document.body.style.overflow = "hidden";
       document.addEventListener("keydown", handleEsc);
+    } else {
+      // Разблокируем скролл при закрытии
+      document.body.style.overflow = "unset";
     }
     return () => {
+      document.body.style.overflow = "unset"; // Убедимся, что скролл разблокирован при размонтировании
       document.removeEventListener("keydown", handleEsc);
     };
   }, [isOpen, onClose]);
@@ -177,15 +184,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          onClick={handleOverlayClick} // Закрытие по клику на оверлей
+          transition={{ duration: 0.3 }} // Чуть дольше для плавности
+          onClick={handleOverlayClick}
         >
           <motion.div
             className={modalStyles.modalContent}
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ scale: 0.95, opacity: 0, y: 30 }} // Начальное состояние чуть ниже
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            exit={{ scale: 0.95, opacity: 0, y: 30 }} // Конечное состояние чуть ниже
+            transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <div className={modalStyles.modalHeader}>
               <h2>{title}</h2>
@@ -194,7 +201,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
                 className={modalStyles.closeButton}
                 aria-label="Закрыть"
               >
-                &times;
+                &times; {/* Крестик */}
               </button>
             </div>
             <div className={modalStyles.modalBody}>{children}</div>
@@ -207,8 +214,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
 
 // Основной компонент
 const TeamAdvantages: React.FC = () => {
-  const ref = useRef<HTMLDivElement>(null); // Типизируем ref
-  const isInView = useInView(ref, { once: true, amount: 0.3 }); // Анимация сработает один раз
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 }); // Срабатывание чуть раньше
   const controls = useAnimation();
 
   const [activeModal, setActiveModal] = useState<SectionInfo | null>(null);
@@ -238,13 +245,13 @@ const TeamAdvantages: React.FC = () => {
           initial="hidden"
           animate={controls}
           variants={{
-            visible: { transition: { staggerChildren: 0.1 } }, // Задержка между анимациями дочерних элементов
+            visible: { transition: { staggerChildren: 0.1 } },
           }}
         >
           <motion.h2
             className={styles.title}
             variants={itemVariants}
-            custom={0} // Первый элемент для анимации
+            custom={0}
           >
             Экосистема <span className={styles.highlight}>47</span>
           </motion.h2>
@@ -256,21 +263,21 @@ const TeamAdvantages: React.FC = () => {
                 className={styles.advantageButton}
                 onClick={() => handleOpenModal(section.id)}
                 variants={itemVariants}
-                custom={i + 1} // Индекс для задержки анимации
-                whileHover={{
-                  scale: 1.03,
-                  boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.1)",
-                }}
-                whileTap={{ scale: 0.98 }}
+                custom={i + 1}
+                whileHover={{ y: -5, scale: 1.02 }} // Небольшой подъем и увеличение при ховере
+                whileTap={{ scale: 0.97 }} // Небольшое сжатие при нажатии
               >
-                <div className={styles.buttonIcon}>{section.icon}</div>
+                <div className={styles.buttonIconWrapper}>
+                  <span className={styles.buttonIcon}>{section.icon}</span>
+                </div>
                 <div className={styles.buttonText}>
                   <h3 className={styles.buttonTitle}>{section.title}</h3>
                   <p className={styles.buttonDescription}>
                     {section.shortDescription}
                   </p>
                 </div>
-                <div className={styles.buttonGlow} />
+                {/* Эффект градиентного свечения можно добавить сюда, если нужно */}
+                {/* <div className={styles.buttonGlow} /> */}
               </motion.button>
             ))}
           </div>
@@ -278,14 +285,14 @@ const TeamAdvantages: React.FC = () => {
           <motion.div
             className={styles.footer}
             variants={itemVariants}
-            custom={sectionsData.length + 1} // Последний анимированный элемент
+            custom={sectionsData.length + 1}
           >
             <p>Узнайте больше о каждом направлении</p>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* Рендерим модальное окно */}
+      {/* Модальное окно */}
       <Modal
         isOpen={!!activeModal}
         onClose={handleCloseModal}

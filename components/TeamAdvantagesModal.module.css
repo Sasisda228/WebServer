@@ -1,99 +1,128 @@
-/* components/TeamAdvantages/Modal.module.css */
+/* components/TeamAdvantages/TeamAdvantagesModal.module.css */
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный фон */
+  inset: 0; /* Аналог top/left/right/bottom: 0 */
+  background-color: rgba(10, 8, 18, 0.8); /* Затемненный фон с оттенком основного */
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Поверх остального контента */
-  padding: 20px; /* Отступы для мобильных */
+  z-index: 1000;
+  padding: 15px; /* Отступы для мобильных */
+  backdrop-filter: blur(5px); /* Эффект размытия фона (опционально) */
 }
 
 .modalContent {
-  background-color: #ffffff;
-  padding: 30px;
-  border-radius: 16px;
-  max-width: 650px; /* Максимальная ширина окна */
+  background-color: #1f1d2b; /* Фон модалки чуть светлее основного */
+  padding: 25px;
+  border-radius: 12px;
+  max-width: 600px; /* Макс. ширина */
   width: 100%;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   position: relative;
-  max-height: 85vh; /* Максимальная высота */
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
+  border: 1px solid #371B72; /* Граница акцентным цветом */
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding-bottom: 15px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #371B72; /* Разделитель акцентным цветом */
+  flex-shrink: 0; /* Заголовок не сжимается */
 }
 
 .modalHeader h2 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #343a40;
+  color: #ffffff; /* Белый заголовок */
   margin: 0;
 }
 
 .closeButton {
   background: none;
   border: none;
-  font-size: 2rem;
-  font-weight: 300;
-  color: #adb5bd;
+  font-size: 1.8rem; /* Размер крестика */
+  font-weight: 400;
+  color: #a0a0a0; /* Цвет крестика */
   cursor: pointer;
   padding: 0 5px;
   line-height: 1;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .closeButton:hover {
-  color: #343a40;
+  color: #9A1840; /* Акцентный цвет при ховере */
+  transform: rotate(90deg); /* Небольшой эффект при ховере */
 }
 
 .modalBody {
-  overflow-y: auto; /* Прокрутка, если контент не помещается */
-  font-size: 1rem;
-  line-height: 1.7;
-  color: #495057;
+  overflow-y: auto; /* Прокрутка */
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #d0d0d0; /* Светло-серый текст */
+  padding-right: 10px; /* Отступ для скроллбара */
+  margin-right: -10px; /* Компенсация отступа */
 }
 
 .modalBody p {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .modalBody ul {
-  list-style: disc;
-  padding-left: 25px;
+  list-style: none; /* Убираем стандартные маркеры */
+  padding-left: 0;
   margin-bottom: 15px;
 }
 
 .modalBody li {
   margin-bottom: 8px;
+  padding-left: 20px; /* Отступ для кастомного маркера */
+  position: relative;
 }
 
-/* Стили для скроллбара (опционально) */
+/* Кастомный маркер списка */
+.modalBody li::before {
+  content: '•'; /* Или '▹', '✓' */
+  position: absolute;
+  left: 0;
+  color: #9A1840; /* Акцентный цвет маркера */
+  font-weight: bold;
+  font-size: 1.1em;
+  line-height: inherit;
+}
+
+/* Стили для скроллбара (темная тема) */
 .modalBody::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .modalBody::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #1f1d2b; /* Фон трека */
   border-radius: 10px;
 }
 
 .modalBody::-webkit-scrollbar-thumb {
-  background: #ced4da;
+  background: #371B72; /* Цвет ползунка (акцент 2) */
   border-radius: 10px;
 }
 
 .modalBody::-webkit-scrollbar-thumb:hover {
-  background: #adb5bd;
+  background: #4a2a91; /* Чуть светлее при ховере */
+}
+
+/* Адаптация для больших экранов */
+@media (min-width: 640px) {
+  .modalContent {
+    padding: 30px;
+  }
+  .modalHeader h2 {
+    font-size: 1.6rem;
+  }
+   .modalBody {
+    font-size: 1rem;
+  }
 }
