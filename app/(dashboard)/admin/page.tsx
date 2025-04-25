@@ -1,8 +1,17 @@
-"use client";
-import { DashboardSidebar, StatsElement } from "@/components";
-import React, { useEffect } from "react";
+import dynamic from "next/dynamic";
 import { FaArrowUp } from "react-icons/fa6";
 
+// Динамически загружаем компоненты
+const DashboardSidebar = dynamic(
+  () => import("@/components/DashboardSidebar"),
+  {
+    loading: () => <p>Loading Sidebar...</p>,
+  }
+);
+
+const StatsElement = dynamic(() => import("@/components/StatsElement"), {
+  loading: () => <p>Loading Stats...</p>,
+});
 const AdminDashboardPage = () => {
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col">
