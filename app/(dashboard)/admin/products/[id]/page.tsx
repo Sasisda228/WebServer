@@ -1,9 +1,7 @@
 "use client";
 import { DashboardSidebar } from "@/components";
 import UploadcareImage from "@uploadcare/nextjs-loader";
-// Remove the incorrect CSS import as it's not needed for react-widget
-// import "@uploadcare/react-uploader/core.css";
-import { Widget } from "@uploadcare/react-widget";
+import { FileInfo, Widget } from "@uploadcare/react-widget"; // Import FileInfo type from the package
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,33 +15,7 @@ interface DashboardProductDetailsProps {
   params: { id: string };
 }
 
-// Updated interface to match the FileInfo type from Uploadcare Widget
-interface FileInfo {
-  uuid?: string;
-  name?: string;
-  size?: number;
-  isImage?: boolean;
-  isStored?: boolean;
-  cdnUrl?: string;
-  cdnUrlModifiers?: string;
-  originalUrl?: string;
-  originalImageInfo?: {
-    width: number;
-    height: number;
-    format: string;
-    datetimeOriginal?: string;
-    gpsLatitude?: number;
-    gpsLongitude?: number;
-    dpi?: [number, number];
-    colorMode?: string;
-    orientation?: number;
-    sequence?: boolean;
-  };
-  mimeType?: string;
-  isReady?: boolean;
-  count?: number; // For group uploads
-  id?: string;    // For group uploads
-}
+// Remove our custom FileInfo interface since we're importing the official one
 
 interface Category {
   id: string;
@@ -205,11 +177,11 @@ const DashboardProductDetails = ({
     }
   };
 
-  // Updated handler to match the FileInfo type expected by the Widget component
+  // Updated handler to use the official FileInfo type
   const handleGroupUpload = (fileInfo: FileInfo) => {
     setUploadingImages(false);
 
-    // Check if this is a group upload (has uuid and is a group)
+    // Check if this is a group upload (has uuid)
     if (!fileInfo || !fileInfo.uuid) {
       console.error("Failed to get file information");
       return;
@@ -461,7 +433,7 @@ const DashboardProductDetails = ({
                     Album Preview({albumImages.length}):
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {/* Если у нас есть отдельные URL изоб��ажений из альбома */}
+                    {/* Если у нас есть отдельные URL изображений из альбома */}
                     {albumImages.length > 0
                       ? albumImages.map((imageUrl, index) => (
                           <div key={index} className="relative">
