@@ -1,8 +1,8 @@
 /* components/TeamAdvantages/TeamAdvantages.module.css */
 .section {
-  padding: 60px 15px; /* Меньше отступы для мобильных по умолчанию */
-  background-color: #141220; /* Основной темный фон */
-  color: #e0e0e0; /* Основной светлый цвет текста */
+  padding: 50px 10px; /* Еще меньше отступы для мобильных */
+  background-color: #141220;
+  color: #e0e0e0;
   overflow: hidden;
 }
 
@@ -13,85 +13,98 @@
 }
 
 .title {
-  font-size: 2.2rem; /* Меньше для мобильных */
+  font-size: 2rem; /* Еще немного меньше для мобильных */
   font-weight: 700;
-  margin-bottom: 40px;
-  color: #ffffff; /* Белый заголовок */
+  margin-bottom: 30px;
+  color: #ffffff;
 }
 
 .highlight {
-  /* Градиент из акцентных цветов */
-  background: linear-gradient(90deg, #9A1840, #6a1b9a); /* Используем #9A1840 и промежуточный фиолетовый */
+  background: linear-gradient(90deg, #9A1840, #6a1b9a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
-  padding: 0 2px; /* Небольшой отступ, чтобы градиент был виден */
+  padding: 0 2px;
 }
 
 .buttonsGrid {
   display: grid;
-  grid-template-columns: 2fr; /* Одна колонка по умолчанию (mobile-first) */
-  gap: 20px;
-  margin-bottom: 40px;
+  /* --- ИЗМЕНЕНО: Сетка 2x2 по умолчанию --- */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px; /* Уменьшаем отступ между кнопками */
+  margin-bottom: 30px;
 }
 
 .advantageButton {
-  background-color: #1f1d2b; /* Чуть светлее фона */
-  border-radius: 12px;
-  padding: 20px;
+  background-color: #1f1d2b;
+  border-radius: 10px; /* Чуть меньше скругление */
+  /* --- ИЗМЕНЕНО: Уменьшаем padding --- */
+  padding: 15px;
   text-align: left;
-  border: 1px solid #371B72; /* Граница акцентным цветом 2 */
+  border: 1px solid #371B72;
   cursor: pointer;
   position: relative;
   overflow: hidden;
   transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
-  display: flex; /* Используем flex для выравнивания иконки и текста */
-  align-items: center; /* Выравниваем по центру вертикально */
-  gap: 15px; /* Отступ между иконкой и текстом */
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Тень для темной темы */
+  display: flex;
+  /* --- ИЗМЕНЕНО: Можно вернуть вертикальное расположение на мобильных для компактности --- */
+  flex-direction: column;
+  align-items: flex-start; /* Выравнивание по левому краю при column */
+  gap: 10px; /* Уменьшаем отступ */
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .advantageButton:hover {
-  transform: translateY(-5px) scale(1.02);
-  border-color: #9A1840; /* Меняем цвет границы на акцент 1 при ховере */
-  box-shadow: 0px 8px 25px rgba(154, 24, 64, 0.3); /* Тень акцентным цветом 1 */
+  transform: translateY(-4px) scale(1.01); /* Чуть меньше эффект */
+  border-color: #9A1840;
+  box-shadow: 0px 6px 20px rgba(154, 24, 64, 0.25);
 }
 
 .buttonIconWrapper {
-  flex-shrink: 0; /* Иконка не будет сжиматься */
-  background: linear-gradient(135deg, #371B72, #5e35b1); /* Градиент акцентным цветом 2 */
-  width: 55px;
-  height: 55px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #371B72, #5e35b1);
+  /* --- ИЗМЕНЕНО: Уменьшаем размер иконки --- */
+  width: 45px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  font-size: 1.8rem; /* Размер иконки */
+  border-radius: 8px; /* Меньше скругление */
+  font-size: 1.5rem; /* Меньше иконка */
   color: #ffffff;
+  /* --- ИЗМЕНЕНО: Убираем margin-bottom, т.к. используем gap во flex-direction: column --- */
+  /* margin-bottom: 10px; */
 }
 
 .buttonText {
-  flex-grow: 1; /* Текстовый блок занимает оставшееся место */
+  flex-grow: 1;
 }
 
 .buttonTitle {
-  font-size: 1.15rem;
+  font-size: 1.05rem; /* Немного меньше */
   font-weight: 600;
-  margin-bottom: 5px;
-  color: #ffffff; /* Белый заголовок кнопки */
+  margin-bottom: 4px;
+  color: #ffffff;
 }
 
 .buttonDescription {
-  font-size: 0.9rem;
-  color: #b0b0b0; /* Немного темнее основного текста */
-  line-height: 1.5;
+  /* --- ИЗМЕНЕНО: Уменьшаем шрифт и высоту строки --- */
+  font-size: 0.8rem;
+  color: #a0a0a0; /* Еще светлее для читаемости */
+  line-height: 1.4;
+  /* --- Опционально: Ограничение строк (может не работать во всех браузерах) --- */
+  /* display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; */
 }
 
 .footer {
-  margin-top: 30px;
-  color: #a0a0a0; /* Цвет текста подвала */
-  font-size: 0.9rem;
+  margin-top: 25px;
+  color: #a0a0a0;
+  font-size: 0.85rem;
 }
 
 /* --- Адаптация для планшетов и десктопов --- */
@@ -103,29 +116,44 @@
   }
   .title {
     font-size: 2.5rem;
+    margin-bottom: 40px;
   }
   .buttonsGrid {
-    /* Две колонки на планшетах */
+    /* Оставляем 2 колонки или меняем на 3? Оставим 2 для консистентности */
     grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
+    gap: 25px; /* Возвращаем больший gap */
+     margin-bottom: 40px;
   }
    .advantageButton {
-    padding: 25px;
-    gap: 20px;
+    padding: 25px; /* Возвращаем padding */
+    /* --- Возвращаем горизонтальное расположение --- */
+    flex-direction: row;
+    align-items: center;
+    gap: 20px; /* Возвращаем gap */
   }
   .buttonIconWrapper {
-     width: 60px;
+     width: 60px; /* Возвращаем размер */
      height: 60px;
-     font-size: 2rem;
+     font-size: 2rem; /* Возвращаем размер */
+     border-radius: 10px;
   }
    .buttonTitle {
-    font-size: 1.25rem;
+    font-size: 1.25rem; /* Возвращаем размер */
+     margin-bottom: 5px;
   }
   .buttonDescription {
-    font-size: 0.95rem;
+    font-size: 0.95rem; /* Возвращаем размер */
+    line-height: 1.5;
+     /* Убираем ограничение строк, если было */
+    /* display: block;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+    overflow: visible;
+    text-overflow: clip; */
   }
    .footer {
     font-size: 1rem;
+     margin-top: 40px;
   }
 }
 
@@ -144,9 +172,8 @@
     gap: 30px;
      margin-bottom: 50px;
   }
-   .advantageButton {
-     /* Можно вернуть вертикальное расположение на больших экранах, если нужно */
-     /* flex-direction: column;
-     align-items: flex-start; */
-   }
+   /* Стили для advantageButton, buttonIconWrapper, buttonTitle, buttonDescription
+      обычно наследуются от @media (min-width: 640px), если не переопределены здесь.
+      Можно добавить специфичные стили для десктопа, если нужно. */
 }
+```
