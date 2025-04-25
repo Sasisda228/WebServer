@@ -1,8 +1,9 @@
 "use client";
 import { DashboardSidebar } from "@/components";
 import UploadcareImage from "@uploadcare/nextjs-loader";
-import { FileInfo, Widget } from "@uploadcare/react-widget"; // Import FileInfo type from the package
+import { FileInfo } from "@uploadcare/react-widget"; // Import FileInfo type from the package
 import axios from "axios";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -10,6 +11,13 @@ import {
   convertCategoryNameToURLFriendly as convertSlugToURLFriendly,
   formatCategoryName,
 } from "../../../../../utils/categoryFormating";
+const Widget = dynamic(
+  () => import("@uploadcare/react-widget").then((mod) => mod.Widget),
+  {
+    ssr: false,
+    loading: () => <p>Loading image uploader...</p>,
+  }
+);
 
 interface DashboardProductDetailsProps {
   params: { id: string };

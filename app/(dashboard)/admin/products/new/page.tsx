@@ -15,7 +15,6 @@ const Widget = dynamic(
     loading: () => <p>Loading image uploader...</p>,
   }
 );
-
 // Типы данных для работы с Prisma
 interface Category {
   id: string;
