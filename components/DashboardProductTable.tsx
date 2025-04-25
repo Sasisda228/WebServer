@@ -84,8 +84,8 @@ const DashboardProductTable = () => {
                             width={48}
                             height={48}
                             src={
-                              product?.mainImage
-                                ? `/${product?.mainImage}`
+                              product?.images[0]
+                                ? `${product?.images[0]}/nth/0/`
                                 : "/product_placeholder.jpg"
                             }
                             alt="Avatar Tailwind CSS Component"

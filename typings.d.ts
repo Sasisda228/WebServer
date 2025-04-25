@@ -5,10 +5,10 @@ interface Product {
   price: number;
   rating: number;
   description: string;
-  mainImage: string;
+  images: string[];
   manufacturer: string;
   categoryId: string;
-  category: {name: string}?;
+  category: { name: string }?;
   inStock: number;
 }
 

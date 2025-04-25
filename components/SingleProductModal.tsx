@@ -1,19 +1,28 @@
 "use client";
 
-import pageStyles from "@/app/product/[productSlug]/page.module.css";
+import pageStyles from "@/app/product/[productSlug]/page.module.css"
 import {
   AddToCartSingleProductBtn,
   AddToWishlistBtn,
   BuyNowSingleProductBtn,
   StockAvailabillity,
-  UrgencyText,
-} from "@/components";
-import axios from "axios";
-import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaXmark } from "react-icons/fa6";
-import modalStyles from "./SingleProductModal.module.css";
+} from "@/components"
+import UploadcareImage from "@uploadcare/nextjs-loader"
+import axios from "axios"
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "framer-motion"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { FaChevronDown } from "react-icons/fa6"
+import { IoShareSocialOutline } from "react-icons/io5"
+import {
+  default as modalStyles,
+  default as styles,
+} from "./SingleProductModal.module.css"
 
 interface ImageItem {
   imageID: string;
@@ -29,9 +38,11 @@ const TABS = [
 
 const TAB_CONTENT: Record<string, string> = {
   details:
-    "Здесь подробное описание товара, его характеристики и преимущества.",
-  delivery: "Доставка осуществляется по всей России в течение 2-5 дней.",
-  return: "Возврат товара возможен в течение 14 дней после получения.",
+    "Здесь подробное описание товара, его характеристики и преимущества. Мы предоставляем только высококачественные товары, которые прошли тщательную проверку перед отправкой клиенту.",
+  delivery:
+    "Доставка осуществляется по всей России в течение 2-5 рабочих дней. Для Москвы и Санкт-Петербурга доступна экспресс-доставка в день заказа при оформлении до 14:00.",
+  return:
+    "Возврат товара возможен в течение 14 дней после получения. Товар должен быть в оригинальной упаковке и не иметь следов использования. Для оформления возврата свяжитесь с нашей службой поддержки.",
 };
 
 interface SingleProductModalProps {
@@ -48,66 +59,192 @@ export default function SingleProductModal({
   const [product, setProduct] = useState<any>(null);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const prefersReducedMotion = useReducedMotion();
+  const [showSwipeIndicator, setShowSwipeIndicator] = useState(true);
+  const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
+  const [albumImages, setAlbumImages] = useState<string[]>([]);
+  // Для свайпа вниз
+  const y = useMotionValue(0);
+  const modalOpacity = useTransform(y, [0, 300], [1, 0]);
+  const modalScale = useTransform(y, [0, 300], [1, 0.9]);
+  const dragConstraints = useRef(null);
 
-  // For focus trap and accessibility
+  // Для фокуса и доступности
   const modalRef = useRef<HTMLDivElement>(null);
+  const initialFocusRef = useRef<HTMLDivElement>(null);
 
   // Блокировка скролла body при открытии модалки
   useEffect(() => {
     if (open) {
-      const original = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+
+      // Показываем индикатор свайпа на 3 секунды
+      setShowSwipeIndicator(true);
+      const timer = setTimeout(() => {
+        setShowSwipeIndicator(false);
+      }, 3000);
+
       return () => {
-        document.body.style.overflow = original;
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        window.scrollTo(0, scrollY);
+        clearTimeout(timer);
       };
     }
   }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    setLoading(true);
-
-    // Replace fetch with axios
-    (async () => {
-      try {
-        // You may want to use a relative URL like `/apiv3/slugs/${productSlug}` if you have a proxy set up
-        const productRes = await axios.get(`/apiv3/slugs/${productSlug}`);
-        const productData = productRes.data;
-        setProduct(productData);
-
-        if (productData?.id) {
-          const imgsRes = await axios.get(`/apiv3/images/${productData.id}`);
-          setImages(imgsRes.data);
-        } else {
-          setImages([]);
+  const fetchAlbumImages = async (groupId: string) => {
+    try {
+      // Используем Uploadcare REST API для получения информации о группе
+      const response = await fetch(
+        `https://api.uploadcare.com/groups/${groupId}/`,
+        {
+          headers: {
+            Accept: "application/vnd.uploadcare-v0.7+json",
+            Authorization: `Uploadcare.Simple 75ae123269ffcd1362e6:dabbafb5c211c86840bc`,
+          },
         }
-      } catch (err) {
-        setProduct(null);
-        setImages([]);
-      } finally {
-        setLoading(false);
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error fetching album info: ${response.status}`);
       }
-    })();
+
+      const data = await response.json();
+
+      // Извлекаем URL всех файлов в группе
+      if (data.files && Array.isArray(data.files)) {
+        const imageUrls = data.files.map(
+          (file: any) => file.original_file_url || file.cdn_url
+        );
+        setAlbumImages(imageUrls);
+      }
+    } catch (error) {
+      console.error("Error fetching album images:", error);
+    }
+  };
+  // Загрузка данных о продукте
+  const fetchProductData = useCallback(async () => {
+    if (!open || !productSlug) return;
+
+    setLoading(true);
+    try {
+      const productRes = await axios.get(`/apiv3/slugs/${productSlug}`);
+      const productData = productRes.data;
+      setProduct(productData);
+
+      if (
+        productData.images &&
+        Array.isArray(productData.images) &&
+        productData.images.length > 0
+      ) {
+        const firstImage = productData.images[0];
+
+        // Проверяем, является ли URL ссылкой на альбом Uploadcare
+        if (firstImage.includes("ucarecdn.com") && firstImage.includes("/")) {
+          // Извлекаем ID альбома из URL
+          const match = firstImage.match(/ucarecdn\.com\/([^\/]+)/);
+          if (match && match[1]) {
+            setAlbumGroupId(match[1]);
+            fetchAlbumImages(match[1]);
+          }
+        }
+      }
+      if (productData?.id) {
+        const imgsRes = await axios.get(`/apiv3/images/${productData.id}`);
+        setImages(imgsRes.data);
+      } else {
+        setImages([]);
+      }
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [productSlug, open]);
 
-  // Close on ESC
+  useEffect(() => {
+    fetchProductData();
+  }, [fetchProductData]);
+
+  // Закрытие по ESC
   useEffect(() => {
     if (!open) return;
+
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+      }
     };
+
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [open, onClose]);
 
-  // Focus trap
+  // Фокус
   useEffect(() => {
     if (open && modalRef.current) {
-      modalRef.current.focus();
+      setTimeout(() => {
+        initialFocusRef.current?.focus();
+      }, 100);
     }
   }, [open]);
 
-  // Карусель
+  // Обработка свайпа вниз
+  const handleDragEnd = (_event: any, info: any) => {
+    if (info.offset.y > 100) {
+      onClose();
+    }
+  };
+
+  // Поделиться товаром
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product?.title || "Посмотрите этот товар",
+          text: "Нашел интересный товар, который может вам понравиться!",
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.log("Sharing failed", error);
+      }
+    } else {
+      // Fallback - копирование ссылки в буфер обмена
+      navigator.clipboard.writeText(window.location.href);
+      alert("Ссылка скопирована в буфер обмена");
+    }
+  };
+
+  // Анимации
+  const overlayAnimation = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: 0.3 } },
+    exit: { opacity: 0, transition: { duration: 0.2 } },
+  };
+
+  const modalAnimation = {
+    initial: { opacity: 0, y: "100%" },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        damping: 25,
+        stiffness: 300,
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: "100%",
+      transition: { duration: 0.3 },
+    },
+  };
+
+  // Карусель с улучшенным UX и полноэкранными изображениями
   function ProductCarousel({
     images,
     mainImage,
@@ -115,69 +252,118 @@ export default function SingleProductModal({
     images: ImageItem[];
     mainImage: string;
   }) {
-    const allImages = [mainImage, ...images.map((img) => img.image)].filter(
-      Boolean
-    );
+    const allImages = albumImages;
     const [current, setCurrent] = useState(0);
+    const [touchStart, setTouchStart] = useState(0);
+    const [touchEnd, setTouchEnd] = useState(0);
+    const [isTransitioning, setIsTransitioning] = useState(false);
 
-    const prev = () =>
+    const prev = () => {
+      if (isTransitioning) return;
+      setIsTransitioning(true);
       setCurrent((c) => (c === 0 ? allImages.length - 1 : c - 1));
-    const next = () =>
+      setTimeout(() => setIsTransitioning(false), 300);
+    };
+
+    const next = () => {
+      if (isTransitioning) return;
+      setIsTransitioning(true);
       setCurrent((c) => (c === allImages.length - 1 ? 0 : c + 1));
-    const select = (idx: number) => setCurrent(idx);
+      setTimeout(() => setIsTransitioning(false), 300);
+    };
+
+    const select = (idx: number) => {
+      if (isTransitioning || idx === current) return;
+      setIsTransitioning(true);
+      setCurrent(idx);
+      setTimeout(() => setIsTransitioning(false), 300);
+    };
+
+    // Свайп для мобильных устройств
+    const handleTouchStart = (e: React.TouchEvent) => {
+      setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+      setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+      if (touchStart - touchEnd > 100) {
+        next();
+      }
+      if (touchStart - touchEnd < -100) {
+        prev();
+      }
+    };
 
     return (
-      <div className={pageStyles.carouselWrapper}>
-        <button
-          className={`${pageStyles.carouselBtn} ${pageStyles.left}`}
+      <div
+        className={styles.carouselWrapper}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* <button
+          className={`${styles.carouselBtn} ${styles.carouselBtnLeft}`}
           onClick={prev}
           aria-label="Предыдущее фото"
           type="button"
+          disabled={isTransitioning}
         >
           <FaChevronLeft size={22} />
-        </button>
+        </button> */}
+
         <motion.div
           key={current}
-          className={pageStyles.carouselImage}
-          initial={{ opacity: 0.7, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
+          className={styles.carouselImage}
+          initial={prefersReducedMotion ? {} : { opacity: 0.7, scale: 0.98 }}
+          animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
+          style={{ width: "100%", aspectRatio: "3/4", maxWidth: "100vw" }}
         >
-          <Image
-            src={`/${allImages[current]}`}
-            alt="Фото товара"
-            fill
-            className="object-contain"
-            sizes="(max-width: 900px) 100vw, 800px"
-            priority
+          <UploadcareImage
+            alt={`Product image ${current + 1}`}
+            src={`https://ucarecdn.com/${albumGroupId}/nth/${current}/`}
+            width={600}
+            height={800}
+            style={{
+              width: "100%",
+              height: "100%",
+              maxHeight: "calc(100vh - 200px)",
+            }}
           />
         </motion.div>
-        <button
-          className={`${pageStyles.carouselBtn} ${pageStyles.right}`}
+
+        {/* <button
+          className={`${styles.carouselBtn} ${styles.carouselBtnRight}`}
           onClick={next}
           aria-label="Следующее фото"
           type="button"
+          disabled={isTransitioning}
         >
           <FaChevronRight size={22} />
-        </button>
+        </button> */}
+
         {/* Thumbnails */}
-        <div className={pageStyles.carouselThumbnails}>
-          {allImages.map((img, idx) => (
+        <div className={styles.carouselThumbnails}>
+          {albumImages.map((img, idx) => (
             <button
               key={img + idx}
-              className={`${pageStyles.carouselThumbBtn} ${
-                idx === current ? pageStyles.active : ""
+              className={`${styles.carouselThumbBtn} ${
+                idx === current ? styles.active : ""
               }`}
               onClick={() => select(idx)}
               aria-label={`Фото ${idx + 1}`}
               type="button"
+              disabled={isTransitioning}
             >
-              <Image
-                src={`/${img}`}
-                alt={`Миниатюра ${idx + 1}`}
-                width={32}
-                height={32}
-                className="object-cover w-full h-full"
+              <UploadcareImage
+                alt={`Product image ${idx + 1}`}
+                src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/`}
+                width="32"
+                height="32"
+                style={{ objectFit: "cover" }}
               />
             </button>
           ))}
@@ -186,9 +372,10 @@ export default function SingleProductModal({
     );
   }
 
-  // Tabs logic
+  // Tabs с улучшенным UX
   function ProductTabs() {
     const [tab, setTab] = useState("details");
+
     return (
       <div className={pageStyles.tabsWrapper}>
         <div className={pageStyles.tabsHeader}>
@@ -205,18 +392,23 @@ export default function SingleProductModal({
             </button>
           ))}
         </div>
-        <motion.div
-          key={tab}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className={pageStyles.tabContent}
-        >
-          {TAB_CONTENT[tab]}
-        </motion.div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={tab}
+            initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+            exit={prefersReducedMotion ? {} : { opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className={pageStyles.tabContent}
+          >
+            {TAB_CONTENT[tab]}
+          </motion.div>
+        </AnimatePresence>
       </div>
     );
   }
+
+  // Увеличенное изображение
 
   // Модальное окно
   return (
@@ -224,89 +416,162 @@ export default function SingleProductModal({
       {open && (
         <motion.div
           className={modalStyles.modalOverlay}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          {...overlayAnimation}
           onClick={onClose}
         >
           <motion.div
             className={modalStyles.modalContent}
             ref={modalRef}
-            initial={{ scale: 0.96, opacity: 0.7 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.96, opacity: 0.7 }}
-            transition={{ type: "spring", stiffness: 260, damping: 22 }}
-            tabIndex={-1}
+            style={{ opacity: modalOpacity, scale: modalScale }}
+            drag="y"
+            dragConstraints={dragConstraints}
+            dragElastic={0.1}
+            onDragEnd={handleDragEnd}
+            {...modalAnimation}
             onClick={(e) => e.stopPropagation()}
             aria-modal="true"
             role="dialog"
+            aria-labelledby="product-modal-title"
           >
-            <div className={modalStyles.header}>
+            <div
+              className={modalStyles.header}
+              ref={initialFocusRef}
+              tabIndex={-1}
+            >
               <div
                 className={modalStyles.handle}
-                title="Закрыть"
-                onClick={onClose}
-                tabIndex={0}
-                role="button"
-                aria-label="Закрыть модальное окно"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") onClose();
-                }}
+                title="Свайп вниз для закрытия"
+                role="presentation"
               />
-              <button
-                onClick={onClose}
-                className={modalStyles.closeBtn}
-                aria-label="Закрыть"
-                type="button"
-              >
-                <FaXmark size={22} />
-              </button>
             </div>
-            <div className={modalStyles.body}>
+
+            <div className={modalStyles.body} ref={dragConstraints}>
               {loading ? (
                 <div className={modalStyles.loader}>
-                  <span>Загрузка...</span>
+                  <div className={modalStyles.loaderSpinner} />
+                  <span>Загрузка товара...</span>
                 </div>
               ) : (
-                <>
-                  <ProductCarousel
-                    images={images}
-                    mainImage={product?.mainImage}
-                  />
-                  <h1 className={pageStyles.title}>{product?.title}</h1>
-                  <div className={pageStyles.priceBlock}>
-                    <span className={pageStyles.price}>{product?.price} ₽</span>
-                    <StockAvailabillity
-                      stock={product?.stock ?? 0}
-                      inStock={product?.inStock}
-                    />
-                    {product?.inStock === 1 && (
-                      <UrgencyText stock={product?.stock ?? 5} />
-                    )}
-                  </div>
-                  <div>
-                    <AddToCartSingleProductBtn
-                      quantityCount={1}
-                      product={product}
+                <div className={modalStyles.productContent}>
+                  <div
+                    className={modalStyles.productImageSection}
+                    style={{ width: "100%" }}
+                  >
+                    <ProductCarousel
+                      images={images}
+                      mainImage={product?.mainImage}
                     />
                   </div>
-                  <div>
-                    <BuyNowSingleProductBtn
-                      quantityCount={1}
-                      product={product}
-                    />
+
+                  <div className={modalStyles.productDetailsSection}>
+                    <motion.h1
+                      id="product-modal-title"
+                      className={pageStyles.title}
+                      initial={
+                        prefersReducedMotion ? {} : { opacity: 0, y: 20 }
+                      }
+                      animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1, duration: 0.4 }}
+                    >
+                      {product?.title}
+                    </motion.h1>
+
+                    <motion.div
+                      className={pageStyles.priceBlock}
+                      initial={
+                        prefersReducedMotion ? {} : { opacity: 0, y: 20 }
+                      }
+                      animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2, duration: 0.4 }}
+                    >
+                      <span className={pageStyles.price}>
+                        {product?.price} ₽
+                      </span>
+                      <StockAvailabillity
+                        stock={product?.stock ?? 0}
+                        inStock={product?.inStock}
+                      />
+                    </motion.div>
+
+                    <motion.div
+                      className={modalStyles.actionButtons}
+                      initial={
+                        prefersReducedMotion ? {} : { opacity: 0, y: 20 }
+                      }
+                      animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.4 }}
+                    >
+                      <AddToCartSingleProductBtn
+                        quantityCount={1}
+                        product={product}
+                      />
+                      <BuyNowSingleProductBtn
+                        quantityCount={1}
+                        product={product}
+                      />
+                    </motion.div>
+
+                    <motion.div
+                      className={modalStyles.wishlistWrapper}
+                      initial={
+                        prefersReducedMotion ? {} : { opacity: 0, y: 20 }
+                      }
+                      animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4, duration: 0.4 }}
+                    >
+                      <div className="flex justify-between items-center">
+                        <AddToWishlistBtn
+                          product={product}
+                          slug={productSlug}
+                        />
+                        <button
+                          onClick={handleShare}
+                          className="flex items-center gap-x-2 cursor-pointer"
+                          aria-label="Поделиться товаром"
+                        >
+                          <IoShareSocialOutline className="text-xl text-custom-black" />
+                          <span className="text-lg">ПОДЕЛИТЬСЯ</span>
+                        </button>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={
+                        prefersReducedMotion ? {} : { opacity: 0, y: 20 }
+                      }
+                      animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5, duration: 0.4 }}
+                    >
+                      <ProductTabs />
+                    </motion.div>
+
+                    <motion.div
+                      className={modalStyles.infoBlock}
+                      initial={
+                        prefersReducedMotion ? {} : { opacity: 0, y: 20 }
+                      }
+                      animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6, duration: 0.4 }}
+                    >
+                      Здесь будет дополнительная информация о товаре, условиях
+                      покупки, гарантии и других важных деталях для клиента. Вы
+                      можете добавить сюда любые тексты, которые нужны для
+                      вашего магазина.
+                    </motion.div>
                   </div>
-                  <div className={pageStyles.wishlistWrapper}>
-                    <AddToWishlistBtn product={product} slug={productSlug} />
-                  </div>
-                  <ProductTabs />
-                  <div className={pageStyles.infoBlock}>
-                    Здесь будет дополнительная информация о товаре, условиях
-                    покупки, гарантии и других важных деталях для клиента. Вы
-                    можете добавить сюда любые тексты, которые нужны для вашего
-                    магазина.
-                  </div>
-                </>
+                </div>
+              )}
+
+              {/* Индикатор свайпа */}
+              {showSwipeIndicator && (
+                <motion.div
+                  className={modalStyles.swipeIndicator}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <FaChevronDown size={24} />
+                </motion.div>
               )}
             </div>
           </motion.div>
