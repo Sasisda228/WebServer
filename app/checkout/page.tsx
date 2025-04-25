@@ -6,6 +6,7 @@ import {
   isValidEmailAddressFormat,
   isValidNameOrLastname,
 } from "@/lib/utils";
+import UploadcareImage from "@uploadcare/nextjs-loader";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,6 +18,34 @@ import { useProductStore } from "../_zustand/store";
 import styles from "./CheckoutPage.module.css";
 
 const SHIPPING_COST = 5;
+
+// Helper function to get the correct product image URL
+function getProductImageUrl(product: { images?: string[]; image?: string }): string | null {
+  // 1. If there's an images array and it's not empty
+  if (product.images && product.images.length > 0) {
+    const firstImage = product.images[0];
+    // Check if it's an Uploadcare album
+    if (
+      firstImage.startsWith("https://ucarecdn.com/") &&
+      firstImage.match(/^https:\/\/ucarecdn\.com\/[^/]+\/?$/)
+    ) {
+      // Extract groupId and return the first image from the album
+      const match = firstImage.match(/ucarecdn\.com\/([^/]+)/);
+      if (match && match[1]) {
+        const groupId = match[1];
+        return `https://ucarecdn.com/${groupId}/nth/0/`;
+      }
+    }
+    // If it's a regular image link
+    return firstImage;
+  }
+  // 2. If there's an image field (old variant)
+  if (product.image) {
+    return `/${product.image}`;
+  }
+  // 3. No image
+  return null;
+}
 
 const CheckoutPage = () => {
   const { products, total, removeFromCart, clearCart } = useProductStore();
@@ -169,48 +198,72 @@ const CheckoutPage = () => {
                 </div>
               ) : (
                 <ul className={styles.cartList}>
-                  {products.map((product) => (
-                    <motion.li
-                      key={product.id}
-                      className={styles.cartItem}
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <div className={styles.productImage}>
-                        <Image
-                          width={96}
-                          height={96}
-                          src={
-                            product?.image
-                              ? `/${product.image}`
-                              : "/product_placeholder.jpg"
-                          }
-                          alt={product.title}
-                          className={styles.image}
-                        />
-                      </div>
-                      <div className={styles.productInfo}>
-                        <h3 className={styles.productTitle}>{product.title}</h3>
-                        <p className={styles.productPrice}>{product.price} ₽</p>
-                        <span className={styles.productAmount}>
-                          x{product.amount}
-                        </span>
-                        <button
-                          onClick={() => handleRemoveItem(product.id)}
-                          className={styles.removeBtn}
-                          aria-label="Удалить товар"
-                        >
-                          <FaXmark size={18} />
-                        </button>
-                        <div className={styles.stockStatus}>
-                          <FaCheck className={styles.inStockIcon} />
-                          <span>В наличии</span>
+                  {products.map((product) => {
+                    const imageUrl = getProductImageUrl(product);
+                    return (
+                      <motion.li
+                        key={product.id}
+                        className={styles.cartItem}
+                        initial={{ opacity: 0, scale: 0.96 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.96 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div className={styles.productImage}>
+                          {imageUrl ? (
+                            <UploadcareImage
+                              alt={product.title}
+                              src={imageUrl}
+                              width={96}
+                              height={96}
+                              style={{
+                                borderRadius: "12px",
+                                objectFit: "cover",
+                              }}
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: 96,
+                                height: 96,
+                                borderRadius: 12,
+                                background: "#f3f3f3",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "#bbb",
+                                fontSize: 24,
+                              }}
+                            >
+                              No Image
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    </motion.li>
-                  ))}
+                        <div className={styles.productInfo}>
+                          <h3 className={styles.productTitle}>
+                            {product.title}
+                          </h3>
+                          <p className={styles.productPrice}>
+                            {product.price} ₽
+                          </p>
+                          <span className={styles.productAmount}>
+                            x{product.amount}
+                          </span>
+                          <button
+                            onClick={() => handleRemoveItem(product.id)}
+                            className={styles.removeBtn}
+                            aria-label="Удалить товар"
+                          >
+                            <FaXmark size={18} />
+                          </button>
+                          <div className={styles.stockStatus}>
+                            <FaCheck className={styles.inStockIcon} />
+                            <span>В наличии</span>
+                          </div>
+                        </div>
+                      </motion.li>
+                    );
+                  })}
                 </ul>
               )}
               {products.length > 0 && (
