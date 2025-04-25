@@ -3,8 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { MdExplore, MdHome } from "react-icons/md";
-import { useMediaQuery } from "react-responsive";
-import CategoryBar from "./CategoryBar.tsx";
+import CategoryBar from "./CategoryBar";
 import styles from "./NavBar.module.css";
 import ProfileModal from "./ProfileModal";
 
@@ -28,7 +27,6 @@ export default function NavBar() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const isMobile = useMediaQuery({ maxWidth: 768 });
   const navRef = useRef<HTMLDivElement>(null);
 
   // Update active item and selected category when pathname changes
@@ -69,10 +67,7 @@ export default function NavBar() {
       {/* Category Bar - appears when in shop section */}
       <CategoryBar categories={categories} currentCategory={selectedCategory} />
 
-      <nav
-        className={`${styles.navContainer} ${isMobile ? styles.mobileNav : ""}`}
-        ref={navRef}
-      >
+      <nav className={styles.navContainer} ref={navRef}>
         <div className={styles.navContent}>
           {/* Left navigation item (Home) */}
           <div className={styles.navSide}>
