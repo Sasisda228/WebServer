@@ -25,7 +25,7 @@ const BuyNowSingleProductBtn = ({
       id: product?.id.toString(),
       title: product?.title,
       price: product?.price,
-      image: product?.mainImage,
+      images: product?.images,
       amount: quantityCount,
     });
     calculateTotals();
