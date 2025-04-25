@@ -1,13 +1,18 @@
-import { IntroducingSection } from "@/components";
-export const dynamic = "force-static";
+"use client";
+import dynamic from "next/dynamic";
 
-export default function Home() {
+// динамический импорт TeamAdvantages
+const TeamAdvantages = dynamic(() => import("@/components/TeamAdvantages"), {
+  ssr: false, // отключаем SSR, потому что framer-motion клиентский
+  loading: () => <p style={{ textAlign: "center" }}>Загрузка секции...</p>,
+});
+
+const Home = () => {
   return (
-    <>
-      {/* <Hero /> */}
-      <IntroducingSection />
-      {/* <CategoryMenu />
-      <ProductsSection /> */}
-    </>
+    <div>
+      <TeamAdvantages />
+    </div>
   );
-}
+};
+
+export default Home;
