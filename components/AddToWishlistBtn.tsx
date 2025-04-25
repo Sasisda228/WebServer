@@ -63,7 +63,7 @@ const AddToWishlistBtn = ({ product }: AddToWishlistBtnProps) => {
           id: product?.id,
           title: product?.title,
           price: product?.price,
-          image: product?.mainImage,
+          images: product?.images,
           slug: product?.slug,
           stockAvailabillity: product?.inStock,
         });

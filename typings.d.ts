@@ -22,7 +22,7 @@ type ProductInWishlist = {
   id: string;
   title: string;
   price: number;
-  image: string;
+  images: string[];
   slug: string;
   stockAvailabillity: number;
 };
