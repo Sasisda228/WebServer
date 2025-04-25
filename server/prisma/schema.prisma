@@ -17,7 +17,7 @@ model Product {
   id             String                   @id @default(uuid())
   slug           String                   @unique
   title          String
-  mainImage      String
+  images         Json
   price          Int                      @default(0)
   rating         Int                      @default(0)
   description    String
@@ -27,12 +27,6 @@ model Product {
   category       Category                 @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   customerOrders customer_order_product[]
   Wishlist       Wishlist[]
-}
-
-model Image {
-  imageID   String @id @default(uuid())
-  productID String
-  image     String
 }
 
 model User {

@@ -1,26 +1,141 @@
 const express = require("express");
-const multer = require("multer");
 const router = express.Router();
-const {
-  getSingleProductImages,
-  createImage,
-  updateImage,
-  deleteImage,
-} = require("../controllers/productImages");
+const productImagesController = require("../controllers/productImages");
 
-// Configure multer storage
-const upload = multer({ dest: "../public/" });
+/**
+ * @route POST /api/products/:productId/images
+ * @desc Добавляет изображения к товару
+ * @access Private
+ */
+router.post("/:productId/images", async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { imageUrls } = req.body;
 
-// Get all images for a product
-router.route("/:id").get(getSingleProductImages);
+    if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Необходимо предоставить массив URL изображений",
+      });
+    }
 
-// Upload one or multiple product images (max 10)
-router.route("/").post(upload.array("images", 10), createImage);
+    const result = await productImagesController.addImagesToProduct(
+      parseInt(productId, 10),
+      imageUrls
+    );
 
-// Update a product image
-router.route("/:id").put(updateImage);
+    if (result.success) {
+      return res.status(200).json(result);
+    } else {
+      return res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error("Ошибка в маршруте добавления изображений:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Внутренняя ошибка сервера",
+    });
+  }
+});
 
-// Delete a product image
-router.route("/:id").delete(deleteImage); // id = imageID
+/**
+ * @route DELETE /api/products/:productId/images
+ * @desc Удаляет изображение из товара
+ * @access Private
+ */
+router.delete("/:productId/images", async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { imageUrl } = req.body;
+
+    if (!imageUrl) {
+      return res.status(400).json({
+        success: false,
+        message: "Необходимо предоставить URL изображения для удаления",
+      });
+    }
+
+    const result = await productImagesController.removeImageFromProduct(
+      parseInt(productId, 10),
+      imageUrl
+    );
+
+    if (result.success) {
+      return res.status(200).json(result);
+    } else {
+      return res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error("Ошибка в маршруте удаления изображения:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Внутренняя ошибка сервера",
+    });
+  }
+});
+
+/**
+ * @route GET /api/products/:productId/images
+ * @desc Получает все изображения товара
+ * @access Public
+ */
+router.get("/:productId/images", async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const result = await productImagesController.getProductImages(
+      parseInt(productId, 10)
+    );
+
+    if (result.success) {
+      return res.status(200).json(result);
+    } else {
+      return res.status(404).json(result);
+    }
+  } catch (error) {
+    console.error("Ошибка в маршруте получения изображений:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Внутренняя ошибка сервера",
+      images: [],
+    });
+  }
+});
+
+/**
+ * @route PUT /api/products/:productId/images
+ * @desc Устанавливает новый набор изображений для товара (заменяет существующие)
+ * @access Private
+ */
+router.put("/:productId/images", async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { imageUrls } = req.body;
+
+    if (!Array.isArray(imageUrls)) {
+      return res.status(400).json({
+        success: false,
+        message: "Необходимо предоставить массив URL изображений",
+      });
+    }
+
+    const result = await productImagesController.setProductImages(
+      parseInt(productId, 10),
+      imageUrls
+    );
+
+    if (result.success) {
+      return res.status(200).json(result);
+    } else {
+      return res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error("Ошибка в маршруте обновления изображений:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Внутренняя ошибка сервера",
+    });
+  }
+});
 
 module.exports = router;

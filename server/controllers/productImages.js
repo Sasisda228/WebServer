@@ -2,104 +2,257 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 /**
- * Получить все изображения товара по productID
+ * Контроллер для работы с изображениями товаров (только JSON-поле)
  */
-async function getSingleProductImages(request, response) {
-  const { id } = request.params;
-  const images = await prisma.image.findMany({
-    where: { productID: id },
-  });
-  if (!images) {
-    return response.status(404).json({ error: "Images not found" });
-  }
-  return response.json(images);
-}
+const productImagesController = {
+  /**
+   * Добавляет изображения к товару
+   * @param {string} productId - ID товара
+   * @param {string[]} imageUrls - Массив URL изображений
+   * @returns {Promise<Object>} - Результат операции
+   */
+  async addImagesToProduct(productId, imageUrls) {
+    try {
+      // Проверяем существование товара
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { images: true },
+      });
 
-/**
- * Загрузить одно или несколько изображений товара (используй multer array('images'))
- */
-async function createImage(request, response) {
-  try {
-    const { productID } = request.body;
-    // multer кладет файлы в request.files
-    const files = request.files;
+      if (!product) {
+        throw new Error(`Товар с ID ${productId} не найден`);
+      }
 
-    if (!files || files.length === 0) {
-      return response.status(400).json({ error: "No files uploaded" });
+      // Получаем текущие изображения или создаем пустой массив
+      let currentImages = [];
+      if (product.images) {
+        // Если images уже массив, используем его
+        if (Array.isArray(product.images)) {
+          currentImages = product.images;
+        }
+        // Если images строка (JSON), парсим ее
+        else if (typeof product.images === "string") {
+          try {
+            currentImages = JSON.parse(product.images);
+            if (!Array.isArray(currentImages)) {
+              currentImages = [];
+            }
+          } catch (e) {
+            currentImages = [];
+          }
+        }
+      }
+
+      // Добавляем новые URL к существующим
+      const updatedImages = [...currentImages, ...imageUrls];
+
+      // Обновляем запись в БД
+      await prisma.product.update({
+        where: { id: productId },
+        data: { images: updatedImages },
+      });
+
+      return {
+        success: true,
+        message: "Изображения успешно добавлены",
+        images: updatedImages,
+      };
+    } catch (error) {
+      console.error("Ошибка при добавлении изображений:", error);
+      return {
+        success: false,
+        message: error.message || "Произошла ошибка при добавлении изображений",
+      };
     }
+  },
 
-    const imagesToCreate = files.map((file) => ({
-      productID: productID,
-      image: file.filename, // или file.path, если нужен полный путь
-    }));
+  /**
+   * Удаляет изображение из товара
+   * @param {string} productId - ID товара
+   * @param {string} imageUrl - URL изображения для удаления
+   * @returns {Promise<Object>} - Результат операции
+   */
+  async removeImageFromProduct(productId, imageUrl) {
+    try {
+      // Проверяем существование товара
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { images: true },
+      });
 
-    const createdImages = await prisma.image.createMany({
-      data: imagesToCreate,
-    });
+      if (!product) {
+        throw new Error(`Товар с ID ${productId} не найден`);
+      }
 
-    return response.status(201).json({
-      message: "Images uploaded",
-      count: createdImages.count,
-    });
-  } catch (error) {
-    console.error("Error creating image:", error);
-    return response.status(500).json({ error: "Error creating image" });
-  }
-}
+      // Получаем текущие изображения или создаем пустой массив
+      let currentImages = [];
+      if (product.images) {
+        // Если images уже массив, используем его
+        if (Array.isArray(product.images)) {
+          currentImages = product.images;
+        }
+        // Если images строка (JSON), парсим ее
+        else if (typeof product.images === "string") {
+          try {
+            currentImages = JSON.parse(product.images);
+            if (!Array.isArray(currentImages)) {
+              currentImages = [];
+            }
+          } catch (e) {
+            currentImages = [];
+          }
+        }
+      }
 
-async function updateImage(request, response) {
-  try {
-    const { id } = request.params; // Getting product id from params
-    const { productID, image } = request.body;
+      // Удаляем указан��ое изображение
+      const updatedImages = currentImages.filter((url) => url !== imageUrl);
 
-    // Checking whether photo exists for the given product id
-    const existingImage = await prisma.image.findFirst({
-      where: {
-        productID: id, // Finding photo with a product id
-      },
-    });
+      // Обновляем запись в БД
+      await prisma.product.update({
+        where: { id: productId },
+        data: { images: updatedImages },
+      });
 
-    // if photo doesn't exist, return coresponding status code
-    if (!existingImage) {
-      return response
-        .status(404)
-        .json({ error: "Image not found for the provided productID" });
+      return {
+        success: true,
+        message: "Изображение успешно удалено",
+        images: updatedImages,
+      };
+    } catch (error) {
+      console.error("Ошибка при удалении изображения:", error);
+      return {
+        success: false,
+        message: error.message || "Произошла ошибка при удалении изображения",
+      };
     }
+  },
 
-    // Updating photo using coresponding imageID
-    const updatedImage = await prisma.image.update({
-      where: {
-        imageID: existingImage.imageID, // Using imageID of the found existing image
-      },
-      data: {
-        productID: productID,
-        image: image,
-      },
-    });
+  /**
+   * Получает все изображения товара
+   * @param {string} productId - ID товара
+   * @returns {Promise<Object>} - Результат операции с массивом URL
+   */
+  async getProductImages(productId) {
+    try {
+      // Проверяем существование товара
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        select: { images: true },
+      });
 
-    return response.json(updatedImage);
-  } catch (error) {
-    console.error("Error updating image:", error);
-    return response.status(500).json({ error: "Error updating image" });
-  }
-}
+      if (!product) {
+        throw new Error(`Товар с ID ${productId} не найден`);
+      }
 
-async function deleteImage(request, response) {
-  try {
-    const { id } = request.params; // id = imageID
-    await prisma.image.delete({
-      where: { imageID: id },
-    });
-    return response.status(204).send();
-  } catch (error) {
-    console.error("Error deleting image:", error);
-    return response.status(500).json({ error: "Error deleting image" });
-  }
-}
+      // Получаем изображения или возвращаем пустой массив
+      let images = [];
+      if (product.images) {
+        // Если images уже массив, используем его
+        if (Array.isArray(product.images)) {
+          images = product.images;
+        }
+        // Если images строка (JSON), парсим ее
+        else if (typeof product.images === "string") {
+          try {
+            images = JSON.parse(product.images);
+            if (!Array.isArray(images)) {
+              images = [];
+            }
+          } catch (e) {
+            images = [];
+          }
+        }
+      }
 
-module.exports = {
-  getSingleProductImages,
-  createImage,
-  updateImage,
-  deleteImage,
+      return {
+        success: true,
+        images,
+      };
+    } catch (error) {
+      console.error("Ошибка при получении изображений:", error);
+      return {
+        success: false,
+        message: error.message || "Произошла ошибка при получении изображений",
+        images: [],
+      };
+    }
+  },
+
+  /**
+   * Устанавливает новый набор изображений для товара (заменяет существующие)
+   * @param {string} productId - ID товара
+   * @param {string[]} imageUrls - Массив URL изображений
+   * @returns {Promise<Object>} - Результат операции
+   */
+  async setProductImages(productId, imageUrls) {
+    try {
+      // Проверяем существование товара
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+      });
+
+      if (!product) {
+        throw new Error(`Товар с ID ${productId} не найден`);
+      }
+
+      // Обновляем запись в БД, заменяя все изображения
+      await prisma.product.update({
+        where: { id: productId },
+        data: { images: imageUrls },
+      });
+
+      return {
+        success: true,
+        message: "Изображения успешно обновлены",
+        images: imageUrls,
+      };
+    } catch (error) {
+      console.error("Ошибка при обновлении изображений:", error);
+      return {
+        success: false,
+        message: error.message || "Произошла ошибка при обновлении изображений",
+      };
+    }
+  },
+
+  /**
+   * Устанавливает главное изображение товара
+   * @param {string} productId - ID товара
+   * @param {string} imageUrl - URL изображения
+   * @returns {Promise<Object>} - Результат операции
+   */
+  async setMainImage(productId, imageUrl) {
+    try {
+      // Проверяем существование товара
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+      });
+
+      if (!product) {
+        throw new Error(`Товар с ID ${productId} не найден`);
+      }
+
+      // Обновляем mainImage товара
+      await prisma.product.update({
+        where: { id: productId },
+        data: { mainImage: imageUrl },
+      });
+
+      return {
+        success: true,
+        message: "Главное изображение успешно обновлено",
+        mainImage: imageUrl,
+      };
+    } catch (error) {
+      console.error("Ошибка при обновлении главного изображения:", error);
+      return {
+        success: false,
+        message:
+          error.message ||
+          "Произошла ошибка при обновлении главного изображения",
+      };
+    }
+  },
 };
+
+module.exports = productImagesController;
