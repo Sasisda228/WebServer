@@ -1,9 +1,22 @@
 "use client";
 import SingleProductModal from "@/components/SingleProductModal"; // путь поправьте под ваш проект
-import UploadcareImage from "@uploadcare/nextjs-loader";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import styles from "./ProductCard.module.css";
 
+import styles from "./ProductCard.module.css";
+const UploadcareImage = dynamic(
+  () => import("@uploadcare/nextjs-loader").then((mod) => mod.UploadcareImage),
+  {
+    ssr: false, // Important: Usually, image loaders might need client-side JS
+    // Optional: Add a placeholder while the component loads
+    loading: () => (
+      <div
+        style={{ width: 200, height: 200, backgroundColor: "#eee" }}
+        aria-label="Loading image..."
+      ></div>
+    ),
+  }
+);
 interface Product {
   id: string | number;
   title: string;
