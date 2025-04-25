@@ -23,8 +23,12 @@ const formatCategorySlug = (slug: string | undefined): string => {
 
 // Define Product type (adjust based on your actual API response)
 interface Product {
-  id: number | string;
-  // ... other product properties
+  id: string | number;
+  title: string;
+  images: string[];
+  price: number;
+  rating?: number;
+  slug: string;
 }
 
 // Server-side data fetching function
@@ -47,7 +51,7 @@ async function getProducts(
   if (inStockNum === 0 && outOfStockNum === 0) stockMode = "gt"; // None selected (inStock > 1 - effectively shows nothing based on typical boolean stock) - *Review this logic* maybe default to 'lte' if none selected?
 
   // Construct the API URL carefully
-  const apiUrl = `/apiv3/products?filters[price][$lte]=${price}&filters[rating][$gte]=${rating}&filters[inStock][$${stockMode}]=1&${
+  const apiUrl = `/api/products?filters[price][$lte]=${price}&filters[rating][$gte]=${rating}&filters[inStock][$${stockMode}]=1&${
     slugParam ? `filters[category][$equals]=${slugParam}&` : ""
   }sort=${sort}&page=${page}`;
 
@@ -56,9 +60,7 @@ async function getProducts(
   try {
     // IMPORTANT: Use absolute URL or configure baseURL for axios if running server-side
     // Or better, use fetch API directly
-    const response = await axios.get(
-      process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl
-    ); // Example using env var
+    const response = await axios.get("http://localhost:3001" + apiUrl); // Example using env var
     // const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + apiUrl);
     // const data = await response.json();
     return response.data; // Adjust based on your API response structure
