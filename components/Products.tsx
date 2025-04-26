@@ -1,4 +1,5 @@
 "use client";
+import { Product } from "@/typings"; // Import the Product type if not already globally available
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
