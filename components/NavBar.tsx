@@ -1,11 +1,20 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
+// Keep AnimatePresence only if needed for modal, consider removing if modal animation isn't critical
+import { AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic"; // Import dynamic for lazy loading
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useState } from "react"; // Added Suspense
 import { MdExplore, MdHome } from "react-icons/md";
-import CategoryBar from "./CategoryBar";
+import CategoryBar from "./CategoryBar"; // Assuming CategoryBar is relatively light or optimized separately
 import styles from "./NavBar.module.css";
-import ProfileModal from "./ProfileModal";
+// Removed ProfileModal direct import
+
+// Lazy load ProfileModal
+const ProfileModal = dynamic(() => import("./ProfileModal"), {
+  // Optional: Add a loading component while the modal code is fetched
+  // loading: () => <p>Loading profile...</p>,
+  ssr: false, // Don't render modal on the server initially
+});
 
 interface NavItem {
   label: string;
@@ -18,147 +27,147 @@ const navItems: NavItem[] = [
   { label: "Каталог", route: "/shop", icon: MdExplore },
 ];
 
+// Consider fetching categories dynamically if they change often,
+// or pass them as props if they are static or fetched in the layout.
+// For now, keeping it static as in the original code.
 const categories = ["Rifles", "Pistols", "Sights", "Bullets"];
 
 export default function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [activeItem, setActiveItem] = useState(pathname);
+  const [, setActiveItem] = useState(pathname);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  // Removed unused navRef
 
-  const navRef = useRef<HTMLDivElement>(null);
-
-  // Update active item and selected category when pathname changes
   useEffect(() => {
     setActiveItem(pathname);
-
-    // Extract category from pathname if in shop section
     if (pathname.startsWith("/shop/")) {
       const category = pathname.split("/")[2];
       if (category) {
-        // Capitalize first letter
         const formattedCategory =
           category.charAt(0).toUpperCase() + category.slice(1);
         setSelectedCategory(formattedCategory);
+      } else {
+        // Handle case like /shop where no category is selected yet
+        setSelectedCategory(null);
       }
     } else {
       setSelectedCategory(null);
     }
   }, [pathname]);
 
-  // Handle navigation item click
   const handleItemClick = (
     route: string,
-    e: React.MouseEvent<HTMLDivElement>
+    e: React.MouseEvent<HTMLDivElement> // Keep type for event handling
   ) => {
-    e.preventDefault();
-    setActiveItem(route);
+    e.preventDefault(); // Prevent default if it's wrapping an anchor, otherwise maybe not needed
+    // No need to setActiveItem here if useEffect handles it based on pathname
     router.push(route);
   };
 
-  // Handle logo click to open profile modal
   const handleLogoClick = () => {
     setModalOpen(true);
   };
 
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
   return (
     <>
-      {/* Category Bar - appears when in shop section */}
-      <CategoryBar categories={categories} currentCategory={selectedCategory} />
+      {/* Category Bar - Render conditionally based on path */}
+      {/* Consider if CategoryBar itself needs optimization or lazy loading */}
+      {pathname.startsWith("/shop") && (
+        <CategoryBar
+          categories={categories}
+          currentCategory={selectedCategory}
+        />
+      )}
 
-      <nav className={styles.navContainer} ref={navRef}>
+      {/* Use standard nav tag */}
+      <nav className={styles.navContainer}>
         <div className={styles.navContent}>
           {/* Left navigation item (Home) */}
           <div className={styles.navSide}>
             {navItems.slice(0, 1).map((item) => {
               const Icon = item.icon;
+              // Simplified isActive check
               const isActive =
                 item.route === "/"
-                  ? activeItem === "/"
-                  : activeItem.startsWith(item.route);
+                  ? pathname === "/"
+                  : pathname.startsWith(item.route);
 
               return (
-                <motion.div
+                // Use standard div with CSS transitions instead of motion.div
+                <div
                   key={item.route}
                   className={`${styles.navItem} ${
                     isActive ? styles.active : ""
                   }`}
                   onClick={(e) => handleItemClick(item.route, e)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  role="button" // Add role for accessibility
+                  tabIndex={0} // Add tabIndex for accessibility
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ")
+                      handleItemClick(item.route, e as any);
+                  }} // Basic keyboard accessibility
                 >
                   <Icon className={styles.navIcon} />
                   <span className={styles.navLabel}>{item.label}</span>
-                  {isActive && (
-                    <motion.div
-                      className={styles.activeIndicator}
-                      layoutId="activeIndicator"
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-                </motion.div>
+                  {/* Use CSS for the active indicator */}
+                  <div className={styles.activeIndicator} />
+                </div>
               );
             })}
           </div>
 
-          {/* Center logo */}
-          <motion.div
+          {/* Center logo - Use standard div with CSS transitions */}
+          <div
             className={styles.logoContainer}
             onClick={handleLogoClick}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") handleLogoClick();
+            }}
           >
             <div className={styles.glitchLogo}>
               <span className={styles.glitch} data-text="47">
                 47
               </span>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right navigation item (Catalog) */}
           <div className={styles.navSide}>
             {navItems.slice(1).map((item) => {
               const Icon = item.icon;
+              const isActive = pathname.startsWith(item.route); // Catalog active if path starts with /shop
+              // Determine label based on selected category when active
               const buttonLabel =
-                item.route === "/shop" && selectedCategory
-                  ? selectedCategory
-                  : item.label;
-              const isActive =
-                item.route === "/"
-                  ? activeItem === "/"
-                  : activeItem.startsWith(item.route);
+                isActive && selectedCategory ? selectedCategory : item.label;
 
               return (
-                <div key={item.route} className={styles.navItemWrapper}>
-                  <motion.div
-                    className={`${styles.navItem} ${
-                      isActive ? styles.active : ""
-                    }`}
-                    onClick={(e) => handleItemClick(item.route, e)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  >
-                    <Icon className={styles.navIcon} />
-                    <span className={styles.navLabel}>{buttonLabel}</span>
-                    {isActive && (
-                      <motion.div
-                        className={styles.activeIndicator}
-                        layoutId="activeIndicator"
-                        transition={{
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 30,
-                        }}
-                      />
-                    )}
-                  </motion.div>
+                // Removed unnecessary wrapper div
+                // Use standard div with CSS transitions
+                <div
+                  key={item.route}
+                  className={`${styles.navItem} ${
+                    isActive ? styles.active : ""
+                  }`}
+                  onClick={(e) => handleItemClick(item.route, e)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ")
+                      handleItemClick(item.route, e as any);
+                  }}
+                >
+                  <Icon className={styles.navIcon} />
+                  <span className={styles.navLabel}>{buttonLabel}</span>
+                  {/* Use CSS for the active indicator */}
+                  <div className={styles.activeIndicator} />
                 </div>
               );
             })}
@@ -166,10 +175,16 @@ export default function NavBar() {
         </div>
       </nav>
 
-      {/* Profile modal */}
+      {/* Profile modal - Rendered conditionally and lazy-loaded */}
+      {/* Wrap dynamic component in Suspense if using a loading fallback */}
+      {/* AnimatePresence kept for modal fade-in/out, remove if not needed */}
       <AnimatePresence>
         {modalOpen && (
-          <ProfileModal open={modalOpen} onClose={() => setModalOpen(false)} />
+          <Suspense fallback={null}>
+            {" "}
+            {/* Or fallback={<LoadingSpinner />} */}
+            <ProfileModal open={modalOpen} onClose={handleCloseModal} />
+          </Suspense>
         )}
       </AnimatePresence>
     </>
