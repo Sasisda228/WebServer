@@ -3,7 +3,7 @@
 /* ======================================== */
 
 /* --- Variables --- */
-:root { /* Define variables on :root or a specific container if themes change */
+.navContainer   { /* Define variables on :root or a specific container if themes change */
   --primary-color: #141220;
   --secondary-color: #1d1a2d;
   --accent-color-1: #9a1840;
