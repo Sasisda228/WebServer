@@ -51,23 +51,23 @@ async function getRecentReviews(): Promise<Review[]> {
   return [
     {
       id: "r1",
-      author: "ProGamer123",
-      text: "Отличный сервис! Быстро получил свой скин, все честно.",
+      author: "Илья Жданов",
+      text: "Всё хуйня, переделывайте)",
     },
     {
       id: "r2",
-      author: "CSGO_Fan",
-      text: "Большой выбор и хорошие цены. Рекомендую!",
+      author: "Илья Жданов",
+      text: "Всё хуйня, переделывайте)",
     },
     {
       id: "r3",
-      author: "SkinCollector",
-      text: "Нашел редкий скин, которого нигде не было. Спасибо!",
+      author: "Илья Жданов",
+      text: "Всё хуйня, переделывайте)",
     },
     {
       id: "r4",
-      author: "NoobMaster69",
-      text: "Все супер, поддержка отвечает быстро.",
+      author: "Илья Жданов",
+      text: "Всё хуйня, переделывайте)",
     },
   ];
   // --- End Placeholder Data ---
