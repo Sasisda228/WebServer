@@ -74,18 +74,16 @@ export default function ProductCarousel({
       <div className={styles.embla} ref={emblaRef}>
         <div className={styles.emblaContainer}>
           {products.map((product) => {
-            let albumGroupId: string | null = null; // Use a variable, not state
-            const imageUrl = product.images; // Assuming product.images is the URL string
+            const firstImage = product.images[0];
 
             if (
-              imageUrl && // Check if imageUrl exists
-              imageUrl.includes("ucarecdn.com") &&
-              imageUrl.includes("/")
+              firstImage.includes("ucarecdn.com") &&
+              firstImage.includes("/")
             ) {
               // Извлекаем ID альбома из URL
-              const match = imageUrl.match(/ucarecdn\.com\/([^\/]+)/);
+              const match = firstImage.match(/ucarecdn\.com\/([^\/]+)/);
               if (match && match[1]) {
-                albumGroupId = match[1]; // Assign to the variable
+                setAlbumGroupId(match[1]);
               }
             }
             return (
