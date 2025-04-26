@@ -36,8 +36,6 @@ const TABS = [
 ];
 
 const TAB_CONTENT: Record<string, string> = {
-  details:
-    "Здесь подробное описание товара, его характеристики и преимущества. Мы предоставляем только высококачественные товары, которые прошли тщательную проверку перед отправкой клиенту.",
   delivery:
     "Доставка осуществляется по всей России в течение 2-5 рабочих дней. Для Москвы и Санкт-Петербурга доступна экспресс-доставка в день заказа при оформлении до 14:00.",
   return:
@@ -372,8 +370,18 @@ export default function SingleProductModal({
   }
 
   // Tabs с улучшенным UX
-  function ProductTabs() {
+  function ProductTabs({ description }: { description?: string }) {
     const [tab, setTab] = useState("details");
+
+    // Function to get the correct content based on the active tab
+    const getCurrentTabContent = () => {
+      if (tab === "details") {
+        // Use the passed description, provide a fallback if it's empty/null
+        return description || "Описание товара временно отсутствует.";
+      }
+      // For other tabs, use the static content from TAB_CONTENT
+      return TAB_CONTENT[tab];
+    };
 
     return (
       <div className={pageStyles.tabsWrapper}>
@@ -400,7 +408,7 @@ export default function SingleProductModal({
             transition={{ duration: 0.3 }}
             className={pageStyles.tabContent}
           >
-            {TAB_CONTENT[tab]}
+            {getCurrentTabContent()}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -541,7 +549,7 @@ export default function SingleProductModal({
                       animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                       transition={{ delay: 0.5, duration: 0.4 }}
                     >
-                      <ProductTabs />
+                      <ProductTabs description={product?.description} />
                     </motion.div>
 
                     <motion.div
