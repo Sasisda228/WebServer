@@ -36,7 +36,6 @@ export { default as SearchInput } from "./SearchInput";
 export { default as SectionTitle } from "./SectionTitle";
 export { default as SimpleSlider } from "./SimpleSlider";
 export { default as SingleProductDynamicFields } from "./SingleProductDynamicFields";
-export { default as SingleProductModal } from "./SingleProductModal";
 export { default as SingleProductRating } from "./SingleProductRating";
 export { default as SingleReview } from "./SingleReview";
 export { default as SortBy } from "./SortBy";

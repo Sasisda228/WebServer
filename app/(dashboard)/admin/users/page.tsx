@@ -1,6 +1,5 @@
 "use client";
 import { CustomButton, DashboardSidebar } from "@/components";
-import axios from "axios";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,12 +7,11 @@ import { useEffect, useState } from "react";
 const DashboardUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
 
-  useEffect(async () => {
+  useEffect(() => {
     // sending API request for all users
-    await axios
-      .get("/apiv3/users")
+    fetch("http://212.67.12.199:3001/api/users")
       .then((res) => {
-        return res.data();
+        return res.json();
       })
       .then((data) => {
         setUsers(data);
