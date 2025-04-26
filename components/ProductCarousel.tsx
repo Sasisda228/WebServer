@@ -5,11 +5,11 @@ import { useCallback, useEffect, useState } from "react";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md"; // Simple icons
 import styles from "./ProductCarousel.module.css";
 
-// Define the Product type (adjust based on your actual data structure)
+// Define the Product type (using title and images as per your interface)
 interface Product {
   id: string | number;
   title: string;
-  images: string; // Assuming PNG or other image URL
+  images: string; // Assuming a single image URL string based on interface
 }
 
 interface ProductCarouselProps {
@@ -21,7 +21,8 @@ export default function ProductCarousel({
   products = [], // Default to empty array
   title = "Наши Товары",
 }: ProductCarouselProps) {
-  const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
+  // Removed useState for albumGroupId - it caused the infinite loop
+  // const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
 
   // Initialize Embla Carousel
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -74,26 +75,42 @@ export default function ProductCarousel({
       <div className={styles.embla} ref={emblaRef}>
         <div className={styles.emblaContainer}>
           {products.map((product) => {
-            const firstImage = product.images[0];
+            // --- Calculate albumGroupId locally for *this* product ---
+            let albumGroupId: string | null = null; // Use a local variable
+            const imageUrl = product.images; // Assuming product.images is the URL string
 
             if (
-              firstImage.includes("ucarecdn.com") &&
-              firstImage.includes("/")
+              imageUrl && // Check if imageUrl exists
+              imageUrl.includes("ucarecdn.com") &&
+              imageUrl.includes("/")
             ) {
               // Извлекаем ID альбома из URL
-              const match = firstImage.match(/ucarecdn\.com\/([^\/]+)/);
+              const match = imageUrl.match(/ucarecdn\.com\/([^\/]+)/);
               if (match && match[1]) {
-                setAlbumGroupId(match[1]);
+                albumGroupId = match[1]; // Assign to the local variable
               }
             }
+            // --- End of local calculation ---
+
+            // Construct the final image source URL using the local albumGroupId
+            // Provide a fallback if albumGroupId couldn't be extracted or if the original URL should be used
+            const imageSrc = albumGroupId
+              ? `https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/1024x1024/` // Added preview/size optimization
+              : imageUrl || "/placeholder.png"; // Fallback to original URL or placeholder
+
             return (
               <div className={styles.emblaSlide} key={product.id}>
-                {/* Use next/image for optimization if using Next.js */}
+                {/* Use next/image for optimization if using Next.js and configured */}
                 <img
-                  src={`https://ucarecdn.com/${albumGroupId}/nth/0/`}
+                  src={imageSrc} // Use the calculated or fallback source
                   alt={product.title}
                   className={styles.productImage}
                   loading="lazy" // Lazy load images outside initial viewport
+                  onError={(e) => {
+                    // Optional: Handle image loading errors
+                    e.currentTarget.src = "/placeholder.png";
+                    e.currentTarget.onerror = null;
+                  }}
                 />
                 <h3 className={styles.productName}>{product.title}</h3>
                 <div className={styles.dlight}></div>{" "}
