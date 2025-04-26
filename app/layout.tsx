@@ -1,5 +1,4 @@
-import NavBar from "@/components/NavBar"; // Imports the main navigation, likely a Client Component due to interactivity/hooks
-import Providers from "@/Providers"; // Imports Providers (e.g., for Toaster), likely a Client Component
+import Providers from "@/Providers";
 import SessionProvider from "@/utils/SessionProvider"; // Client Component wrapper for next-auth session state
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth"; // Fetches session server-side efficiently
@@ -41,7 +40,7 @@ export default async function RootLayout({
             {children}
           </Providers>
           {/* NavBar is likely a Client Component due to hooks (useState, usePathname, etc.) and interactivity */}
-          <NavBar />
+          {/* <NavBar /> */}
         </SessionProvider>
       </body>
     </html>
