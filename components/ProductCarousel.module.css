@@ -1,0 +1,207 @@
+/* components/ProductCarousel.module.css */
+/* --- Import or Define Variables --- */
+/* Assuming variables are globally defined or imported */
+/* Example definitions if not global: */
+:root {
+  --primary-color: #141220;
+  --secondary-color: #1d1a2d;
+  --accent-color-1: #9a1840;
+  --accent-color-2: #371b72;
+  --text-color: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --hover-color: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --glow-color: rgba(154, 24, 64, 0.5);
+  --transition-speed: 0.3s;
+  --border-radius: 12px;
+}
+
+.carouselContainer {
+  padding: 3rem 0; /* Vertical padding */
+  background-color: var(--primary-color); /* Match theme */
+  position: relative;
+  overflow: hidden; /* Important for Embla */
+}
+
+.carouselHeader {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 2.5rem;
+  background: linear-gradient(90deg, var(--accent-color-1), var(--accent-color-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; /* Make text transparent to show gradient */
+}
+
+.embla {
+  overflow: hidden; /* Crucial for Embla */
+  padding: 0 1rem; /* Padding for items near edges */
+}
+
+.emblaContainer {
+  display: flex;
+  gap: 1.5rem; /* Space between slides */
+}
+
+.emblaSlide {
+  flex: 0 0 30%; /* Adjust percentage for number of visible slides */
+  min-width: 0; /* Required by Embla */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  cursor: grab;
+}
+
+.emblaSlide:active {
+    cursor: grabbing;
+}
+
+.emblaSlide:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px var(--shadow-color);
+}
+
+.productImage {
+  width: 100%;
+  max-width: 250px; /* Limit image size */
+  height: auto;
+  aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+  object-fit: contain; /* Ensure image fits without distortion */
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+  transition: transform var(--transition-speed) ease;
+}
+
+.emblaSlide:hover .productImage {
+    transform: scale(1.05);
+}
+
+.productName {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* "Dlight" effect - subtle glow */
+.dlight {
+  position: absolute;
+  bottom: -10px; /* Position below the slide */
+  left: 15%;
+  right: 15%;
+  height: 10px;
+  background: radial-gradient(
+    ellipse at center,
+    var(--glow-color) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+  pointer-events: none; /* Don't interfere with clicks */
+}
+
+/* Show dlight on hover or when active (if needed) */
+.emblaSlide:hover .dlight {
+  opacity: 0.7;
+}
+
+/* --- Carousel Controls --- */
+.controls {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none; /* Allow clicks through to slides */
+  z-index: 1; /* Above slides */
+}
+
+.arrow {
+  pointer-events: all; /* Make arrows clickable */
+  background-color: rgba(29, 26, 45, 0.7); /* Semi-transparent background */
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: background-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.arrow:hover {
+  background-color: var(--accent-color-1);
+  color: var(--text-color);
+  transform: scale(1.1);
+}
+
+.arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+  transform: scale(1);
+  background-color: rgba(29, 26, 45, 0.5);
+}
+
+.arrowIcon {
+  font-size: 2rem; /* Adjust icon size */
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .emblaSlide {
+    flex-basis: 45%; /* Show fewer slides */
+  }
+}
+
+@media (max-width: 768px) {
+  .carouselContainer {
+    padding: 2rem 0;
+  }
+  .carouselHeader {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .emblaSlide {
+    flex-basis: 60%; /* Even fewer slides */
+    padding: 1rem;
+  }
+  .productName {
+    font-size: 1rem;
+  }
+  .controls {
+    /* Hide controls on mobile? Or make smaller? */
+    /* Example: hide */
+     /* display: none; */
+     /* Example: smaller */
+     left: 0.5rem;
+     right: 0.5rem;
+  }
+   .arrow {
+      width: 35px;
+      height: 35px;
+   }
+   .arrowIcon {
+      font-size: 1.5rem;
+   }
+}
+
+@media (max-width: 480px) {
+   .emblaSlide {
+      flex-basis: 85%; /* Almost one slide visible */
+   }
+}

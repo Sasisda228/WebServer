@@ -1,30 +1,25 @@
 "use client";
-
 import { CustomButton, DashboardSidebar } from "@/components";
+import axios from "axios";
+import { nanoid } from "nanoid";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatCategoryName } from "../../../../utils/categoryFormating";
 
 const DashboardCategory = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
+  // getting all categories to be displayed on the all categories page
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const res = await fetch(`${process.env.API_URL || ""}/api/categories`, {
-          next: { revalidate: 60 }, // обновлять раз в 60 секунд
-        });
-
-        const data = await res.json();
-        setCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchCategories();
+    axios
+      .get("/apiv3/categories")
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((error) => {
+        // Optionally handle error here
+        console.error("Failed to fetch categories:", error);
+      });
   }, []);
 
   return (
@@ -47,58 +42,55 @@ const DashboardCategory = () => {
           </Link>
         </div>
         <div className="xl:ml-5 w-full max-xl:mt-5 overflow-auto w-full h-[80vh]">
-          {isLoading ? (
-            <p className="text-center py-4">Loading...</p>
-          ) : (
-            <table className="table table-md table-pin-cols">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Name</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {categories.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="text-center py-4">
-                      No categories found.
-                    </td>
-                  </tr>
-                ) : (
-                  categories.map((category) => (
-                    <tr key={category.id}>
-                      <td>
+          <table className="table table-md table-pin-cols">
+            {/* head */}
+            <thead>
+              <tr>
+                <th>
+                  <label>
+                    <input type="checkbox" className="checkbox" />
+                  </label>
+                </th>
+                <th>Name</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {categories &&
+                categories.map((category: Category) => (
+                  <tr key={nanoid()}>
+                    <th>
+                      <label>
                         <input type="checkbox" className="checkbox" />
-                      </td>
-                      <td>
-                        <p>
-                          {category?.name
-                            ? formatCategoryName(category.name)
-                            : "N/A"}
-                        </p>
-                      </td>
-                      <td>
-                        <Link
-                          href={`/admin/categories/${category.id}`}
-                          className="btn btn-ghost btn-xs"
-                        >
-                          details
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th></th>
-                  <th>Name</th>
-                  <th></th>
-                </tr>
-              </tfoot>
-            </table>
-          )}
+                      </label>
+                    </th>
+
+                    <td>
+                      <div>
+                        <p>{formatCategoryName(category?.name)}</p>
+                      </div>
+                    </td>
+
+                    <th>
+                      <Link
+                        href={`/admin/categories/${category?.id}`}
+                        className="btn btn-ghost btn-xs"
+                      >
+                        details
+                      </Link>
+                    </th>
+                  </tr>
+                ))}
+            </tbody>
+            {/* foot */}
+            <tfoot>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th></th>
+              </tr>
+            </tfoot>
+          </table>
         </div>
       </div>
     </div>
