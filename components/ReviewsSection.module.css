@@ -1,6 +1,7 @@
 /* components/ReviewsSection.module.css */
 /* --- Variables (Import or Define) --- */
-:root {
+
+.reviewsContainer {
   --primary-color: #141220;
   --secondary-color: #1d1a2d;
   --accent-color-1: #9a1840;
@@ -12,9 +13,6 @@
   --glow-color: rgba(154, 24, 64, 0.5);
   --transition-speed: 0.3s;
   --border-radius: 12px;
-}
-
-.reviewsContainer {
   padding: 3rem 1rem;
   background-color: var(--secondary-color); /* Slightly different background */
 }
