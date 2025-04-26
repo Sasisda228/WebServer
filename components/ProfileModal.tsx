@@ -1,203 +1,113 @@
 "use client";
-// Using pageStyles only for tab styling consistency
-import pageStyles from "@/app/product/[productSlug]/page.module.css"
-import { isValidEmailAddressFormat } from "@/lib/utils"; // Using the util function
-import { AnimatePresence, motion } from "framer-motion"
-import { signIn } from "next-auth/react"; // signOut and useSession removed
-import React, { useEffect, useRef, useState } from "react"
-import toast from "react-hot-toast"
-// Removed unused icons: FaRegUser, FaSquareFacebook, FaSquarePinterest, FaSquareXTwitter
-// Kept FaRegEnvelope for potential future use if needed, but not used currently
-// import { FaRegEnvelope } from "react-icons/fa6";
-import styles from "./ProfileModal.module.css"
+import pageStyles from "@/app/product/[productSlug]/page.module.css";
+import { isValidEmailAddressFormat } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import router from "next/router";
+import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import {
+  FaRegEnvelope,
+  FaRegUser,
+  FaSquareFacebook,
+  FaSquarePinterest,
+  FaSquareXTwitter,
+} from "react-icons/fa6";
+import styles from "./ProfileModal.module.css";
+
+// Add animation for the form
 
 interface ProfileModalProps {
   open: boolean;
   onClose: () => void;
 }
-
 const TABS = [
   { label: "Вход", key: "login" },
   { label: "Регистрация", key: "register" },
 ];
 
-const formVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
-  exit: { opacity: 0, y: -10, transition: { duration: 0.2, ease: "easeIn" } },
-};
-
 const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
-  // Removed useSession hook
+  const { data: session } = useSession();
   const [show, setShow] = useState(open);
   const [closing, setClosing] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [tab, setTab] = useState<"login" | "register">("login");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Added loading state
-
-  // Effect to control modal visibility and closing animation
   useEffect(() => {
     if (open) {
       setShow(true);
       setClosing(false);
-      // Reset state when opening
-      setTab("login");
-      setError("");
-      setLoading(false);
     } else if (show) {
       setClosing(true);
-      // Wait for animation to finish before hiding
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         setShow(false);
-        setClosing(false); // Reset closing state
-      }, 350); // Match animation duration
-      return () => clearTimeout(timer);
+        setClosing(false);
+      }, 350);
     }
-  }, [open, show]); // Added show to dependencies
+  }, [open]);
 
-  // Registration submit handler
-  const handleSubmitReg = async (e: React.FormEvent<HTMLFormElement>) => {
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+  const handleSubmitReg = async (e: any) => {
     e.preventDefault();
-    if (loading) return; // Prevent double submit
+    const email = e.target[0].value;
+    const password = e.target[1].value;
+    const confirmPassword = e.target[2].value;
 
-    const emailInput = e.currentTarget.elements.namedItem(
-      "email"
-    ) as HTMLInputElement;
-    const passwordInput = e.currentTarget.elements.namedItem(
-      "password"
-    ) as HTMLInputElement;
-    const confirmPasswordInput = e.currentTarget.elements.namedItem(
-      "confirmPassword"
-    ) as HTMLInputElement;
-
-    const email = emailInput.value;
-    const password = passwordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
-
-    setError(""); // Clear previous errors
-
-    if (!isValidEmailAddressFormat(email)) {
-      setError("Некорректный формат email");
-      toast.error("Некорректный формат email");
+    if (!isValidEmail(email)) {
+      setError("Email is invalid");
+      toast.error("Email is invalid");
       return;
     }
 
     if (!password || password.length < 8) {
-      setError("Пароль должен быть не менее 8 символов");
-      toast.error("Пароль должен быть не менее 8 символов");
+      setError("Password is invalid");
+      toast.error("Password is invalid");
       return;
     }
 
     if (confirmPassword !== password) {
-      setError("Пароли не совпадают");
-      toast.error("Пароли не совпадают");
+      setError("Passwords are not equal");
+      toast.error("Passwords are not equal");
       return;
     }
 
-    setLoading(true); // Set loading state
     try {
+      // sending API request for registering user
       const res = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       });
 
       if (res.status === 400) {
-        const data = await res.json();
-        const errorMessage = data.error || "Этот email уже зарегистрирован";
-        setError(errorMessage);
-        toast.error(errorMessage);
-      } else if (res.ok) {
-        // Check for successful status codes (e.g., 200, 201)
+        toast.error("This email is already registered");
+        setError("The email already in use");
+      }
+      if (res.status === 200) {
         setError("");
-        toast.success("Регистрация успешна! Теперь вы можете войти.");
-        setTab("login"); // Switch to login tab after successful registration
-      } else {
-        // Handle other non-OK responses
-        const errorText = await res.text();
-        setError(`Ошибка регистрации: ${res.status} ${errorText || ""}`);
-        toast.error("Ошибка регистрации, попробуйте снова.");
+        toast.success("Registration successful");
+        router.push("/login");
       }
     } catch (error) {
-      setError("Ошибка сети, попробуйте снова.");
-      toast.error("Ошибка сети, попробуйте снова.");
-      console.error("Registration error:", error);
-    } finally {
-      setLoading(false); // Reset loading state
+      toast.error("Error, try again");
+      setError("Error, try again");
+      console.log(error);
     }
   };
-
-  // Login submit handler
-  const handleSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (loading) return; // Prevent double submit
-
-    const emailInput = e.currentTarget.elements.namedItem(
-      "email"
-    ) as HTMLInputElement;
-    const passwordInput = e.currentTarget.elements.namedItem(
-      "password"
-    ) as HTMLInputElement;
-
-    const email = emailInput.value;
-    const password = passwordInput.value;
-
-    setError(""); // Clear previous errors
-
-    if (!isValidEmailAddressFormat(email)) {
-      setError("Некорректный формат email");
-      toast.error("Некорректный формат email");
-      return;
-    }
-
-    if (!password || password.length < 8) {
-      // Although login doesn't strictly need length check, it's good UX consistency
-      setError("Введите пароль (минимум 8 символов)");
-      toast.error("Введите пароль");
-      return;
-    }
-
-    setLoading(true); // Set loading state
-    try {
-      const res = await signIn("credentials", {
-        redirect: false, // Handle redirect manually or based on response
-        email,
-        password,
-      });
-
-      if (res?.error) {
-        // More specific error messages could be returned from the credentials provider
-        setError("Неверный email или пароль");
-        toast.error("Неверный email или пароль");
-      } else if (res?.ok) {
-        setError("");
-        toast.success("Вход выполнен успешно!");
-        onClose(); // Close modal on successful login
-      } else {
-        // Handle cases where res is null or not ok without specific error
-        setError("Ошибка входа. Попробуйте снова.");
-        toast.error("Ошибка входа. Попробуйте снова.");
-      }
-    } catch (error) {
-      setError("Ошибка сети, попробуйте снова.");
-      toast.error("Ошибка сети, попробуйте снова.");
-      console.error("Login error:", error);
-    } finally {
-      setLoading(false); // Reset loading state
-    }
-  };
-
   // Close on overlay click
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === overlayRef.current) {
       onClose();
     }
   };
-
-  // Close on ESC key
+  // Close on ESC
   useEffect(() => {
     if (!show) return;
     const handleEsc = (e: KeyboardEvent) => {
@@ -206,14 +116,55 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [show, onClose]);
+  const [tab, setTab] = useState<"login" | "register">("login");
+  const [error, setError] = useState("");
 
-  // Render nothing if not 'show'
+  const handleLogout = () => {
+    setTimeout(() => signOut(), 1000);
+    toast.success("Logout successful!");
+  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const email = (
+      e.currentTarget.elements.namedItem("email") as HTMLInputElement
+    ).value;
+    const password = (
+      e.currentTarget.elements.namedItem("password") as HTMLInputElement
+    ).value;
+
+    if (!isValidEmailAddressFormat(email)) {
+      setError("Email is invalid");
+      toast.error("Email is invalid");
+      return;
+    }
+
+    if (!password || password.length < 8) {
+      setError("Password is invalid");
+      toast.error("Password is invalid");
+      return;
+    }
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (res?.error) {
+      setError("Invalid email or password");
+      toast.error("Invalid email or password");
+    } else {
+      setError("");
+      toast.success("Successful login");
+      onClose();
+    }
+  };
   if (!show) return null;
 
   return (
     <div
       className={`${styles.overlay} ${
-        !open || closing ? styles.overlayHidden : "" // Use !open for initial hidden state
+        !open || closing ? styles.overlayHidden : ""
       }`}
       ref={overlayRef}
       onClick={handleOverlayClick}
@@ -224,54 +175,84 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
         <button
           className={styles.closeBtn}
           onClick={onClose}
-          aria-label="Закрыть окно профиля"
+          aria-label="Close profile modal"
         >
           ×
         </button>
-
-        {/* --- Login/Register Section --- */}
-        <div className={styles.authContainer}>
-          {" "}
-          {/* Added container for better structure */}
-          {/* Tabs */}
-          <div className={pageStyles.tabsWrapper}>
-            <div className={pageStyles.tabsHeader}>
-              {TABS.map((t) => (
-                <button
-                  key={t.key}
-                  className={`${pageStyles.tabBtn} ${
-                    tab === t.key ? pageStyles.active : ""
-                  }`}
-                  onClick={() => {
-                    if (!loading) {
-                      // Prevent tab switch while loading
-                      setTab(t.key as "login" | "register");
-                      setError(""); // Clear errors on tab switch
+        {session ? (
+          <>
+            <div className={styles.header}>
+              <div>
+                <div className={styles.imageWrap}>
+                  <Image
+                    src={
+                      session?.user?.image
+                        ? session.user.image
+                        : "/user_placeholder.png"
                     }
-                  }}
-                  type="button"
-                  disabled={loading} // Disable tab switch while loading
-                >
-                  {t.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Animated Form Content */}
-            <div className={styles.formContentWrapper}>
-              {" "}
-              {/* Wrapper for consistent height/animation */}
-              <AnimatePresence mode="wait">
-                {tab === "login" ? (
-                  <motion.form
-                    key="login-form"
-                    className={styles.profileForm}
-                    onSubmit={handleSubmitLogin}
-                    variants={formVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
+                    width={220}
+                    height={220}
+                    alt={session?.user?.name || "User avatar"}
+                    style={{ objectFit: "cover" }}
+                    priority
+                  />
+                </div>
+              </div>
+              <div className={styles.info}>
+                <h1 className={styles.title}>
+                  {session?.user?.name || "No Name"}
+                </h1>
+                <p className={styles.price}>
+                  <FaRegEnvelope className="inline mr-2" />
+                  {session?.user?.email || "No Email"}
+                </p>
+                <div className={styles.actions}>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-x-2 font-semibold"
                   >
+                    <FaRegUser className="text-white" />
+                    <span>Log out</span>
+                  </button>
+                  <div className={styles.socials}>
+                    <FaSquareFacebook />
+                    <FaSquareXTwitter />
+                    <FaSquarePinterest />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Tabs for Login/Register */}
+            <div className={pageStyles.tabsWrapper}>
+              <div className={pageStyles.tabsHeader}>
+                {TABS.map((t) => (
+                  <button
+                    key={t.key}
+                    className={`${pageStyles.tabBtn} ${
+                      tab === t.key ? pageStyles.active : ""
+                    }`}
+                    onClick={() => {
+                      setTab(t.key as "login" | "register");
+                      setError("");
+                    }}
+                    type="button"
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <motion.div
+                key={tab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className={pageStyles.tabContent}
+              >
+                {tab === "login" ? (
+                  <form className={styles.profileForm} onSubmit={handleSubmit}>
                     <div className={styles.formGroup}>
                       <label htmlFor="email" className={styles.formLabel}>
                         Email
@@ -284,8 +265,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                         required
                         className={styles.formInput}
                         placeholder="you@email.com"
-                        autoFocus // Focus on first input
-                        disabled={loading}
                       />
                     </div>
                     <div className={styles.formGroup}>
@@ -300,7 +279,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                         required
                         className={styles.formInput}
                         placeholder="********"
-                        disabled={loading}
                       />
                     </div>
                     <div className={styles.formActions}>
@@ -310,7 +288,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                           name="remember-me"
                           type="checkbox"
                           className={styles.formCheckbox}
-                          disabled={loading}
                         />
                         <label
                           htmlFor="remember-me"
@@ -325,24 +302,15 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                     </div>
                     {error && <div className={styles.formError}>{error}</div>}
                     <div className={styles.buttonForm}>
-                      <button
-                        className={styles.buyButton} // Consider renaming this style if used elsewhere
-                        type="submit"
-                        disabled={loading} // Disable button when loading
-                      >
-                        {loading ? "Вход..." : "Войти"}
+                      <button className={styles.buyButton} type="submit">
+                        Войти
                       </button>
                     </div>
-                  </motion.form>
+                  </form>
                 ) : (
-                  <motion.form
-                    key="register-form"
+                  <form
                     className={styles.profileForm}
                     onSubmit={handleSubmitReg}
-                    variants={formVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
                   >
                     <div className={styles.formGroup}>
                       <label htmlFor="reg-email" className={styles.formLabel}>
@@ -356,8 +324,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                         required
                         className={styles.formInput}
                         placeholder="you@email.com"
-                        autoFocus // Focus on first input
-                        disabled={loading}
                       />
                     </div>
                     <div className={styles.formGroup}>
@@ -365,7 +331,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                         htmlFor="reg-password"
                         className={styles.formLabel}
                       >
-                        Пароль (мин. 8 символов)
+                        Пароль
                       </label>
                       <input
                         id="reg-password"
@@ -373,10 +339,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                         type="password"
                         autoComplete="new-password"
                         required
-                        minLength={8} // Add minLength attribute
                         className={styles.formInput}
                         placeholder="********"
-                        disabled={loading}
                       />
                     </div>
                     <div className={styles.formGroup}>
@@ -392,31 +356,35 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ open, onClose }) => {
                         type="password"
                         autoComplete="new-password"
                         required
-                        minLength={8} // Add minLength attribute
                         className={styles.formInput}
                         placeholder="********"
-                        disabled={loading}
                       />
                     </div>
-                    {error && <div className={styles.formError}>{error}</div>}
                     <div className={styles.buttonForm}>
-                      <button
-                        className={styles.buyButton} // Consider renaming
-                        type="submit"
-                        disabled={loading} // Disable button when loading
-                      >
-                        {loading ? "Регистрация..." : "Зарегистрироваться"}
+                      <button className={styles.buyButton} type="submit">
+                        Зарегистрироваться
                       </button>
                     </div>
-                  </motion.form>
+                  </form>
                 )}
-              </AnimatePresence>
+              </motion.div>
             </div>
-          </div>
-        </div>
-        {/* Removed session display section */}
+          </>
+        )}
       </div>
-      {/* Removed global style block - rely on framer-motion and CSS modules */}
+      {/* Animation keyframes for the form */}
+      <style jsx global>{`
+        @keyframes fadeSlideIn {
+          from {
+            opacity: 0;
+            transform: translateY(40px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 };
