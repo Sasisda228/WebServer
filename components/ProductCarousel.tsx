@@ -105,7 +105,6 @@ export default function ProductCarousel({
                   src={imageSrc} // Use the calculated or fallback source
                   alt={product.title}
                   className={styles.productImage}
-                  loading="lazy" // Lazy load images outside initial viewport
                   onError={(e) => {
                     // Optional: Handle image loading errors
                     e.currentTarget.src = "/placeholder.png";
