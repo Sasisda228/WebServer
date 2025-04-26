@@ -6,8 +6,7 @@ import {
   AddToWishlistBtn,
   BuyNowSingleProductBtn,
   StockAvailabillity,
-} from "@/components"
-import UploadcareImage from "@uploadcare/nextjs-loader"
+} from "@/components";
 import axios from "axios"
 import {
   AnimatePresence,
@@ -322,7 +321,7 @@ export default function SingleProductModal({
           transition={{ duration: 0.4 }}
           style={{ width: "100%", aspectRatio: "3/4", maxWidth: "100vw" }}
         >
-          <UploadcareImage
+          <img
             alt={`Product image ${current + 1}`}
             src={`https://ucarecdn.com/${albumGroupId}/nth/${current}/`}
             width={600}
@@ -358,7 +357,7 @@ export default function SingleProductModal({
               type="button"
               disabled={isTransitioning}
             >
-              <UploadcareImage
+              <img
                 alt={`Product image ${idx + 1}`}
                 src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/`}
                 width="32"

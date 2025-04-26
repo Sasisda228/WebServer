@@ -11,19 +11,6 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 import styles from "./ProductCard.module.css";
-const UploadcareImage = dynamic(
-  () => import("@uploadcare/nextjs-loader").then((mod) => mod.default),
-  {
-    ssr: false, // Important: Usually, image loaders might need client-side JS
-    // Optional: Add a placeholder while the component loads
-    loading: () => (
-      <div
-        style={{ width: 200, height: 200, backgroundColor: "#eee" }}
-        aria-label="Loading image..."
-      ></div>
-    ),
-  }
-);
 interface Product {
   id: string | number;
   title: string;
@@ -80,9 +67,9 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
           aria-label={`View ${product.title}`}
         >
           {albumGroupId && (
-            <UploadcareImage
+            <img
+              src={`https://ucarecdn.com/${albumGroupId}/nth/0/`}
               alt={`Product image 1`}
-              src={`https://ucarecdn.com/${albumGroupId}/nth/1/`}
               width={200}
               height={200}
               sizes="(max-width: 600px) 100vw, 180px"
