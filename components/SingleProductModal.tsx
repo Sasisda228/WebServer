@@ -559,9 +559,7 @@ export default function SingleProductModal({
                       }
                       animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                       transition={{ delay: 0.6, duration: 0.4 }}
-                    >
-                      {product?.description}
-                    </motion.div>
+                    ></motion.div>
                   </div>
                 </div>
               )}

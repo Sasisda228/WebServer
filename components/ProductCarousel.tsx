@@ -5,11 +5,12 @@ import { useCallback, useEffect, useState } from "react";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md"; // Simple icons
 import styles from "./ProductCarousel.module.css";
 
-// Define the Product type (using title and images as per your interface)
+// Define the Product type (using title, images, and price as per your interface)
 interface Product {
   id: string | number;
   title: string;
   images: string; // Assuming a single image URL string based on interface
+  price: number; // Added price field
 }
 
 interface ProductCarouselProps {
@@ -27,7 +28,7 @@ export default function ProductCarousel({
   // Initialize Embla Carousel
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true, // Enable looping
-    align: "start", // Align slides to the start
+    align: "center", // Center the active slide
     containScroll: "trimSnaps", // Optional: Adjust scroll behavior
   });
 
@@ -94,25 +95,26 @@ export default function ProductCarousel({
 
             // Construct the final image source URL using the local albumGroupId
             // Provide a fallback if albumGroupId couldn't be extracted or if the original URL should be used
-            const imageSrc = `https://ucarecdn.com/${albumGroupId}/nth/0/`;
 
             return (
               <div className={styles.emblaSlide} key={product.id}>
-                {/* Use next/image for optimization if using Next.js and configured */}
-
-                <img
-                  src={imageUrl + "nth/0/"} // Use the calculated or fallback source
-                  alt={product.title}
-                  className={styles.productImage}
-                  onError={(e) => {
-                    // Optional: Handle image loading errors
-                    e.currentTarget.src = "/placeholder.png";
-                    e.currentTarget.onerror = null;
-                  }}
-                />
+                <div className={styles.productImageContainer}>
+                  <img
+                    src={imageUrl + "nth/0/"} // Use the calculated or fallback sourcesrc={imageUrl + "nth/0/"} // Use the calculated or fallback source                    alt={product.title}
+                    className={styles.productImage}
+                    loading="lazy"
+                    onError={(e) => {
+                      // Optional: Handle image loading errors
+                      e.currentTarget.src = "/placeholder.png";
+                      e.currentTarget.onerror = null;
+                    }}
+                  />
+                  {/* Stand simulation element */}
+                  <div className={styles.stand}></div>
+                </div>
                 <h3 className={styles.productName}>{product.title}</h3>
-                <div className={styles.dlight}></div>{" "}
-                {/* Dlight effect element */}
+                {/* Display product price */}
+                <p className={styles.productPrice}>{product.price} ₽</p>
               </div>
             );
           })}
