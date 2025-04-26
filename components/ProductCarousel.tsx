@@ -94,9 +94,7 @@ export default function ProductCarousel({
 
             // Construct the final image source URL using the local albumGroupId
             // Provide a fallback if albumGroupId couldn't be extracted or if the original URL should be used
-            const imageSrc = albumGroupId
-              ? `https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/1024x1024/` // Added preview/size optimization
-              : imageUrl || "/placeholder.png"; // Fallback to original URL or placeholder
+            const imageSrc = `https://ucarecdn.com/${albumGroupId}/nth/0/`;
 
             return (
               <div className={styles.emblaSlide} key={product.id}>
