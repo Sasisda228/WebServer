@@ -55,11 +55,6 @@
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
 }
 
-.advantageButton:hover {
-  transform: translateY(-4px) scale(1.01); /* Чуть меньше эффект */
-  border-color: #9A1840;
-  box-shadow: 0px 6px 20px rgba(154, 24, 64, 0.25);
-}
 
 .buttonIconWrapper {
   flex-shrink: 0;
@@ -159,6 +154,12 @@
 
 /* Десктопы (например, > 1024px) */
 @media (min-width: 1024px) {
+  .advantageButton:hover {
+    transform: translateY(-4px) scale(1.01); /* Чуть меньше эффект */
+    border-color: #9A1840;
+    box-shadow: 0px 6px 20px rgba(154, 24, 64, 0.25);
+  }
+  
   .section {
     padding: 80px 20px;
   }
