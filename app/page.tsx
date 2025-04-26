@@ -9,8 +9,8 @@ import dynamic from "next/dynamic";
 // Example Product type (adjust as needed)
 interface Product {
   id: string | number;
-  name: string;
-  imageUrl: string;
+  title: string;
+  images: string;
 }
 
 // Example Review type (adjust as needed)
@@ -23,35 +23,15 @@ interface Review {
 async function getFeaturedProducts(): Promise<Product[]> {
   // TODO: Replace with your actual API endpoint or data fetching logic
   // Example fetching logic:
-  // const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/featured`, { cache: 'no-store' }); // Or configure caching
-  // if (!res.ok) {
-  //   throw new Error('Failed to fetch products');
-  // }
-  // const data = await res.json();
-  // return data;
+  const res = await fetch(`${process.env.API_URL}/api/products/featured`, {
+    cache: "no-store",
+  }); // Or configure caching
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+  const data = await res.json();
+  return data;
 
-  // --- Placeholder Data ---
-  console.log("Fetching featured products (server-side)...");
-  await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate network delay
-  return [
-    { id: 1, name: "AK-47 | Redline", imageUrl: "/images/placeholder-ak.png" }, // Replace with actual paths
-    { id: 2, name: "M4A4 | Howl", imageUrl: "/images/placeholder-m4.png" },
-    {
-      id: 3,
-      name: "AWP | Dragon Lore",
-      imageUrl: "/images/placeholder-awp.png",
-    },
-    {
-      id: 4,
-      name: "Glock-18 | Fade",
-      imageUrl: "/images/placeholder-glock.png",
-    },
-    {
-      id: 5,
-      name: "Karambit | Doppler",
-      imageUrl: "/images/placeholder-knife.png",
-    },
-  ];
   // --- End Placeholder Data ---
 }
 

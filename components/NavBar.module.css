@@ -1,9 +1,5 @@
-/* ======================================== */
-/* Premium NavBar Styles (Optimized)      */
-/* ======================================== */
-
-/* --- Variables --- */
-.navContainer   { /* Define variables on :root or a specific container if themes change */
+/* Premium NavBar Styles */
+.navContainer {
   --primary-color: #141220;
   --secondary-color: #1d1a2d;
   --accent-color-1: #9a1840;
@@ -11,20 +7,17 @@
   --text-color: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --hover-color: rgba(255, 255, 255, 0.1);
-  --active-color: #9a1840; /* Consider if this should be accent-color-1 */
+  --active-color: #9a1840;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --glow-color: rgba(154, 24, 64, 0.5);
   --glow-color-2: rgba(55, 27, 114, 0.5);
   --transition-speed: 0.3s;
   --border-radius: 12px;
-}
 
-/* --- Main Container --- */
-.navContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(20, 18, 32, 0.85); /* Slightly transparent primary for backdrop */
+  background-color: var(--primary-color);
   color: var(--text-color);
   padding: 0 2rem;
   position: fixed;
@@ -34,14 +27,11 @@
   z-index: 100;
   height: 80px;
   box-shadow: 0 4px 20px var(--shadow-color);
-  border-bottom: 1px solid rgba(154, 24, 64, 0.15);
-
-  /* Performance consideration: backdrop-filter can be expensive, especially on mobile. Test performance. */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(154, 24, 64, 0.15);
 }
 
-/* --- Content Wrapper --- */
 .navContent {
   display: flex;
   justify-content: space-between;
@@ -51,35 +41,33 @@
   height: 100%;
 }
 
-/* --- Navigation Sides --- */
 .navSide {
   flex: 1;
   display: flex;
   align-items: center;
 }
 
-.navSide:first-child { /* Left side items */
-  justify-content: flex-start; /* Align items to the start */
-  /* Removed padding-right, spacing handled by items/logo */
+.navSide:first-child {
+  justify-content: flex-end;
+  padding-right: 2rem;
 }
 
-.navSide:last-child { /* Right side items */
-  justify-content: flex-end; /* Align items to the end */
-  /* Removed padding-left */
+.navSide:last-child {
+  justify-content: flex-start;
+  padding-left: 2rem;
 }
 
-/* --- Logo --- */
+/* Logo styles */
 .logoContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  position: relative; /* Needed for z-index stacking */
-  z-index: 2; /* Ensure logo is clickable above potential side elements */
-  padding: 0 2rem; /* Add padding to space it from nav items */
+  position: relative;
+  z-index: 2;
 }
 
-.glitchLogoContainer { /* Renamed for clarity - this is the pulsing container */
+.glitchLogo {
   position: relative;
   display: flex;
   justify-content: center;
@@ -93,15 +81,10 @@
     var(--accent-color-1)
   );
   box-shadow: 0 0 15px var(--glow-color);
-  overflow: hidden; /* Keep overflow hidden */
-  transition: transform var(--transition-speed) ease; /* Add transition for hover scale */
-
-  /* Performance consideration: Animating box-shadow in 'pulse' can be expensive. */
-  /* If performance issues arise, consider animating opacity or transform on a pseudo-element. */
-  animation: pulse 3s infinite ease-in-out;
+  overflow: hidden;
 }
 
-.glitchLogoContainer::before { /* Radial gradient inside logo */
+.glitchLogo::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -110,73 +93,28 @@
     transparent 50%,
     rgba(154, 24, 64, 0.15) 100%
   );
-  z-index: 1; /* Below the image/text */
+  z-index: -1;
 }
 
-.glitchLogoContainer:hover {
-  transform: scale(1.05); /* Scale the container on hover */
+.logoImage {
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px var(--accent-color-1));
+  transition: all 0.3s ease;
 }
 
-/* --- Logo Text (Glitch Effect) --- */
-/* Consolidated glitch styles - applied to the text span inside the logo container */
-.glitchText {
-  position: relative; /* Needed for pseudo-elements */
-  z-index: 2; /* Ensure text is above ::before gradient */
-  color: #fff;
-  font-size: 2.4rem; /* Adjust as needed */
-  font-weight: bold;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1;
-  display: inline-block;
-  /* Glitch base color shadows */
-  text-shadow: 2px 0 #00fff9, -2px 0 #ff005a;
-  animation: glitch-skew 1.2s infinite linear alternate-reverse;
-}
-
-.glitchText::before,
-.glitchText::after {
-  content: attr(data-text); /* Use data-text attribute from the span */
-  position: absolute;
-  left: 0;
-  top: 0; /* Ensure alignment */
-  width: 100%;
-  height: 100%; /* Ensure full coverage */
-  overflow: hidden;
-  color: #fff;
-  background: transparent; /* Background should be transparent */
-  clip: rect(0, 900px, 0, 0);
-}
-
-.glitchText::before {
-  text-shadow: 2px 0 #00fff9; /* Match base shadow */
-  animation: glitch-top 1.2s infinite linear alternate-reverse;
-}
-
-.glitchText::after {
-  text-shadow: -2px 0 #ff005a; /* Match base shadow */
-  animation: glitch-bottom 1.2s infinite linear alternate-reverse;
-}
-
-
-/* --- Navigation Items --- */
+/* Navigation items */
 .navItem {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem; /* Adjust padding as needed */
-  margin: 0 0.5rem; /* Add margin for spacing between items */
+  padding: 0.75rem 1.5rem;
   cursor: pointer;
   position: relative;
   border-radius: var(--border-radius);
   background-color: transparent;
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  transition: all var(--transition-speed);
   user-select: none;
-}
-
-.navItem:hover {
-  background-color: var(--hover-color);
 }
 
 .navIcon {
@@ -192,95 +130,58 @@
   letter-spacing: 0.5px;
   color: var(--text-secondary);
   transition: color var(--transition-speed);
-  white-space: nowrap; /* Prevent label wrapping */
 }
 
-/* Hover and Active States for Icon/Label */
 .navItem:hover .navIcon,
-.navItem:hover .navLabel {
+.navItem:hover .navLabel,
+.navItem.active .navIcon,
+.navItem.active .navLabel {
   color: var(--text-color);
 }
 
-.navItem.active .navLabel {
-   color: var(--text-color); /* Active label text color */
-   font-weight: 600; /* Slightly bolder when active */
-}
-
 .navItem.active .navIcon {
-  color: var(--accent-color-1); /* Active icon color */
+  color: var(--accent-color-1);
 }
 
-/* Active Indicator Dot */
 .activeIndicator {
   position: absolute;
-  bottom: 5px; /* Adjusted position */
+  bottom: -2px;
   left: 50%;
-  transform: translateX(-50%) scale(0); /* Start hidden and scaled down */
-  width: 6px; /* Slightly larger */
-  height: 6px;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
   background-color: var(--accent-color-1);
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--glow-color); /* Use glow color */
-  transition: transform var(--transition-speed) ease;
-  opacity: 0; /* Start hidden */
+  box-shadow: 0 0 10px var(--accent-color-1);
 }
 
-.navItem.active .activeIndicator {
-  transform: translateX(-50%) scale(1); /* Scale up when active */
-  opacity: 1; /* Fade in */
-}
-
-/* --- Category Dropdown --- */
-/* Wrapper might not be needed if motion.div was removed */
-/* Verify if .navItemWrapper is still used in the TSX component */
-/*
 .navItemWrapper {
   position: relative;
 }
-*/
 
-.categoryDropdownContainer { /* Wrapper for positioning */
-   position: relative;
-}
-
+/* Category dropdown - Redesigned */
 .categoryDropdown {
   position: absolute;
-  top: calc(100% + 15px); /* Increased distance */
+  top: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  background: var(--secondary-color); /* Use secondary color for contrast */
+  background: var(--primary-color);
   border-radius: 8px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(154, 24, 64, 0.3); /* Enhanced shadow */
-  padding: 0.75rem; /* Increased padding */
-  min-width: 180px; /* Slightly wider */
-  z-index: 110; /* Ensure dropdown is above nav container */
-  border: 1px solid rgba(154, 24, 64, 0.2); /* Softer border */
-  overflow: hidden; /* Keep overflow hidden */
-  opacity: 0; /* Start hidden */
-  visibility: hidden; /* Start hidden */
-  transform: translateX(-50%) translateY(10px); /* Start slightly lower */
-  transition: opacity var(--transition-speed) ease,
-              visibility var(--transition-speed) ease,
-              transform var(--transition-speed) ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(154, 24, 64, 0.2);
+  padding: 0.5rem;
+  min-width: 160px;
+  z-index: 10;
+  border: 1px solid rgb(154, 24, 63);
+  overflow: hidden;
 }
 
-/* Show dropdown when a parent/sibling indicates hover/focus */
-/* This logic needs to be handled by the React component (useState) */
-/* Example class added by React when dropdown should be open: */
-.categoryDropdown.open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
-
-
-.categoryDropdown::before { /* Top gradient border */
+.categoryDropdown::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px; /* Thicker gradient */
+  height: 2px;
   background: linear-gradient(
     90deg,
     var(--accent-color-1),
@@ -295,230 +196,281 @@
 }
 
 .categoryItem {
-  margin: 0.25rem 0; /* Adjusted margin */
+  margin: 0.15rem 0;
 }
 
 .categoryButton {
   width: 100%;
   text-align: left;
-  padding: 0.7rem 1rem; /* Adjusted padding */
+  padding: 0.6rem 0.8rem;
   background: none;
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
   border-radius: 6px;
-  transition: background-color var(--transition-speed), color var(--transition-speed), padding-left var(--transition-speed);
+  transition: all var(--transition-speed);
   font-weight: 500;
-  font-size: 0.9rem; /* Slightly larger font */
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
-  position: relative; /* For pseudo-element */
-  overflow: hidden; /* For hover effect */
 }
 
-.categoryButton::before { /* Hover indicator */
+.categoryButton::before {
   content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px; /* Indicator width */
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
   background: linear-gradient(
-    180deg,
+    135deg,
     var(--accent-color-1),
     var(--accent-color-2)
   );
-  border-radius: 0 4px 4px 0; /* Rounded edge */
+  border-radius: 50%;
   opacity: 0;
-  transform: translateX(-100%); /* Start off-screen */
+  transform: scale(0);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .categoryButton:hover {
-  background-color: var(--hover-color);
+  background-color: rgba(154, 24, 64, 0.1);
   color: var(--text-color);
-  padding-left: 1.5rem; /* Indent text on hover */
+  padding-left: 1rem;
 }
 
 .categoryButton:hover::before {
   opacity: 1;
-  transform: translateX(0); /* Slide in indicator */
+  transform: scale(1);
 }
 
-/* --- Animations --- */
+/* Premium animations */
 @keyframes pulse {
   0% {
     box-shadow: 0 0 10px var(--glow-color);
   }
   50% {
-    box-shadow: 0 0 20px var(--glow-color-2), 0 0 25px var(--glow-color); /* Increased glow */
+    box-shadow: 0 0 15px var(--glow-color-2), 0 0 20px var(--glow-color);
   }
   100% {
     box-shadow: 0 0 10px var(--glow-color);
   }
 }
 
-/* Glitch Text Animations */
-@keyframes glitch-skew {
-  0% { transform: skew(0deg); }
-  20% { transform: skew(-2deg); }
-  40% { transform: skew(2deg); }
-  60% { transform: skew(-1deg); }
-  80% { transform: skew(1deg); }
-  100% { transform: skew(0deg); }
+.glitchLogo {
+  animation: pulse 3s infinite ease-in-out;
 }
 
-@keyframes glitch-top {
-  0% { clip: rect(0, 900px, 0, 0); transform: translate(-2px, -2px); }
-  10% { clip: rect(0, 900px, 10px, 0); transform: translate(-2px, 2px); }
-  20% { clip: rect(10px, 900px, 20px, 0); transform: translate(2px, -2px); } /* Adjusted clip */
-  30% { clip: rect(20px, 900px, 30px, 0); transform: translate(2px, 2px); } /* Adjusted clip */
-  40% { clip: rect(30px, 900px, 40px, 0); transform: translate(-2px, -2px); } /* Added steps */
-  50% { clip: rect(40px, 900px, 50px, 0); transform: translate(-2px, 2px); }
-  60% { clip: rect(50px, 900px, 60px, 0); transform: translate(2px, -2px); }
-  70% { clip: rect(60px, 900px, 70px, 0); transform: translate(2px, 2px); }
-  80% { clip: rect(70px, 900px, 80px, 0); transform: translate(-2px, -2px); }
-  90% { clip: rect(80px, 900px, 90px, 0); transform: translate(-2px, 2px); }
-  100% { clip: rect(90px, 900px, 100px, 0); transform: translate(0, 0); } /* Adjusted clip */
+.glitchLogo:hover .logoImage {
+  transform: scale(1.1);
 }
 
-@keyframes glitch-bottom {
-   0% { clip: rect(0, 900px, 0, 0); transform: translate(2px, 2px); }
-  10% { clip: rect(90px, 900px, 100px, 0); transform: translate(2px, -2px); } /* Adjusted clip */
-  20% { clip: rect(80px, 900px, 90px, 0); transform: translate(-2px, 2px); } /* Adjusted clip */
-  30% { clip: rect(70px, 900px, 80px, 0); transform: translate(-2px, -2px); } /* Adjusted clip */
-  40% { clip: rect(60px, 900px, 70px, 0); transform: translate(2px, 2px); } /* Added steps */
-  50% { clip: rect(50px, 900px, 60px, 0); transform: translate(2px, -2px); }
-  60% { clip: rect(40px, 900px, 50px, 0); transform: translate(-2px, 2px); }
-  70% { clip: rect(30px, 900px, 40px, 0); transform: translate(-2px, -2px); }
-  80% { clip: rect(20px, 900px, 30px, 0); transform: translate(2px, 2px); }
-  90% { clip: rect(10px, 900px, 20px, 0); transform: translate(2px, -2px); }
-  100% { clip: rect(0, 900px, 10px, 0); transform: translate(0, 0); } /* Adjusted clip */
+/* Glitch effect on hover */
+.glitchLogo:hover::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(154, 24, 64, 0.5) 50%,
+    transparent 55%
+  );
+  mix-blend-mode: overlay;
+  animation: glitch 2s infinite linear alternate;
 }
 
-
-/* --- Media Queries --- */
-@media (max-width: 1024px) { /* Adjusted breakpoint */
-  .navItem {
-    padding: 0.75rem 1rem; /* Slightly less padding */
-    margin: 0 0.25rem; /* Less margin */
+@keyframes glitch {
+  0% {
+    transform: translateX(-20px);
+    opacity: 0;
   }
-  .navLabel {
-    font-size: 0.8rem;
+  10% {
+    transform: translateX(0);
+    opacity: 0.2;
   }
-  .logoContainer {
-     padding: 0 1rem; /* Less padding around logo */
+  20% {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-20px);
+    opacity: 0;
   }
 }
 
+/* Media queries */
 @media (max-width: 768px) {
-  /* Mobile: Bottom Navigation */
-  .navContainer {
-    top: auto; /* Remove from top */
-    bottom: 0; /* Stick to bottom */
-    height: 70px;
-    padding: 0 1rem;
-    border-top: 1px solid rgba(154, 24, 64, 0.15); /* Border on top */
-    border-bottom: none; /* No bottom border */
-    box-shadow: 0 -4px 20px var(--shadow-color); /* Shadow on top */
-  }
-
-  .navContent {
-    max-width: 100%; /* Full width on mobile */
-  }
-
-  .navSide {
-     flex-grow: 1; /* Allow sides to grow */
-     flex-basis: 0; /* Start from 0 basis */
-  }
-   .navSide:first-child {
-     justify-content: flex-start; /* Align left side to start */
-   }
-   .navSide:last-child {
-     justify-content: flex-end; /* Align right side to end */
-   }
-
-
-  .logoContainer {
-    position: absolute; /* Position logo absolutely */
-    left: 50%;
-    bottom: 15px; /* Position above the nav bar */
-    transform: translateX(-50%);
-    z-index: 101; /* Above nav items */
-    padding: 0; /* Remove padding */
-  }
-
-  .glitchLogoContainer {
-    width: 65px; /* Slightly smaller logo */
-    height: 65px;
-  }
-
   .navItem {
-    padding: 0.5rem; /* Smaller padding */
-    margin: 0 0.1rem; /* Tighter spacing */
-    flex-grow: 1; /* Allow items to fill space */
-    justify-content: center; /* Center content vertically */
+    padding: 0.5rem 1rem;
   }
 
   .navIcon {
-    font-size: 1.4rem; /* Adjust icon size */
-    margin-bottom: 0.15rem;
+    font-size: 1.3rem;
   }
 
   .navLabel {
-    font-size: 0.7rem; /* Smaller label */
-  }
-
-  .activeIndicator {
-     bottom: 3px; /* Adjust indicator position */
-     width: 5px;
-     height: 5px;
-  }
-
-  /* Category Dropdown on Mobile */
-  .categoryDropdownContainer {
-     position: static; /* Remove relative positioning */
+    font-size: 0.75rem;
   }
 
   .categoryDropdown {
-    bottom: calc(100% + 10px); /* Position above the nav bar */
-    top: auto; /* Remove top positioning */
-    left: 1rem; /* Align to left */
-    right: 1rem; /* Align to right */
-    transform: none; /* Reset transform */
-    width: auto; /* Auto width */
-    min-width: 0; /* Reset min-width */
-    max-width: calc(100vw - 2rem); /* Limit width */
-    /* Adjust transform for animation if needed */
-     transform: translateY(10px);
+    min-width: 140px;
+    padding: 0.4rem;
   }
-   .categoryDropdown.open {
-      transform: translateY(0);
-   }
 
   .categoryButton {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.85rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.8rem;
+  }
+  /* Mobile styles */
+  .navContainer {
+    top: auto;
+    bottom: 0;
+    height: 70px;
+    padding: 0 1rem;
+    border-top: 1px solid rgba(154, 24, 64, 0.15);
+    border-bottom: none;
+    box-shadow: 0 -4px 20px var(--shadow-color);
+  }
+
+  .navContainer .navContent {
+    max-width: 100%;
+  }
+
+  .navContainer .navSide:first-child {
+    padding-right: 1rem;
+  }
+
+  .navContainer .navSide:last-child {
+    padding-left: 1rem;
+  }
+
+  .navContainer .glitchLogo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .navContainer .categoryDropdown {
+    bottom: calc(100% + 10px);
+    top: auto;
   }
 }
 
-/* Reduced Motion Preferences */
+/* Reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .navContainer *,
-  .glitchLogoContainer,
+  .glitchLogo,
   .navItem,
-  .categoryDropdown,
-  .glitchText,
-  .glitchText::before,
-  .glitchText::after {
-    transition-duration: 0.01s !important; /* Minimal transition */
-    animation: none !important; /* Disable animations */
+  .categoryDropdown {
+    transition-duration: 0.1s;
+    animation-duration: 0.1s;
   }
-
-  /* Keep essential transitions like opacity for visibility */
-   .activeIndicator,
-   .categoryDropdown {
-      transition: opacity 0.01s !important;
-   }
 }
 
+.glitch {
+  position: relative;
+  color: #fff;
+  font-size: 2.4rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  display: inline-block;
+  cursor: pointer;
+  /* Glitch base color */
+  text-shadow: 2px 0 #00fff9, -2px 0 #ff005a;
+  animation: glitch-skew 1.2s infinite linear alternate-reverse;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  color: #fff;
+  background: transparent;
+  clip: rect(0, 900px, 0, 0);
+}
+
+.glitch::before {
+  text-shadow: 2px 0 #00fff9;
+  animation: glitch-top 1.2s infinite linear alternate-reverse;
+  top: 0;
+}
+
+.glitch::after {
+  text-shadow: -2px 0 #ff005a;
+  animation: glitch-bottom 1.2s infinite linear alternate-reverse;
+  top: 0;
+}
+
+@keyframes glitch-skew {
+  0% {
+    transform: skew(0deg);
+  }
+  20% {
+    transform: skew(-2deg);
+  }
+  40% {
+    transform: skew(2deg);
+  }
+  60% {
+    transform: skew(-1deg);
+  }
+  80% {
+    transform: skew(1deg);
+  }
+  100% {
+    transform: skew(0deg);
+  }
+}
+
+@keyframes glitch-top {
+  0% {
+    clip: rect(0, 900px, 0, 0);
+    transform: translate(-2px, -2px);
+  }
+  10% {
+    clip: rect(0, 900px, 10px, 0);
+    transform: translate(-2px, 2px);
+  }
+  20% {
+    clip: rect(0, 900px, 20px, 0);
+    transform: translate(2px, -2px);
+  }
+  30% {
+    clip: rect(0, 900px, 30px, 0);
+    transform: translate(2px, 2px);
+  }
+  100% {
+    clip: rect(0, 900px, 0, 0);
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glitch-bottom {
+  0% {
+    clip: rect(0, 900px, 0, 0);
+    transform: translate(2px, 2px);
+  }
+  10% {
+    clip: rect(10px, 900px, 100px, 0);
+    transform: translate(2px, -2px);
+  }
+  20% {
+    clip: rect(20px, 900px, 200px, 0);
+    transform: translate(-2px, 2px);
+  }
+  30% {
+    clip: rect(30px, 900px, 300px, 0);
+    transform: translate(-2px, -2px);
+  }
+  100% {
+    clip: rect(0, 900px, 0, 0);
+    transform: translate(0, 0);
+  }
+}

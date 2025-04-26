@@ -8,8 +8,8 @@ import styles from "./ProductCarousel.module.css";
 // Define the Product type (adjust based on your actual data structure)
 interface Product {
   id: string | number;
-  name: string;
-  imageUrl: string; // Assuming PNG or other image URL
+  title: string;
+  images: string; // Assuming PNG or other image URL
 }
 
 interface ProductCarouselProps {
@@ -21,6 +21,8 @@ export default function ProductCarousel({
   products = [], // Default to empty array
   title = "Наши Товары",
 }: ProductCarouselProps) {
+  const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
+
   // Initialize Embla Carousel
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true, // Enable looping
@@ -71,20 +73,36 @@ export default function ProductCarousel({
       <h2 className={styles.carouselHeader}>{title}</h2>
       <div className={styles.embla} ref={emblaRef}>
         <div className={styles.emblaContainer}>
-          {products.map((product) => (
-            <div className={styles.emblaSlide} key={product.id}>
-              {/* Use next/image for optimization if using Next.js */}
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className={styles.productImage}
-                loading="lazy" // Lazy load images outside initial viewport
-              />
-              <h3 className={styles.productName}>{product.name}</h3>
-              <div className={styles.dlight}></div>{" "}
-              {/* Dlight effect element */}
-            </div>
-          ))}
+          {products.map((product) => {
+            let albumGroupId: string | null = null; // Use a variable, not state
+            const imageUrl = product.images; // Assuming product.images is the URL string
+
+            if (
+              imageUrl && // Check if imageUrl exists
+              imageUrl.includes("ucarecdn.com") &&
+              imageUrl.includes("/")
+            ) {
+              // Извлекаем ID альбома из URL
+              const match = imageUrl.match(/ucarecdn\.com\/([^\/]+)/);
+              if (match && match[1]) {
+                albumGroupId = match[1]; // Assign to the variable
+              }
+            }
+            return (
+              <div className={styles.emblaSlide} key={product.id}>
+                {/* Use next/image for optimization if using Next.js */}
+                <img
+                  src={`https://ucarecdn.com/${albumGroupId}/nth/0/`}
+                  alt={product.title}
+                  className={styles.productImage}
+                  loading="lazy" // Lazy load images outside initial viewport
+                />
+                <h3 className={styles.productName}>{product.title}</h3>
+                <div className={styles.dlight}></div>{" "}
+                {/* Dlight effect element */}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className={styles.controls}>
