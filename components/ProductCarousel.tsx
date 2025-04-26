@@ -99,6 +99,7 @@ export default function ProductCarousel({
             return (
               <div className={styles.emblaSlide} key={product.id}>
                 {/* Use next/image for optimization if using Next.js and configured */}
+                {imageUrl}
                 {imageSrc}
                 <img
                   src={imageSrc} // Use the calculated or fallback source
