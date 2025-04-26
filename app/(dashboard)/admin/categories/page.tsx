@@ -1,26 +1,27 @@
-"use client";
 import { CustomButton, DashboardSidebar } from "@/components";
-import axios from "axios";
-import { nanoid } from "nanoid";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { formatCategoryName } from "../../../../utils/categoryFormating";
 
-const DashboardCategory = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+// Function to fetch categories server-side
+async function getCategories(): Promise<Category[]> {
+  try {
+    const res = await fetch(`${process.env.API_URL || ""}/api/categories`, {
+      cache: "no-store",
+    });
 
-  // getting all categories to be displayed on the all categories page
-  useEffect(() => {
-    axios
-      .get("/apiv3/categories")
-      .then((res) => {
-        setCategories(res.data);
-      })
-      .catch((error) => {
-        // Optionally handle error here
-        console.error("Failed to fetch categories:", error);
-      });
-  }, []);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch categories: ${res.statusText}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return []; // Return empty array on error
+  }
+}
+
+const DashboardCategory = async () => {
+  const categories = await getCategories();
 
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto h-full max-xl:flex-col max-xl:h-fit max-xl:gap-y-4">
@@ -56,9 +57,15 @@ const DashboardCategory = () => {
               </tr>
             </thead>
             <tbody>
-              {categories &&
+              {categories.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="text-center py-4">
+                    No categories found.
+                  </td>
+                </tr>
+              ) : (
                 categories.map((category: Category) => (
-                  <tr key={nanoid()}>
+                  <tr key={category.id}>
                     <th>
                       <label>
                         <input type="checkbox" className="checkbox" />
@@ -67,7 +74,11 @@ const DashboardCategory = () => {
 
                     <td>
                       <div>
-                        <p>{formatCategoryName(category?.name)}</p>
+                        <p>
+                          {category?.name
+                            ? formatCategoryName(category.name)
+                            : "N/A"}
+                        </p>
                       </div>
                     </td>
 
@@ -80,7 +91,8 @@ const DashboardCategory = () => {
                       </Link>
                     </th>
                   </tr>
-                ))}
+                ))
+              )}
             </tbody>
             {/* foot */}
             <tfoot>
