@@ -102,7 +102,7 @@ export default function ProductCarousel({
                 {imageUrl}
                 {imageSrc}
                 <img
-                  src={imageSrc} // Use the calculated or fallback source
+                  src={imageUrl + "nth/0/"} // Use the calculated or fallback source
                   alt={product.title}
                   className={styles.productImage}
                   onError={(e) => {
