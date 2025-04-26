@@ -552,10 +552,7 @@ export default function SingleProductModal({
                       animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
                       transition={{ delay: 0.6, duration: 0.4 }}
                     >
-                      Здесь будет дополнительная информация о товаре, условиях
-                      покупки, гарантии и других важных деталях для клиента. Вы
-                      можете добавить сюда любые тексты, которые нужны для
-                      вашего магазина.
+                      {product?.description}
                     </motion.div>
                   </div>
                 </div>
