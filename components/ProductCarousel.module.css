@@ -2,7 +2,7 @@
 /* --- Import or Define Variables --- */
 /* Assuming variables are globally defined or imported */
 /* Example definitions if not global: */
-:root {
+.carouselContainer {
   --primary-color: #141220;
   --secondary-color: #1d1a2d;
   --accent-color-1: #9a1840;
