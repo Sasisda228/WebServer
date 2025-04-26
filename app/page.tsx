@@ -23,7 +23,7 @@ interface Review {
 async function getFeaturedProducts(): Promise<Product[]> {
   // TODO: Replace with your actual API endpoint or data fetching logic
   // Example fetching logic:
-  const res = await fetch(`${process.env.API_URL}/api/products/featured`, {
+  const res = await fetch(`${process.env.API_URL}/api/products`, {
     cache: "no-store",
   }); // Or configure caching
   if (!res.ok) {
