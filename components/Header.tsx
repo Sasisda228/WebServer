@@ -133,6 +133,7 @@ const Header = () => {
                 47
               </span>
             </Link>
+            {searchQuery}
           </div>
           {}
           {/* Панель действий пользователя */}
