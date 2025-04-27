@@ -8,7 +8,7 @@ import SingleProductModal from "./SingleProductModal";
 import styles from "./header.module.css";
 
 
-const DEBOUNCE_DELAY = 300; // Delay in ms for debouncing search input
+const DEBOUNCE_DELAY = 10000; // Delay in ms for debouncing search input
 const Header = () => {
   useSession();
   const [isScrolled, setIsScrolled] = useState(false);
