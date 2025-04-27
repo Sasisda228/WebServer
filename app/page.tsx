@@ -1,6 +1,7 @@
 import LegalInfo from "@/components/LegalInfo";
 import ProductCarousel from "@/components/ProductCarousel";
 import ReviewsSection from "@/components/ReviewsSection";
+import SloganSection from "@/components/SloganSection";
 import dynamic from "next/dynamic";
 
 // --- Data Fetching Functions (Server-Side) ---
@@ -11,7 +12,6 @@ interface Product {
   id: string | number;
   title: string;
   images: string;
-  price: number; // Ensure price is included if used in ProductCarousel
 }
 
 // Example Review type (adjust as needed)
@@ -24,29 +24,16 @@ interface Review {
 async function getFeaturedProducts(): Promise<Product[]> {
   // TODO: Replace with your actual API endpoint or data fetching logic
   // Example fetching logic:
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`,
-      {
-        // Use NEXT_PUBLIC_API_BASE_URL consistently
-        cache: "no-store", // Or configure caching
-      }
-    );
-    if (!res.ok) {
-      console.error(
-        `Failed to fetch products: ${res.status} ${res.statusText}`
-      );
-      // Return empty array or throw error depending on desired behavior
-      return [];
-      // throw new Error("Failed to fetch products");
-    }
-    const data = await res.json();
-    // Ensure data is an array, provide default if not
-    return Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error("Error in getFeaturedProducts:", error);
-    return []; // Return empty array on fetch error
+  const res = await fetch(`${process.env.API_URL}/api/products`, {
+    cache: "no-store",
+  }); // Or configure caching
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
   }
+  const data = await res.json();
+  return data;
+
+  // --- End Placeholder Data ---
 }
 
 async function getRecentReviews(): Promise<Review[]> {
@@ -71,7 +58,7 @@ async function getRecentReviews(): Promise<Review[]> {
     {
       id: "r2",
       author: "Илья Жданов",
-      text: "Всё хуйня, переде��ывайте)",
+      text: "Всё хуйня, переделывайте)",
     },
     {
       id: "r3",
@@ -100,7 +87,6 @@ const TeamAdvantages = dynamic(() => import("@/components/TeamAdvantages"), {
         alignItems: "center",
         justifyContent: "center",
         color: "var(--text-secondary)",
-        backgroundColor: "var(--primary-color)", // Match background
       }}
     >
       Загрузка преимуществ...
@@ -120,12 +106,11 @@ export default async function Home() {
   return (
     // Use a main tag for semantic structure
     <main>
-      {/* --- Added Slogan Section --- */}
-      {/* <SloganSection /> */}
+      {/* Hero Section or other introductory content could go here */}
+      <SloganSection />
 
       {/* Product Carousel - Pass fetched data */}
       {/* ProductCarousel is a Client Component but receives data from the Server Component */}
-      {/* Banner/background for carousel is handled within ProductCarousel.module.css */}
       <ProductCarousel products={products} title="Популярные товары" />
 
       {/* Team Advantages Section - Dynamically loaded Client Component */}
