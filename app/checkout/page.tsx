@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  // Убираем неиспользуемые валидаторы карт и email
-  // isValidCardNumber,
-  // isValidCreditCardCVVOrCVC,
-  // isValidCreditCardExpirationDate,
-  // isValidEmailAddressFormat,
-  isValidNameOrLastname,
-} from "@/lib/utils";
+import { isValidNameOrLastname } from "@/lib/utils";
 import UploadcareImage from "@uploadcare/nextjs-loader";
+import axios from "axios"; // <--- Импортируем axios
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,8 +14,7 @@ import { useProductStore } from "../_zustand/store";
 import styles from "./CheckoutPage.module.css";
 
 const SHIPPING_COST = 5;
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://212.67.12.199:3001/api";
+const API_BASE_URL = "/apiv3/";
 
 // Helper function to get the correct product image URL (без изменений)
 function getProductImageUrl(product: {
@@ -48,36 +41,31 @@ function getProductImageUrl(product: {
   return null;
 }
 
-// Функция добавления продукта к заказу (без изменений)
+// --- Функция добавления продукта к заказу (с axios) ---
 const addOrderProduct = async (
   orderId: string,
   productId: string,
   productQuantity: number
 ) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/order-product`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        customerOrderId: orderId,
-        productId: productId,
-        quantity: productQuantity,
-      }),
+    // Используем axios.post
+    await axios.post(`${API_BASE_URL}/order-product`, {
+      customerOrderId: orderId,
+      productId: productId,
+      quantity: productQuantity,
     });
-    if (!response.ok) {
-      console.error(
-        `Failed to add product ${productId} to order ${orderId}: ${response.statusText}`
-      );
-      toast.error(`Не удалось добавить товар ${productId} к заказу.`);
-    }
-  } catch (error) {
+    // Axios по умолчанию считает успешными только 2xx статусы,
+    // поэтому отдельная проверка response.ok не нужна.
+  } catch (error: any) { // Используем any или AxiosError
+    // Axios помещает детали ошибки в error.response
+    const errorMsg = error.response?.data?.message || error.message || "Неизвестная ошибка";
     console.error(
       `Error adding product ${productId} to order ${orderId}:`,
-      error
+      error.response?.data || error
     );
-    toast.error(`Ошибка при добавлении товара ${productId} к заказу.`);
+    toast.error(
+      `Ошибка при добавлении товара ${productId} к заказу: ${errorMsg}`
+    );
   }
 };
 
@@ -85,7 +73,6 @@ const CheckoutPage = () => {
   const { products, total, removeFromCart, clearCart } = useProductStore();
   const [step, setStep] = useState<"cart" | "order" | "success">("cart");
   const [orderLoading, setOrderLoading] = useState(false);
-  // --- Упрощенное состояние формы ---
   const [checkoutForm, setCheckoutForm] = useState({
     name: "",
     lastname: "",
@@ -116,13 +103,13 @@ const CheckoutPage = () => {
     setCheckoutForm({ ...checkoutForm, [e.target.name]: e.target.value });
   };
 
-  // --- Обновленная логика отправки заказа ---
+  // --- Обновленная логика отправки заказа (с axios) ---
   const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setOrderLoading(true);
     setError(null);
 
-    // --- Упрощенная валидация ---
+    // Валидация (без изменений)
     if (
       !checkoutForm.name ||
       !checkoutForm.lastname ||
@@ -150,47 +137,39 @@ const CheckoutPage = () => {
       setOrderLoading(false);
       return;
     }
-    // --- Конец валидации ---
 
     try {
-      // --- Отправка заказа с заглушками '-' ---
-      const orderResponse = await fetch(`${API_BASE_URL}/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: checkoutForm.name,
-          lastname: checkoutForm.lastname,
-          phone: checkoutForm.phone,
-          email: "-", // Заглушка
-          company: "-", // Заглушка
-          address: checkoutForm.address,
-          apartment: "-", // Заглушка
-          postalCode: "-", // Заглушка
-          status: "processing",
-          total: Math.round(total + total / 5 + SHIPPING_COST),
-          city: "-", // Заглушка
-          country: "-", // Заглушка
-          orderNotice: checkoutForm.orderNotice || "-", // Отправляем '-' если пусто
-        }),
-      });
+      // --- Отправка заказа с axios ---
+      const orderPayload = {
+        name: checkoutForm.name,
+        lastname: checkoutForm.lastname,
+        phone: checkoutForm.phone,
+        email: "-",
+        company: "-",
+        address: checkoutForm.address,
+        apartment: "-",
+        postalCode: "-",
+        status: "processing",
+        total: Math.round(total + total / 5 + SHIPPING_COST),
+        city: "-",
+        country: "-",
+        orderNotice: checkoutForm.orderNotice || "-",
+      };
 
-      if (!orderResponse.ok) {
-        const errorData = await orderResponse.json().catch(() => ({}));
-        throw new Error(
-          errorData.message ||
-            `Ошибка создания заказа: ${orderResponse.statusText}`
-        );
-      }
+      // Используем axios.post, данные ответа будут в response.data
+      const orderResponse = await axios.post(
+        `${API_BASE_URL}/orders`,
+        orderPayload
+      );
 
-      const orderData = await orderResponse.json();
-      const orderId: string = orderData.id;
+      // Получаем ID из данных ответа axios
+      const orderId: string = orderResponse.data.id;
 
       if (!orderId) {
         throw new Error("Не удалось получить ID созданного заказа.");
       }
 
+      // Добавление продуктов (использует обновленный addOrderProduct с axios)
       await Promise.all(
         products.map((product) =>
           addOrderProduct(orderId, product.id, product.amount)
@@ -201,7 +180,6 @@ const CheckoutPage = () => {
       toast.success("Заказ успешно создан!");
       setStep("success");
 
-      // Сброс упрощенной формы
       setCheckoutForm({
         name: "",
         lastname: "",
@@ -209,16 +187,16 @@ const CheckoutPage = () => {
         address: "",
         orderNotice: "",
       });
-    } catch (error) {
-      console.error("Order submission failed:", error);
-      setError(
-        error instanceof Error ? error.message : "Произошла неизвестная ошибка."
-      );
-      toast.error(
-        `Ошибка оформления заказа: ${
-          error instanceof Error ? error.message : "Неизвестная ошибка"
-        }`
-      );
+    } catch (error: any) {
+      // Используем any или AxiosError
+      // Axios помещает детали ошибки в error.response
+      const errorMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Произошла неизвестная ошибка.";
+      console.error("Order submission failed:", error.response?.data || error);
+      setError(errorMsg);
+      toast.error(`Ошибка оформления заказа: ${errorMsg}`);
     } finally {
       setOrderLoading(false);
     }
@@ -236,6 +214,7 @@ const CheckoutPage = () => {
 
   const [error, setError] = useState<string | null>(null);
 
+  // --- JSX (без изменений) ---
   return (
     <div className={styles.checkoutWrapper}>
       <div className={styles.divider}></div>
@@ -251,7 +230,7 @@ const CheckoutPage = () => {
       </div>
       <div className={styles.checkoutContainer}>
         <AnimatePresence mode="wait">
-          {/* --- Шаг 1: Корзина (без изменений) --- */}
+          {/* --- Шаг 1: Корзина --- */}
           {step === "cart" && (
             <motion.section
               key="cart"
@@ -377,7 +356,7 @@ const CheckoutPage = () => {
             </motion.section>
           )}
 
-          {/* --- Шаг 2: Оформление (Упрощенная форма) --- */}
+          {/* --- Шаг 2: Оформление --- */}
           {step === "order" && (
             <motion.section
               key="order"
@@ -395,7 +374,6 @@ const CheckoutPage = () => {
                 autoComplete="off"
                 noValidate
               >
-                {/* --- Упрощенные поля формы --- */}
                 <h3 className={styles.formSectionTitle}>
                   Контактная информация
                 </h3>
@@ -424,8 +402,6 @@ const CheckoutPage = () => {
                   </div>
                 </div>
                 <div className={styles.formGroup}>
-                  {" "}
-                  {/* Телефон на всю ширину */}
                   <label htmlFor="phone">Телефон</label>
                   <input
                     type="tel"
@@ -440,8 +416,6 @@ const CheckoutPage = () => {
 
                 <h3 className={styles.formSectionTitle}>Адрес доставки</h3>
                 <div className={styles.formGroup}>
-                  {" "}
-                  {/* Адрес на всю ширину */}
                   <label htmlFor="address">Адрес</label>
                   <input
                     type="text"
@@ -454,9 +428,6 @@ const CheckoutPage = () => {
                   />
                 </div>
 
-                {/* Удалены поля: company, apartment, city, country, postalCode */}
-                {/* Удалена секция "Детали оплаты" */}
-
                 <h3 className={styles.formSectionTitle}>Дополнительно</h3>
                 <div className={styles.formGroup}>
                   <label htmlFor="orderNotice">Комментарий к заказу</label>
@@ -468,9 +439,7 @@ const CheckoutPage = () => {
                     onChange={handleOrderInput}
                   />
                 </div>
-                {/* --- Конец упрощенных полей --- */}
 
-                {/* Итоги заказа (без изменений) */}
                 <div className={styles.orderSummary}>
                   <div className={styles.summaryRow}>
                     <span>Товары:</span>
@@ -495,7 +464,6 @@ const CheckoutPage = () => {
                   </div>
                 </div>
 
-                {/* Кнопки Назад/Оформить (без изменений) */}
                 <div className={styles.orderActions}>
                   <button
                     type="button"
@@ -517,7 +485,7 @@ const CheckoutPage = () => {
             </motion.section>
           )}
 
-          {/* --- Шаг 3: Успех (без изменений) --- */}
+          {/* --- Шаг 3: Успех --- */}
           {step === "success" && (
             <motion.section
               key="success"
@@ -532,8 +500,8 @@ const CheckoutPage = () => {
               </div>
               <h2 className={styles.sectionTitle}>Спасибо за заказ!</h2>
               <p className={styles.successText}>
-                Ваш заказ успешно оформле��. Мы свяжемся с вами для
-                подтверждения в ближайшее время.
+                Ваш заказ успешно оформлен. Мы свяжемся с вами для подтверждения
+                в ближайшее время.
               </p>
               <Link href="/" className={styles.backToShopBtn}>
                 Вернуться на главную
