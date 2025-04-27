@@ -1,32 +1,59 @@
 "use client";
 import { motion, useScroll } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./faq.module.css";
+
+// Определяем тип для статьи FAQ
+interface FaqArticle {
+  id: number;
+  title: string;
+  content: string;
+  gradient: string | null;
+}
+
+// Базовый URL для Express API
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 const FAQPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ container: containerRef });
 
-  const articles = [
-    {
-      title: "Как выбрать пушку",
-      content:
-        "При выборе пушки важно определить цель использования: для спорта, развлечения или тренировок. Обратите внимание на калибр – он влияет на дальность и точность. Проверьте эргономику: как оружие лежит в руке, удобно ли им управлять. Не забывайте учитывать вес и баланс, особенно если планируете длительное использование.",
-      gradient: "linear-gradient(45deg, #9a1840, #371b72)",
-    },
-    {
-      title: "ТОП 5 орбизов",
-      content:
-        "На рынке представлено множество моделей орбизов. Среди лучших выделяются: Orbiz Pro-X2000 за свою надежность, Quantum Trajectory Q4 с отличной точностью, Nebula Striker N9 для любителей футуристичного дизайна, Vortex Velocity V12 с высокой скорострельностью и Eclipse E5 Elite как универсальный вариант для разных задач.",
-      gradient: "linear-gradient(135deg, #371b72, #0d47a1)",
-    },
-    {
-      title: "Чек-лист новичка",
-      content:
-        "Перед первым использованием обязательно проведите проверку безопасности оружия. Настройте прицел для точной стрельбы и сделайте несколько тестовых выстрелов для калибровки. После использования не забывайте чистить ствол. Правильное хранение оборудования продлит его срок службы и обеспечит безопасность.Перед первым использованием обязательно проведите проверку безопасности оружия. Настройте прицел для точной стрельбы и сделайте несколько тестовых выстрелов для калибровки. После использования не забывайте чистить ствол. Правильное хранение оборудования продлит его срок службы и обеспечит безопасность.",
-      gradient: "linear-gradient(45deg, #0d47a1, #4CAF50)",
-    },
-  ];
+  const [articles, setArticles] = useState<FaqArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`${API_BASE_URL}/faq-articles`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: FaqArticle[] = await response.json();
+        setArticles(data);
+      } catch (err) {
+        console.error("Failed to fetch articles:", err);
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  if (loading) {
+    return <div className={styles.loadingState}>Загрузка статей...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.errorState}>Ошибка загрузки: {error}</div>;
+  }
 
   return (
     <div ref={containerRef} className={styles.container}>
@@ -35,11 +62,14 @@ const FAQPage = () => {
         style={{ scaleX: scrollYProgress }}
       />
 
-      {articles.map((article, index) => (
+      {articles.map((article) => (
         <section
-          key={index}
+          key={article.id}
           className={styles.fullpageSection}
-          style={{ background: article.gradient }}
+          style={{
+            background:
+              article.gradient || "linear-gradient(45deg, #333, #555)",
+          }}
         >
           <div className={styles.contentWrapper}>
             <motion.h1
