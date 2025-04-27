@@ -24,7 +24,7 @@ async function searchProducts(request, response) {
                 ]
             }
         });
-
+        console.error(products);
         return response.json(products);
     } catch (error) {
         console.error("Error searching products:", error);
