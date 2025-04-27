@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { motion, useScroll } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import styles from "./faq.module.css";
@@ -12,8 +13,7 @@ interface FaqArticle {
 }
 
 // Базовый URL для Express API
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+const API_BASE_URL = "/apiv3/";
 
 const FAQPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,11 +28,11 @@ const FAQPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${API_BASE_URL}/faq-articles`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: FaqArticle[] = await response.json();
+				const response = await axios.get<FaqArticle[]>(
+          `${API_BASE_URL}/faq-articles`
+        );
+
+        const data: FaqArticle[] = await response.data;
         setArticles(data);
       } catch (err) {
         console.error("Failed to fetch articles:", err);
