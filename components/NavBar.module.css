@@ -304,7 +304,7 @@
 /* Media queries */
 @media (max-width: 768px) {
   .navItem {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
   }
 
   .navIcon {
