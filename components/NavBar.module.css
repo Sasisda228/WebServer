@@ -49,12 +49,12 @@
 
 .navSide:first-child {
   justify-content: flex-end;
-  padding-right: 2rem;
+  padding-right: 1.5rem;
 }
 
 .navSide:last-child {
   justify-content: flex-start;
-  padding-left: 2rem;
+  padding-left: 1.5rem;
 }
 
 /* Logo styles */
