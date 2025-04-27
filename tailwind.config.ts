@@ -13,6 +13,7 @@ const config: Config = {
       },
       fontFamily: {
         "russo-one": ["RUSOONE"],
+        sans: ["var(--font-russo-one)", "sans-serif"], // Переопределяем стандартный sans
       },
     },
   },
