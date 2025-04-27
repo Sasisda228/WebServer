@@ -1,6 +1,7 @@
 import LegalInfo from "@/components/LegalInfo";
 import ProductCarousel from "@/components/ProductCarousel";
 import ReviewsSection from "@/components/ReviewsSection";
+import dynamic from "next/dynamic";
 
 // --- Data Fetching Functions (Server-Side) ---
 // Replace with your actual API calls or data sources
