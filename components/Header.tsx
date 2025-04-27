@@ -35,7 +35,7 @@ const Header = () => {
   // Debounced search effect
   useEffect(() => {
     // Clear previous results and hide dropdown if query is too short
-    if (searchQuery.trim().length < 2) {
+    if (searchQuery.trim().length < 1) {
       setSearchResults([]);
       setIsDropdownVisible(false);
       setIsLoading(false);
@@ -48,11 +48,11 @@ const Header = () => {
     const handler = setTimeout(async () => {
       try {
         const res = await fetch(
-          `http://212.67.12.199:3001/api/search?query=${searchQuery || ""}`
+          `http://212.67.12.199:3001/api/search?query=${searchQuery}`
         );
-          if (!res.ok) {
-            throw new Error("Network response was not ok");
-          }
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
         const data: Product[] = await res.json();
         setSearchResults(data);
         setIsDropdownVisible(data.length > 0);
@@ -123,7 +123,7 @@ const Header = () => {
             </Link>
             {encodeURIComponent(searchQuery.trim())}
           </div>
-          {}
+          {`http://212.67.12.199:3001/api/search?query=${searchQuery}`}
           {/* Панель действий пользователя */}
           <div className={styles.actions}>
             {pathname.startsWith("/shop") && (
