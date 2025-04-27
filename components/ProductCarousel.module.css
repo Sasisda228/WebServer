@@ -204,6 +204,6 @@
 @media (max-width: 480px) {
    /* Further adjustments for smaller screens */
    .productImageContainer {
-     max-width: 220px;
+     max-width: 320px;
    }
 }
