@@ -91,12 +91,7 @@ export default function NavBar() {
     <>
       {/* Category Bar - appears when in shop section */}
       {/* Keep if needed, ensure categories are passed */}
-      {pathname.startsWith("/shop") && (
-        <CategoryBar
-          categories={categories}
-          currentCategory={selectedCategory}
-        />
-      )}
+      <CategoryBar categories={categories} currentCategory={selectedCategory} />
 
       <nav className={styles.navContainer}>
         <div className={styles.navContent}>
