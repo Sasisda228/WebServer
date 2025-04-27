@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import styles from "./FlippingDigit.module.css"; // Создадим этот CSS модуль
+import styles from "./FlippingDigit.module.css";
 
 interface FlippingDigitProps {
   digit: number; // Цифра для отображения (0-9)
@@ -10,18 +10,21 @@ interface FlippingDigitProps {
 const FlippingDigit = ({ digit }: FlippingDigitProps) => {
   const digitString = String(digit);
 
-  // Варианты анимации для перелистывания
   const variants = {
-    initial: { rotateX: -90, y: -25, opacity: 0 }, // Начинаем повернутым сверху
-    animate: { rotateX: 0, y: 0, opacity: 1 }, // Поворачиваем в нормальное положение
-    exit: { rotateX: 90, y: 25, opacity: 0 }, // Уходим поворотом вниз
+    initial: { rotateX: -90, y: -25, opacity: 0 },
+    animate: { rotateX: 0, y: 0, opacity: 1 },
+    exit: { rotateX: 90, y: 25, opacity: 0 },
   };
 
   return (
     <div className={styles.digitContainer}>
+      {/* AnimatePresence теперь здесь, отслеживает смену ключа у motion.span */}
       <AnimatePresence initial={false} mode="popLayout">
         <motion.span
-          key={digitString} // Ключ важен для AnimatePresence
+          // Ключ теперь зависит ТОЛЬКО от цифры.
+          // Когда проп digit меняется, этот ключ меняется,
+          // и AnimatePresence запускает exit/initial/animate.
+          key={digitString}
           variants={variants}
           initial="initial"
           animate="animate"

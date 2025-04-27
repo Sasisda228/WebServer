@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import FlippingDigit from "./FlippingDigit"; // Импортируем новый компонент
+import FlippingDigit from "./FlippingDigit";
 import styles from "./StatsCounter.module.css";
 
 interface StatsCounterProps {
@@ -15,23 +15,23 @@ const StatsCounter = ({ initialValue = 1234, label }: StatsCounterProps) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCount((prevCount) => prevCount + 1);
-    }, 1000); // Интервал в 1 секунду
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Преобразуем число в массив цифр (строк)
+  // Преобразуем число в массив цифр
   const digits = String(count).split("").map(Number);
 
   return (
     <div className={styles.counterWrapper}>
       <div className={styles.counterNumber}>
-        {" "}
-        {/* Обертка для цифр */}
         {digits.map((digit, index) => (
-          // Используем FlippingDigit для каждой цифры
-          // Добавляем уникальный ключ, включающий индекс, на случай повторяющихся цифр
-          <FlippingDigit key={`${digit}-${index}`} digit={digit} />
+          // Ключ теперь зависит ТОЛЬКО от позиции (index).
+          // React будет переиспользовать этот компонент для данной позиции,
+          // но передавать ему новый проп 'digit', когда он изменится.
+          // AnimatePresence ВНУТРИ FlippingDigit обработает смену пропа.
+          <FlippingDigit key={index} digit={digit} />
         ))}
       </div>
       <span className={styles.counterLabel}>{label}</span>
