@@ -2,7 +2,6 @@
 
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import SingleProductModal from "./SingleProductModal";
@@ -114,14 +113,6 @@ const Header = () => {
       >
         {/* Верхняя строка: Логотип и действия пользователя */}
         <div className={styles.headerTop}>
-          <div className={styles.headerLogo}>
-            <Link href="/">
-              <span className={styles.glitch} data-text="47">
-                47
-              </span>
-            </Link>
-          </div>
-
           {/* Панель действий пользователя */}
           <div className={styles.actions}>
             {pathname.startsWith("/shop") && (
