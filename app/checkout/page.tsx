@@ -1,10 +1,11 @@
 "use client";
 
 import {
-  isValidCardNumber,
-  isValidCreditCardCVVOrCVC,
-  isValidCreditCardExpirationDate,
-  isValidEmailAddressFormat,
+  // Убираем неиспользуемые валидаторы карт и email
+  // isValidCardNumber,
+  // isValidCreditCardCVVOrCVC,
+  // isValidCreditCardExpirationDate,
+  // isValidEmailAddressFormat,
   isValidNameOrLastname,
 } from "@/lib/utils";
 import UploadcareImage from "@uploadcare/nextjs-loader";
@@ -19,11 +20,10 @@ import { useProductStore } from "../_zustand/store";
 import styles from "./CheckoutPage.module.css";
 
 const SHIPPING_COST = 5;
-// Базовый URL API (лучше вынести в .env.local)
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
-// Helper function to get the correct product image URL (из первого файла)
+// Helper function to get the correct product image URL (без изменений)
 function getProductImageUrl(product: {
   images?: string[];
   image?: string;
@@ -48,7 +48,7 @@ function getProductImageUrl(product: {
   return null;
 }
 
-// Функция добавления продукта к заказу (из второго фрагмента)
+// Функция добавления продукта к заказу (без изменений)
 const addOrderProduct = async (
   orderId: string,
   productId: string,
@@ -67,7 +67,6 @@ const addOrderProduct = async (
       }),
     });
     if (!response.ok) {
-      // Можно добавить более детальную обработку ошибок API
       console.error(
         `Failed to add product ${productId} to order ${orderId}: ${response.statusText}`
       );
@@ -86,27 +85,16 @@ const CheckoutPage = () => {
   const { products, total, removeFromCart, clearCart } = useProductStore();
   const [step, setStep] = useState<"cart" | "order" | "success">("cart");
   const [orderLoading, setOrderLoading] = useState(false);
-  // Состояние формы из первого файла (используем address вместо adress)
+  // --- Упрощенное состояние формы ---
   const [checkoutForm, setCheckoutForm] = useState({
     name: "",
     lastname: "",
     phone: "",
-    email: "",
-    cardName: "",
-    cardNumber: "",
-    expirationDate: "",
-    cvc: "",
-    company: "",
-    address: "", // Используем 'address'
-    apartment: "",
-    city: "",
-    country: "",
-    postalCode: "",
+    address: "",
     orderNotice: "",
   });
   const router = useRouter();
 
-  // Анимации для секций (из первого файла)
   const sectionVariants = {
     hidden: { opacity: 0, y: 40 },
     visible: {
@@ -117,43 +105,33 @@ const CheckoutPage = () => {
     exit: { opacity: 0, y: -40, transition: { duration: 0.25 } },
   };
 
-  // Удаление товара (из первого файла)
   const handleRemoveItem = (id: string) => {
     removeFromCart(id);
     toast.success("Товар удалён из корзины");
   };
 
-  // Обновление полей формы (из первого файла)
   const handleOrderInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setCheckoutForm({ ...checkoutForm, [e.target.name]: e.target.value });
   };
 
-  // Логика отправки заказа (объединенная)
+  // --- Обновленная логика отправки заказа ---
   const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setOrderLoading(true);
-    setError(null); // Добавим сброс ошибки
+    setError(null);
 
-    // --- Валидация из второго фрагмента ---
+    // --- Упрощенная валидация ---
     if (
       !checkoutForm.name ||
       !checkoutForm.lastname ||
       !checkoutForm.phone ||
-      !checkoutForm.email ||
-      !checkoutForm.cardName ||
-      !checkoutForm.cardNumber ||
-      !checkoutForm.expirationDate ||
-      !checkoutForm.cvc ||
-      !checkoutForm.company || // Добавлено company
-      !checkoutForm.address || // Используем address
-      !checkoutForm.apartment ||
-      !checkoutForm.city ||
-      !checkoutForm.country ||
-      !checkoutForm.postalCode
+      !checkoutForm.address
     ) {
-      toast.error("Пожалуйста, заполните все обязательные поля");
+      toast.error(
+        "Пожалуйста, заполните все обязательные поля (Имя, Фамилия, Телефон, Адрес)"
+      );
       setOrderLoading(false);
       return;
     }
@@ -167,41 +145,15 @@ const CheckoutPage = () => {
       setOrderLoading(false);
       return;
     }
-    // Валидация телефона (можно добавить более строгую)
     if (!checkoutForm.phone.match(/^\+?[0-9\s\-()]{7,}$/)) {
       toast.error("Некорректный формат телефона");
-      setOrderLoading(false);
-      return;
-    }
-    if (!isValidEmailAddressFormat(checkoutForm.email)) {
-      toast.error("Некорректный формат email");
-      setOrderLoading(false);
-      return;
-    }
-    if (!isValidNameOrLastname(checkoutForm.cardName)) {
-      toast.error("Некорректное имя на карте");
-      setOrderLoading(false);
-      return;
-    }
-    if (!isValidCardNumber(checkoutForm.cardNumber)) {
-      toast.error("Некорректный номер карты");
-      setOrderLoading(false);
-      return;
-    }
-    if (!isValidCreditCardExpirationDate(checkoutForm.expirationDate)) {
-      toast.error("Некорректная дата окончания карты (ММ/ГГ или ММ/ГГГГ)");
-      setOrderLoading(false);
-      return;
-    }
-    if (!isValidCreditCardCVVOrCVC(checkoutForm.cvc)) {
-      toast.error("Некорректный CVC/CVV (3 или 4 цифры)");
       setOrderLoading(false);
       return;
     }
     // --- Конец валидации ---
 
     try {
-      // --- Отправка заказа (из второго фрагмента) ---
+      // --- Отправка заказа с заглушками '-' ---
       const orderResponse = await fetch(`${API_BASE_URL}/orders`, {
         method: "POST",
         headers: {
@@ -211,21 +163,20 @@ const CheckoutPage = () => {
           name: checkoutForm.name,
           lastname: checkoutForm.lastname,
           phone: checkoutForm.phone,
-          email: checkoutForm.email,
-          company: checkoutForm.company,
-          address: checkoutForm.address, // Используем 'address'
-          apartment: checkoutForm.apartment,
-          postalCode: checkoutForm.postalCode,
-          status: "processing", // Статус по умолчанию
-          total: Math.round(total + total / 5 + SHIPPING_COST), // Отправляем итоговую сумму
-          city: checkoutForm.city,
-          country: checkoutForm.country,
-          orderNotice: checkoutForm.orderNotice,
+          email: "-", // Заглушка
+          company: "-", // Заглушка
+          address: checkoutForm.address,
+          apartment: "-", // Заглушка
+          postalCode: "-", // Заглушка
+          status: "processing",
+          total: Math.round(total + total / 5 + SHIPPING_COST),
+          city: "-", // Заглушка
+          country: "-", // Заглушка
+          orderNotice: checkoutForm.orderNotice || "-", // Отправляем '-' если пусто
         }),
       });
 
       if (!orderResponse.ok) {
-        // Попытка получить сообщение об ошибке из API
         const errorData = await orderResponse.json().catch(() => ({}));
         throw new Error(
           errorData.message ||
@@ -240,36 +191,22 @@ const CheckoutPage = () => {
         throw new Error("Не удалось получить ID созданного заказа.");
       }
 
-      // Добавление продуктов к заказу
-      // Используем Promise.all для параллельной отправки (быстрее)
       await Promise.all(
         products.map((product) =>
           addOrderProduct(orderId, product.id, product.amount)
         )
       );
-      // --- Конец отправки заказа ---
 
-      // Успех: очистка, уведомление, смена шага
       clearCart();
       toast.success("Заказ успешно создан!");
-      setStep("success"); // Переключаемся на шаг успеха
+      setStep("success");
 
-      // Сбрасываем форму (опционально, т.к. пользователь уходит со страницы)
+      // Сброс упрощенной формы
       setCheckoutForm({
         name: "",
         lastname: "",
         phone: "",
-        email: "",
-        cardName: "",
-        cardNumber: "",
-        expirationDate: "",
-        cvc: "",
-        company: "",
         address: "",
-        apartment: "",
-        city: "",
-        country: "",
-        postalCode: "",
         orderNotice: "",
       });
     } catch (error) {
@@ -283,27 +220,22 @@ const CheckoutPage = () => {
         }`
       );
     } finally {
-      setOrderLoading(false); // Убираем индикатор загрузки в любом случае
+      setOrderLoading(false);
     }
   };
 
-  // Редирект, если корзина пуста (из первого файла, немного изменено)
   useEffect(() => {
-    // Проверяем только если шаг не 'success' и корзина пуста
     if (step !== "success" && products.length === 0) {
       toast.error("Ваша корзина пуста. Перенаправление...");
-      // Небольшая задержка перед редиректом, чтобы пользователь увидел сообщение
       const timer = setTimeout(() => {
         router.push("/");
       }, 1500);
-      return () => clearTimeout(timer); // Очистка таймера при размонтировании
+      return () => clearTimeout(timer);
     }
   }, [products, step, router]);
 
-  // Состояние для ошибки (новое)
   const [error, setError] = useState<string | null>(null);
 
-  // --- Рендеринг компонента (из первого файла, с мелкими правками) ---
   return (
     <div className={styles.checkoutWrapper}>
       <div className={styles.divider}></div>
@@ -319,7 +251,7 @@ const CheckoutPage = () => {
       </div>
       <div className={styles.checkoutContainer}>
         <AnimatePresence mode="wait">
-          {/* --- Шаг 1: Корзина --- */}
+          {/* --- Шаг 1: Корзина (без изменений) --- */}
           {step === "cart" && (
             <motion.section
               key="cart"
@@ -329,10 +261,8 @@ const CheckoutPage = () => {
               animate="visible"
               exit="exit"
             >
-              {/* Отображение пусто корзины или списка товаров */}
               {products.length === 0 ? (
                 <div className={styles.emptyCart}>
-                  {/* ... (код для пустой корзины как в первом файле) ... */}
                   <Image
                     src="/empty_cart.svg"
                     width={180}
@@ -402,7 +332,6 @@ const CheckoutPage = () => {
                   })}
                 </ul>
               )}
-              {/* Итоги корзины и кнопка "Перейти к оформлению" */}
               {products.length > 0 && (
                 <motion.div
                   className={styles.cartSummary}
@@ -448,7 +377,7 @@ const CheckoutPage = () => {
             </motion.section>
           )}
 
-          {/* --- Шаг 2: Оформление --- */}
+          {/* --- Шаг 2: Оформление (Упрощенная форма) --- */}
           {step === "order" && (
             <motion.section
               key="order"
@@ -459,15 +388,14 @@ const CheckoutPage = () => {
               exit="exit"
             >
               <h2 className={styles.sectionTitle}>Оформление заказа</h2>
-              {/* Отображение ошибки API */}
               {error && <p className={styles.apiError}>{error}</p>}
               <form
                 className={styles.orderForm}
                 onSubmit={handleOrderSubmit}
-                autoComplete="off" // Отключаем автозаполнение браузера для примера
-                noValidate // Отключаем встроенную валидацию HTML5
+                autoComplete="off"
+                noValidate
               >
-                {/* --- Поля формы (как в первом файле) --- */}
+                {/* --- Упрощенные поля формы --- */}
                 <h3 className={styles.formSectionTitle}>
                   Контактная информация
                 </h3>
@@ -495,48 +423,25 @@ const CheckoutPage = () => {
                     />
                   </div>
                 </div>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="phone">Телефон</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      required
-                      value={checkoutForm.phone}
-                      onChange={handleOrderInput}
-                      placeholder="+7 (XXX) XXX-XX-XX"
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      value={checkoutForm.email}
-                      onChange={handleOrderInput}
-                    />
-                  </div>
+                <div className={styles.formGroup}>
+                  {" "}
+                  {/* Телефон на всю ширину */}
+                  <label htmlFor="phone">Телефон</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    required
+                    value={checkoutForm.phone}
+                    onChange={handleOrderInput}
+                    placeholder="+7 (XXX) XXX-XX-XX"
+                  />
                 </div>
 
                 <h3 className={styles.formSectionTitle}>Адрес доставки</h3>
                 <div className={styles.formGroup}>
                   {" "}
-                  {/* Company на всю ширину */}
-                  <label htmlFor="company">Компания (необязательно)</label>
-                  <input
-                    type="text"
-                    id="company"
-                    name="company"
-                    value={checkoutForm.company}
-                    onChange={handleOrderInput}
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  {" "}
-                  {/* Address на всю ширину */}
+                  {/* Адрес на всю ширину */}
                   <label htmlFor="address">Адрес</label>
                   <input
                     type="text"
@@ -545,108 +450,12 @@ const CheckoutPage = () => {
                     required
                     value={checkoutForm.address}
                     onChange={handleOrderInput}
-                    placeholder="Улица, дом"
+                    placeholder="Город, Улица, дом, квартира/офис"
                   />
-                </div>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="apartment">Квартира/Офис</label>
-                    <input
-                      type="text"
-                      id="apartment"
-                      name="apartment"
-                      required
-                      value={checkoutForm.apartment}
-                      onChange={handleOrderInput}
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="city">Город</label>
-                    <input
-                      type="text"
-                      id="city"
-                      name="city"
-                      required
-                      value={checkoutForm.city}
-                      onChange={handleOrderInput}
-                    />
-                  </div>
-                </div>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="country">Страна</label>
-                    <input
-                      type="text"
-                      id="country"
-                      name="country"
-                      required
-                      value={checkoutForm.country}
-                      onChange={handleOrderInput}
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="postalCode">Почтовый индекс</label>
-                    <input
-                      type="text"
-                      id="postalCode"
-                      name="postalCode"
-                      required
-                      value={checkoutForm.postalCode}
-                      onChange={handleOrderInput}
-                    />
-                  </div>
                 </div>
 
-                <h3 className={styles.formSectionTitle}>Детали оплаты</h3>
-                <div className={styles.formGroup}>
-                  <label htmlFor="cardName">Имя на карте</label>
-                  <input
-                    type="text"
-                    id="cardName"
-                    name="cardName"
-                    required
-                    value={checkoutForm.cardName}
-                    onChange={handleOrderInput}
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label htmlFor="cardNumber">Номер карты</label>
-                  <input
-                    type="text"
-                    id="cardNumber"
-                    name="cardNumber"
-                    required
-                    value={checkoutForm.cardNumber}
-                    onChange={handleOrderInput}
-                    placeholder="XXXX XXXX XXXX XXXX"
-                  />
-                </div>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="expirationDate">Срок действия</label>
-                    <input
-                      type="text"
-                      id="expirationDate"
-                      name="expirationDate"
-                      required
-                      value={checkoutForm.expirationDate}
-                      onChange={handleOrderInput}
-                      placeholder="ММ/ГГ"
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="cvc">CVC/CVV</label>
-                    <input
-                      type="text"
-                      id="cvc"
-                      name="cvc"
-                      required
-                      value={checkoutForm.cvc}
-                      onChange={handleOrderInput}
-                      placeholder="XXX"
-                    />
-                  </div>
-                </div>
+                {/* Удалены поля: company, apartment, city, country, postalCode */}
+                {/* Удалена секция "Детали оплаты" */}
 
                 <h3 className={styles.formSectionTitle}>Дополнительно</h3>
                 <div className={styles.formGroup}>
@@ -659,8 +468,9 @@ const CheckoutPage = () => {
                     onChange={handleOrderInput}
                   />
                 </div>
+                {/* --- Конец упрощенных полей --- */}
 
-                {/* Итоги заказа (как в первом файле) */}
+                {/* Итоги заказа (без изменений) */}
                 <div className={styles.orderSummary}>
                   <div className={styles.summaryRow}>
                     <span>Товары:</span>
@@ -685,7 +495,7 @@ const CheckoutPage = () => {
                   </div>
                 </div>
 
-                {/* Кнопки Назад/Оформить (как в первом файле) */}
+                {/* Кнопки Назад/Оформить (без изменений) */}
                 <div className={styles.orderActions}>
                   <button
                     type="button"
@@ -707,7 +517,7 @@ const CheckoutPage = () => {
             </motion.section>
           )}
 
-          {/* --- Шаг 3: Успех --- */}
+          {/* --- Шаг 3: Успех (без изменений) --- */}
           {step === "success" && (
             <motion.section
               key="success"
@@ -722,8 +532,8 @@ const CheckoutPage = () => {
               </div>
               <h2 className={styles.sectionTitle}>Спасибо за заказ!</h2>
               <p className={styles.successText}>
-                Ваш заказ успешно оформлен. Мы свяжемся с вами для подтверждения
-                в ближайшее время.
+                Ваш заказ успешно оформле��. Мы свяжемся с вами для
+                подтверждения в ближайшее время.
               </p>
               <Link href="/" className={styles.backToShopBtn}>
                 Вернуться на главную
