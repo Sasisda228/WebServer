@@ -12,7 +12,7 @@
   --radius: 18px;
   --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   /* --- Обновляем основной шрифт --- */
-  --font-main: 'Russo One', sans-serif; /* <--- Применяем Russo One */
+
   background: #141220;
 }
 
@@ -48,7 +48,6 @@ html {
 html {
   margin-top: 87px;
   margin-bottom: 50px;
-  font-family: var(--font-main);
 
 }
 *,
