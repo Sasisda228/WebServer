@@ -16,45 +16,35 @@
 }
 
 .contentWrapper {
-  max-width: 800px;
+  max-width: 80%;
   width: 100%;
-  padding: 2rem;
-  background: rgba(29, 26, 45, 0.9);
+  padding: 2.5rem;
+  background: rgba(29, 26, 45, 0.85);
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  color: var(--text-color);
 }
 
 .title {
-  font-size: 3rem;
+  font-size: 2.8rem;
   font-weight: 700;
   background: linear-gradient(90deg, #9a1840, #371b72);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   margin-bottom: 2rem;
-  text-align: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.list {
-  list-style: none;
-  padding: 0;
-}
-
-.listItem {
-  font-size: 1.4rem;
-  color: var(--text-color);
-  padding: 1rem;
-  margin: 0.8rem 0;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  border-left: 4px solid #9a1840;
-  transition: all 0.3s ease;
-}
-
-.listItem:hover {
-  transform: translateX(10px);
-  background: rgba(154, 24, 64, 0.2);
+/* Добавляем стили для текста статьи */
+.articleContent {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: justify;
+  margin-top: 1rem;
 }
 
 .progressBar {
@@ -68,28 +58,47 @@
   z-index: 1000;
 }
 
+@media (max-width: 1024px) {
+  .contentWrapper {
+    max-width: 85%;
+    padding: 2rem;
+  }
+  .title {
+    font-size: 2.4rem;
+  }
+  .articleContent {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+}
+
 @media (max-width: 768px) {
+  .contentWrapper {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
   .title {
     font-size: 2rem;
   }
-  
-  .listItem {
-    font-size: 1.1rem;
-    padding: 0.8rem;
-  }
-  
-  .contentWrapper {
-    padding: 1.5rem;
-    margin: 1rem;
+  .articleContent {
+    font-size: 1rem;
+    text-align: left;
   }
 }
 
 @media (max-width: 480px) {
+  .contentWrapper {
+    max-width: 95%;
+    padding: 1.2rem;
+  }
   .title {
     font-size: 1.8rem;
   }
-  
-  .listItem {
-    font-size: 1rem;
+  .articleContent {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .progressBar {
+    height: 4px;
   }
 }

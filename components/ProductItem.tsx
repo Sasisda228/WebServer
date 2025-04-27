@@ -95,7 +95,7 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
             {product.title}
           </div>
           <div className={styles.priceRow}>
-            <span className={styles.price}>${product.price.toFixed(2)}</span>
+            <span className={styles.price}>{product?.price} ₽</span>
           </div>
           <button
             className={styles.buyButton}
