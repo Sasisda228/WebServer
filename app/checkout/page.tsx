@@ -110,12 +110,7 @@ const CheckoutPage = () => {
     setError(null);
 
     // Валидация (без изменений)
-    if (
-      !checkoutForm.name ||
-      !checkoutForm.lastname ||
-      !checkoutForm.phone ||
-      !checkoutForm.adress
-    ) {
+    if (!checkoutForm.name || !checkoutForm.lastname || !checkoutForm.phone) {
       toast.error(
         "Пожалуйста, заполните все обязательные поля (Имя, Фамилия, Телефон, Адрес)"
       );
@@ -146,7 +141,7 @@ const CheckoutPage = () => {
         phone: checkoutForm.phone,
         email: "-",
         company: "-",
-        adress: checkoutForm.adress,
+        adress: "-",
         apartment: "-",
         postalCode: "-",
         status: "processing",
