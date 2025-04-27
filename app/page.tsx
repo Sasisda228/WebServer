@@ -2,6 +2,7 @@ import LegalInfo from "@/components/LegalInfo";
 import ProductCarousel from "@/components/ProductCarousel";
 import ReviewsSection from "@/components/ReviewsSection";
 import SloganSection from "@/components/SloganSection";
+import StatsCounter from "@/components/StatsCounter";
 import dynamic from "next/dynamic";
 
 // --- Data Fetching Functions (Server-Side) ---
@@ -115,6 +116,17 @@ export default async function Home() {
 
       {/* Team Advantages Section - Dynamically loaded Client Component */}
       <TeamAdvantages />
+
+      {/* Stats Counter Section */}
+      <section
+        className="stats-section-wrapper"
+        style={{
+          padding: "3rem 1rem",
+          backgroundColor: "var(--primary-color)",
+        }}
+      >
+        <StatsCounter label="Автоматов продано" initialValue={1357} />
+      </section>
 
       {/* Reviews Section - Pass fetched data */}
       {/* ReviewsSection is a Client Component using framer-motion */}

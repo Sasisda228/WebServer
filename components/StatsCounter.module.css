@@ -1,0 +1,55 @@
+/* components/StatsCounter.module.css */
+.counterWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background-color: var(--secondary-color, #1d1a2d); /* Фоновый цвет секции */
+  border-radius: var(--border-radius, 12px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  min-width: 200px; /* Минимальная ширина для наглядности */
+}
+
+.counterNumber {
+  font-size: 3.5rem; /* Крупный размер числа */
+  font-weight: 700;
+  color: var(--accent-color-1, #9a1840); /* Цвет акцента для числа */
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  /* Можно добавить градиент, если нужно */
+  /* background: linear-gradient(90deg, var(--accent-color-1), var(--accent-color-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.counterLabel {
+  font-size: 1.1rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  font-weight: 500;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .counterNumber {
+    font-size: 3rem;
+  }
+  .counterLabel {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .counterNumber {
+    font-size: 2.5rem;
+  }
+  .counterLabel {
+    font-size: 0.9rem;
+  }
+  .counterWrapper {
+    padding: 1.5rem 0.8rem;
+  }
+}
