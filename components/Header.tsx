@@ -13,7 +13,7 @@ const Header = () => {
   useSession();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedProductSlug, setSelectedProductSlug] = useState<string | null>(
@@ -48,14 +48,15 @@ const Header = () => {
     const handler = setTimeout(async () => {
       try {
         const res = await fetch(
-          `http://212.67.12.199:3001/api/search?query=${searchQuery}`
+          `http://212.67.12.199:3001/api/search?query=${encodeURIComponent(
+            searchQuery
+          )}`
         );
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }
-        console.log(res.json());
 
-        const data: Product[] = await res.json();
+        const data = await res.json();
         setSearchResults(data);
         setIsDropdownVisible(data.length > 0);
       } catch (error) {
