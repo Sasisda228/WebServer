@@ -117,11 +117,11 @@
 
 /* Mobile styles */
 @media (max-width: 768px) {
-  .categoryBarContainer {
+  /* .categoryBarContainer {
     top: auto;
     bottom: 70px; /* Position above the mobile navbar */
     height: 40px;
-  }
+  } */
 
   .categoryItem {
     font-size: 0.8rem;
