@@ -1,6 +1,6 @@
 /* components/SloganSection.module.css */
 /* --- Variables (Import or Define) --- */
-:root {
+.sloganContainer {
   --primary-color: #141220;
   --secondary-color: #1d1a2d;
   --accent-color-1: #9a1840;
