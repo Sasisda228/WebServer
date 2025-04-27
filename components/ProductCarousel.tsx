@@ -92,36 +92,38 @@ export default function ProductCarousel({
             // Provide a fallback if albumGroupId couldn't be extracted or if the original URL should be used
 
             return (
-              <div className={styles.emblaSlide} key={product.id}>
-                <div className={styles.productImageContainer}>
-                  <img
-                    width={350}
-                    height={350}
-                    src={
-                      "https://ucarecdn.com/0cca0ce2-2ec2-4d7e-b20c-bffbd953d6a5/"
-                    } // Use finalImageUrl or a placeholder
-                    alt={product.title}
-                    className={styles.productImage}
-                    loading="lazy" // Add lazy loading
-                    onError={(e) => {
-                      // Optional: Handle image loading errors
-                      e.currentTarget.src = "/placeholder.png";
-                      e.currentTarget.onerror = null;
-                    }}
-                  />
-                  {/* Stand simulation element */}
-                  <div className={styles.stand}></div>
+              <>
+                <div className={styles.emblaSlide} key={product.id}>
+                  <div className={styles.productImageContainer}>
+                    <img
+                      width={350}
+                      height={350}
+                      src={
+                        "https://ucarecdn.com/0cca0ce2-2ec2-4d7e-b20c-bffbd953d6a5/"
+                      } // Use finalImageUrl or a placeholder
+                      alt={product.title}
+                      className={styles.productImage}
+                      loading="lazy" // Add lazy loading
+                      onError={(e) => {
+                        // Optional: Handle image loading errors
+                        e.currentTarget.src = "/placeholder.png";
+                        e.currentTarget.onerror = null;
+                      }}
+                    />
+                    {/* Stand simulation element */}
+                    <div className={styles.stand}></div>
+                  </div>
+                  <div className={styles.productInfo}>
+                    <h3 className={styles.productName}>{product.title}</h3>
+                    <p className={styles.productPrice}>{product.price} ₽</p>
+                    <button className={styles.productButton} disabled>
+                      {" "}
+                      {/* Added button */}
+                      Перейти к товару
+                    </button>
+                  </div>
                 </div>
-                <div className={styles.productInfo}>
-                  <h3 className={styles.productName}>{product.title}</h3>
-                  <p className={styles.productPrice}>{product.price} ₽</p>
-                  <button className={styles.productButton} disabled>
-                    {" "}
-                    {/* Added button */}
-                    Перейти к товару
-                  </button>
-                </div>
-              </div>
+              </>
             );
           })}
         </div>
