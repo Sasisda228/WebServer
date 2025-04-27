@@ -22,9 +22,6 @@ export default function ProductCarousel({
   products = [], // Default to empty array
   title = "Наши Товары",
 }: ProductCarouselProps) {
-  // Removed useState for albumGroupId - it caused the infinite loop
-  // const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
-
   // Initialize Embla Carousel
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true, // Enable looping
@@ -104,8 +101,10 @@ export default function ProductCarousel({
                     height={350}
                     src={
                       "https://ucarecdn.com/0cca0ce2-2ec2-4d7e-b20c-bffbd953d6a5/"
-                    } // Use the calculated or fallback sourcesrc={imageUrl + "nth/0/"} // Use the calculated or fallback source                    alt={product.title}
+                    } // Use finalImageUrl or a placeholder
+                    alt={product.title}
                     className={styles.productImage}
+                    loading="lazy" // Add lazy loading
                     onError={(e) => {
                       // Optional: Handle image loading errors
                       e.currentTarget.src = "/placeholder.png";
@@ -115,9 +114,15 @@ export default function ProductCarousel({
                   {/* Stand simulation element */}
                   <div className={styles.stand}></div>
                 </div>
-                <h3 className={styles.productName}>{product.title}</h3>
-                {/* Display product price */}
-                <p className={styles.productPrice}>{product.price} ₽</p>
+                <div className={styles.productInfo}>
+                  <h3 className={styles.productName}>{product.title}</h3>
+                  <p className={styles.productPrice}>{product.price} ₽</p>
+                  <button className={styles.productButton} disabled>
+                    {" "}
+                    {/* Added button */}
+                    Перейти к товару
+                  </button>
+                </div>
               </div>
             );
           })}

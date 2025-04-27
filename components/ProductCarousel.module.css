@@ -12,6 +12,9 @@
   --glow-color: rgba(154, 24, 64, 0.5);
   --transition-speed: 0.3s;
   --border-radius: 12px;
+  --button-bg: var(--accent-color-1);
+  --button-hover-bg: #b82050; /* Slightly lighter accent */
+  --button-text: var(--text-color);
 }
 .carouselContainer {
   padding: 3rem 0;
@@ -23,13 +26,9 @@
   overflow: hidden; /* Keep overflow on main container for controls */
 
   /* --- Added Shadow for Transition --- */
-  /* Creates a fade effect at the top and bottom using the primary color */
   box-shadow:
-    /* Top shadow */
     inset 0 50px 40px -30px var(--primary-color),
-    /* Bottom shadow */
     inset 0 -50px 40px -30px var(--primary-color);
-  /* Adjust the pixel values (50px, 40px, -30px) to control the size and softness of the fade */
 }
 
 .carouselHeader {
@@ -48,8 +47,6 @@
   0 0 10px rgba(154, 24, 64, 0.4), /* Wider glow using accent-color-1 */
   0 0 15px rgba(55, 27, 114, 0.4),  /* Wider glow using accent-color-2 */
   0 0 25px rgba(55, 27, 114, 0.3);  /* Widest glow using accent-color-2 */
-  /* Optional: Add a very subtle white halo for definition */
-  /* 0 0 1px rgba(255, 255, 255, 0.3); */
 }
 
 /* Embla viewport - hides non-centered slides */
@@ -61,7 +58,6 @@
 
 .emblaContainer {
   display: flex;
-  /* Gap not needed since only one slide is visible */
 }
 
 /* Slide styles - minimal */
@@ -100,6 +96,7 @@
   object-fit: contain; /* Ensure image fits without distortion */
   transition: transform var(--transition-speed) ease;
   z-index: 1; /* Ensure image is above stand */
+  border-radius: 8px; /* Slightly rounded corners for the image */
 }
 
 /* Stand simulation */
@@ -115,21 +112,56 @@
   z-index: 0; /* Below the image */
 }
 
-.productName {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--text-color);
+/* Container for text info + button */
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 300px; /* Match image container width */
   text-align: center;
-  margin-bottom: 0.5rem; /* Less margin */
+}
+
+.productName {
+  font-size: 1.2rem; /* Slightly larger */
+  font-weight: 600; /* Bolder */
+  color: var(--text-color);
+  margin-bottom: 0.4rem; /* Adjusted margin */
+  line-height: 1.3; /* Improve readability for longer names */
 }
 
 /* Price styles */
 .productPrice {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.3rem; /* Larger price */
+    font-weight: 700; /* Even bolder */
     color: var(--accent-color-1); /* Use accent color for price */
-    text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; /* Space before button */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3); /* Subtle shadow */
+}
+
+/* --- NEW: Product Button --- */
+.productButton {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.productButton:hover:not(:disabled) {
+  background-color: var(--button-hover-bg);
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.productButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 
@@ -137,8 +169,9 @@
 .controls {
   position: absolute;
   top: 50%;
-  left: 0.5rem;
-  right: 0.5rem;
+  /* Adjust left/right to be further from the edges */
+  left: 1.5rem;
+  right: 1.5rem;
   display: flex;
   justify-content: space-between;
   transform: translateY(-50%);
@@ -180,10 +213,10 @@
       transform: scale(1.03); /* Subtle scale on image hover */
   }
 
-  .arrow:hover {
+  .arrow:hover:not(:disabled) { /* Add :not(:disabled) */
     background-color: var(--accent-color-1);
     color: var(--text-color);
-    transform: scale(1.1);
+    transform: scale(1.1) translateY(-50%); /* Keep translateY if needed */
   }
 }
 
@@ -198,30 +231,58 @@
     margin-bottom: 1rem;
   }
   .productName {
-    font-size: 1rem;
+    font-size: 1.1rem; /* Adjust responsive font size */
   }
   .productPrice {
-    font-size: 1.1rem;
+    font-size: 1.2rem; /* Adjust responsive font size */
+  }
+  .productButton {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.85rem;
   }
   .controls {
-     left: 0.25rem;
-     right: 0.25rem;
+     /* Keep controls further out on tablet */
+     left: 1rem;
+     right: 1rem;
   }
   .arrow {
+     width: 40px; /* Slightly smaller arrows */
+     height: 40px;
+  }
+  .arrowIcon {
+     font-size: 1.8rem;
+  }
+  .productImageContainer {
+    max-width: 280px; /* Smaller image on mobile */
+  }
+  .productInfo {
+    max-width: 280px; /* Match image container */
+  }
+}
+
+@media (max-width: 480px) {
+   .productImageContainer {
+     max-width: 240px; /* Even smaller image */
+   }
+   .productInfo {
+     max-width: 240px; /* Match image container */
+   }
+   .productName {
+     font-size: 1rem;
+   }
+   .productPrice {
+     font-size: 1.1rem;
+   }
+   .controls {
+     /* Bring controls closer on small screens */
+     left: 0.5rem;
+     right: 0.5rem;
+   }
+    .arrow {
      width: 35px;
      height: 35px;
   }
   .arrowIcon {
      font-size: 1.5rem;
   }
-  .productImageContainer {
-    max-width: 450px; /* Smaller image on mobile */
-  }
-}
-
-@media (max-width: 480px) {
-   /* Further adjustments for smaller screens */
-   .productImageContainer {
-     max-width: 320px;
-   }
 }
