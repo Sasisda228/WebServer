@@ -53,6 +53,8 @@ const Header = () => {
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }
+        console.log(res.json());
+
         const data: Product[] = await res.json();
         setSearchResults(data);
         setIsDropdownVisible(data.length > 0);
