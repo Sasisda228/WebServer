@@ -55,6 +55,7 @@ const Header = () => {
 
     const handler = setTimeout(async () => {
       try {
+
         const baseUrl =
           process.env.NEXT_PUBLIC_API_BASE_URL || "http://212.67.12.199:3001";
         const response = await fetch(
@@ -133,7 +134,7 @@ const Header = () => {
                 47
               </span>
             </Link>
-            {searchQuery}
+            {encodeURIComponent(searchQuery.trim())}
           </div>
           {}
           {/* Панель действий пользователя */}
