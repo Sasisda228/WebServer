@@ -120,9 +120,8 @@ const Header = () => {
                 47
               </span>
             </Link>
-            {encodeURIComponent(searchQuery.trim())}
           </div>
-          {`http://212.67.12.199:3001/api/search?query=${searchQuery}`}
+
           {/* Панель действий пользователя */}
           <div className={styles.actions}>
             {pathname.startsWith("/shop") && (
