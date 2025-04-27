@@ -54,6 +54,7 @@ html {
 }
 html {
   margin-top: 50px;
+  margin-bottom: 50px;
 }
 @keyframes slide-in-bottom-to-top {
   from {
