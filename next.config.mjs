@@ -38,6 +38,12 @@ const nextConfig = {
         pathname: "/**",
       },
       {
+        protocol: "https",
+        hostname: "ucarecdn.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
         protocol: "http",
         hostname: `${process.env.HOST}:3001`,
         port: "",
