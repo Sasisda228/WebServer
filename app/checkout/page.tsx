@@ -84,7 +84,7 @@ const CheckoutPage = () => {
     name: "",
     lastname: "",
     phone: "",
-    address: "", // Исправлено с adress на address
+    adress: "", // Исправлено с adress на adress
     orderNotice: "",
   });
   const router = useRouter();
@@ -129,7 +129,7 @@ const CheckoutPage = () => {
       !checkoutForm.name ||
       !checkoutForm.lastname ||
       !checkoutForm.phone ||
-      !checkoutForm.address // Добавлена проверка адреса
+      !checkoutForm.adress // Добавлена проверка адреса
     ) {
       toast.error(
         "Пожалуйста, заполните все обязательные поля (Имя, Фамилия, Телефон, Адрес)"
@@ -159,7 +159,7 @@ const CheckoutPage = () => {
       return;
     }
     // Дополнительная валидация адреса (просто на непустоту)
-    if (checkoutForm.address.trim().length < 5) {
+    if (checkoutForm.adress.trim().length < 5) {
       // Пример: минимальная длина адреса
       toast.error("Пожалуйста, введите корректный адрес (мин. 5 символов)");
       setOrderLoading(false);
@@ -175,7 +175,7 @@ const CheckoutPage = () => {
         phone: checkoutForm.phone,
         email: "-",
         company: "-",
-        address: checkoutForm.address, // <--- Исправлено: отправляем введенный адрес
+        adress: checkoutForm.adress, // <--- Исправлено: отправляем введенный адрес
         apartment: "-",
         postalCode: "-",
         status: "processing",
@@ -213,7 +213,7 @@ const CheckoutPage = () => {
         name: "",
         lastname: "",
         phone: "",
-        address: "",
+        adress: "",
         orderNotice: "",
       });
     } catch (error: any) {
@@ -443,13 +443,13 @@ const CheckoutPage = () => {
 
                 <h3 className={styles.formSectionTitle}>Адрес доставки</h3>
                 <div className={styles.formGroup}>
-                  <label htmlFor="address">Адрес</label>
+                  <label htmlFor="adress">Адрес</label>
                   <input
                     type="text"
-                    id="address"
-                    name="address"
+                    id="adress"
+                    name="adress"
                     required
-                    value={checkoutForm.address}
+                    value={checkoutForm.adress}
                     onChange={handleOrderInput}
                     placeholder="Город, Улица, дом, квартира/офис"
                   />
