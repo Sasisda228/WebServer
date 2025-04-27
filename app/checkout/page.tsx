@@ -279,7 +279,10 @@ const CheckoutPage = () => {
                     alt="Пустая корзина"
                   />
                   <p>Ваша корзина пуста</p>
-                  <Link href="/" className={styles.backToShopBtn}>
+                  <Link
+                    href="/"
+                    className={`${styles.backToShopBtn} ${styles.secondaryButton}`}
+                  >
                     Вернуться к покупкам
                   </Link>
                 </div>
@@ -527,7 +530,10 @@ const CheckoutPage = () => {
                 Ваш заказ успешно оформлен. Мы свяжемся с вами для подтверждения
                 в ближайшее время.
               </p>
-              <Link href="/" className={styles.backToShopBtn}>
+              <Link
+                href="/"
+                className={`${styles.backToShopBtn} ${styles.secondaryButton}`}
+              >
                 Вернуться на главную
               </Link>
             </motion.section>

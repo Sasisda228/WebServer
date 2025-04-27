@@ -435,9 +435,9 @@
   max-width: 450px; /* Ограничим ширину текста */
   margin-bottom: 1.5rem;
 }
-.successSection .backToShopBtn { /* Стилизуем кнопку возврата */
+/* .successSection .backToShopBtn { 
   composes: secondaryButton;
-}
+} */
 
 /* --- Анимация для иконки успеха --- */
 @keyframes popIn {
