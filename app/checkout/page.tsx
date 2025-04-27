@@ -1,19 +1,20 @@
 "use client";
 
-import { isValidNameOrLastname } from "@/lib/utils";
-import UploadcareImage from "@uploadcare/nextjs-loader";
-import axios from "axios"; // <--- Импортируем axios
-import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { FaCheck, FaCircleQuestion, FaXmark } from "react-icons/fa6";
-import { useProductStore } from "../_zustand/store";
-import styles from "./CheckoutPage.module.css";
+// Убираем импорт isValidNameOrLastname, т.к. будем использовать встроенный regex
+import UploadcareImage from "@uploadcare/nextjs-loader"
+import axios from "axios"
+import { AnimatePresence, motion } from "framer-motion"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import React, { useEffect, useState } from "react"
+import toast from "react-hot-toast"
+import { FaCheck, FaCircleQuestion, FaXmark } from "react-icons/fa6"
+import { useProductStore } from "../_zustand/store"
+import styles from "./CheckoutPage.module.css"
 
 const SHIPPING_COST = 5;
+const TAX_RATE = 0.20; // 20% налог, вынесен в константу
 const API_BASE_URL = "/apiv3/";
 
 // Helper function to get the correct product image URL (без изменений)
@@ -70,14 +71,19 @@ const addOrderProduct = async (
 };
 
 const CheckoutPage = () => {
-  const { products, total, removeFromCart, clearCart } = useProductStore();
+  const {
+    products,
+    total: subTotal,
+    removeFromCart,
+    clearCart,
+  } = useProductStore(); // Переименуем total в subTotal для ясности
   const [step, setStep] = useState<"cart" | "order" | "success">("cart");
   const [orderLoading, setOrderLoading] = useState(false);
   const [checkoutForm, setCheckoutForm] = useState({
     name: "",
     lastname: "",
     phone: "",
-    adress: "",
+    address: "", // Исправлено с adress на address
     orderNotice: "",
   });
   const router = useRouter();
@@ -103,27 +109,45 @@ const CheckoutPage = () => {
     setCheckoutForm({ ...checkoutForm, [e.target.name]: e.target.value });
   };
 
-  // --- Обновленная логика отправки заказа (с axios) ---
+  // --- Расчет стоимости ---
+  const calculatedTax = subTotal * TAX_RATE;
+  const finalTotal =
+    subTotal === 0 ? 0 : Math.round(subTotal + calculatedTax + SHIPPING_COST);
+
+  // --- Обновленная логика отправки заказа ---
   const handleOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setOrderLoading(true);
     setError(null);
 
-    // Валидация (без изменений)
-    if (!checkoutForm.name || !checkoutForm.lastname || !checkoutForm.phone) {
+    // --- Обновленная валидация ---
+    const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s\-]+$/u; // Добавляем кириллицу, пробелы, дефисы
+
+    if (
+      !checkoutForm.name ||
+      !checkoutForm.lastname ||
+      !checkoutForm.phone ||
+      !checkoutForm.address // Добавлена проверка адреса
+    ) {
       toast.error(
         "Пожалуйста, заполните все обязательные поля (Имя, Фамилия, Телефон, Адрес)"
       );
       setOrderLoading(false);
       return;
     }
-    if (!isValidNameOrLastname(checkoutForm.name)) {
-      toast.error("Некорректный формат имени");
+    if (!nameRegex.test(checkoutForm.name)) {
+      // Используем regex
+      toast.error(
+        "Некорректный формат имени (допустимы буквы, пробелы, дефисы)"
+      );
       setOrderLoading(false);
       return;
     }
-    if (!isValidNameOrLastname(checkoutForm.lastname)) {
-      toast.error("Некорректный формат фамилии");
+    if (!nameRegex.test(checkoutForm.lastname)) {
+      // Используем regex
+      toast.error(
+        "Некорректный формат фамилии (допустимы буквы, пробелы, дефисы)"
+      );
       setOrderLoading(false);
       return;
     }
@@ -132,6 +156,14 @@ const CheckoutPage = () => {
       setOrderLoading(false);
       return;
     }
+    // Дополнительная валидация адреса (просто на непустоту)
+    if (checkoutForm.address.trim().length < 5) {
+      // Пример: минимальная длина адреса
+      toast.error("Пожалуйста, введите корректный адрес (мин. 5 символов)");
+      setOrderLoading(false);
+      return;
+    }
+    // --- Конец валидации ---
 
     try {
       // --- Отправка заказа с axios ---
@@ -141,11 +173,11 @@ const CheckoutPage = () => {
         phone: checkoutForm.phone,
         email: "-",
         company: "-",
-        adress: "-",
+        address: checkoutForm.address, // <--- Исправлено: отправляем введенный адрес
         apartment: "-",
         postalCode: "-",
         status: "processing",
-        total: Math.round(total + total / 5 + SHIPPING_COST),
+        total: finalTotal, // <--- Отправляем корректно рассчитанную итоговую сумму
         city: "-",
         country: "-",
         orderNotice: checkoutForm.orderNotice || "-",
@@ -179,7 +211,7 @@ const CheckoutPage = () => {
         name: "",
         lastname: "",
         phone: "",
-        adress: "",
+        address: "",
         orderNotice: "",
       });
     } catch (error: any) {
@@ -315,7 +347,7 @@ const CheckoutPage = () => {
                 >
                   <div className={styles.summaryRow}>
                     <span>Товары:</span>
-                    <span>{total} ₽</span>
+                    <span>{subTotal} ₽</span> {/* Используем subTotal */}
                   </div>
                   <div className={styles.summaryRow}>
                     <span>
@@ -328,17 +360,14 @@ const CheckoutPage = () => {
                     <span>{SHIPPING_COST} ₽</span>
                   </div>
                   <div className={styles.summaryRow}>
-                    <span>Налог (прим.):</span>
-                    <span>{Math.round(total / 5)} ₽</span>
+                    <span>Налог ({Math.round(TAX_RATE * 100)}%):</span>
+                    {/* Отображаем округленный налог */}
+                    <span>{Math.round(calculatedTax)} ₽</span>
                   </div>
                   <div className={styles.summaryTotal}>
                     <span>Итого:</span>
-                    <span>
-                      {total === 0
-                        ? 0
-                        : Math.round(total + total / 5 + SHIPPING_COST)}{" "}
-                      ₽
-                    </span>
+                    {/* Отображаем итоговую сумму */}
+                    <span>{finalTotal} ₽</span>
                   </div>
                   <button
                     className={styles.nextBtn}
@@ -417,7 +446,7 @@ const CheckoutPage = () => {
                     id="address"
                     name="address"
                     required
-                    value={checkoutForm.adress}
+                    value={checkoutForm.address}
                     onChange={handleOrderInput}
                     placeholder="Город, Улица, дом, квартира/офис"
                   />
@@ -438,24 +467,21 @@ const CheckoutPage = () => {
                 <div className={styles.orderSummary}>
                   <div className={styles.summaryRow}>
                     <span>Товары:</span>
-                    <span>{total} ₽</span>
+                    <span>{subTotal} ₽</span> {/* Используем subTotal */}
                   </div>
                   <div className={styles.summaryRow}>
                     <span>Доставка:</span>
                     <span>{SHIPPING_COST} ₽</span>
                   </div>
                   <div className={styles.summaryRow}>
-                    <span>Налог (прим.):</span>
-                    <span>{Math.round(total / 5)} ₽</span>
+                    <span>Налог ({Math.round(TAX_RATE * 100)}%):</span>
+                    {/* Отображаем округленный налог */}
+                    <span>{Math.round(calculatedTax)} ₽</span>
                   </div>
                   <div className={styles.summaryTotal}>
                     <span>Итого:</span>
-                    <span>
-                      {total === 0
-                        ? 0
-                        : Math.round(total + total / 5 + SHIPPING_COST)}{" "}
-                      ₽
-                    </span>
+                    {/* Отображаем итоговую сумму */}
+                    <span>{finalTotal} ₽</span>
                   </div>
                 </div>
 
