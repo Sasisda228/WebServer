@@ -121,7 +121,6 @@
 .searchContainer {
   position: relative; /* Crucial for absolute positioning of dropdown */
   padding: 0 16px; /* Match header padding */
-  margin-top: 8px; /* Space below header top */
 }
 
 .searchInput {
