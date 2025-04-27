@@ -2,7 +2,7 @@
 
 import { motion, useSpring, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
-import styles from "./StatsCounter.module.css"; // Создадим этот файл стилей
+import styles from "./StatsCounter.module.css";
 
 interface StatsCounterProps {
   initialValue?: number; // Начальное значение счетчика
@@ -34,9 +34,8 @@ const StatsCounter = ({ initialValue = 1234, label }: StatsCounterProps) => {
 
   return (
     <div className={styles.counterWrapper}>
-      <motion.span className={styles.counterNumber}>
-        {displayCount} {/* Отображаем анимированное значение */}
-      </motion.span>
+      {/* Это правильное использование displayCount с motion.span */}
+      <motion.span className={styles.counterNumber}>{displayCount}</motion.span>
       <span className={styles.counterLabel}>{label}</span>
     </div>
   );
