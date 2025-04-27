@@ -75,6 +75,7 @@ const CheckoutPage = () => {
     products,
     total: subTotal,
     removeFromCart,
+    calculateTotals,
     clearCart,
   } = useProductStore(); // Переименуем total в subTotal для ясности
   const [step, setStep] = useState<"cart" | "order" | "success">("cart");
@@ -100,6 +101,7 @@ const CheckoutPage = () => {
 
   const handleRemoveItem = (id: string) => {
     removeFromCart(id);
+    calculateTotals();
     toast.success("Товар удалён из корзины");
   };
 
@@ -230,6 +232,7 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
+    calculateTotals();
     if (step !== "success" && products.length === 0) {
       toast.error("Ваша корзина пуста. Перенаправление...");
       const timer = setTimeout(() => {
