@@ -43,6 +43,13 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent; /* Make text transparent to show gradient */
+  text-shadow:
+  0 0 5px rgba(154, 24, 64, 0.5), /* Inner glow using accent-color-1 */
+  0 0 10px rgba(154, 24, 64, 0.4), /* Wider glow using accent-color-1 */
+  0 0 15px rgba(55, 27, 114, 0.4),  /* Wider glow using accent-color-2 */
+  0 0 25px rgba(55, 27, 114, 0.3);  /* Widest glow using accent-color-2 */
+  /* Optional: Add a very subtle white halo for definition */
+  /* 0 0 1px rgba(255, 255, 255, 0.3); */
 }
 
 /* Embla viewport - hides non-centered slides */
