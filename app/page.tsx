@@ -116,11 +116,11 @@ export default async function Home() {
           backgroundColor: "var(--primary-color)",
         }}
       >
-        <StatsCounter label="Автоматов продано" initialValue={1357} />
+        <StatsCounter label="Вооруженно бойцов" initialValue={1357} />
       </section>
       {/* Product Carousel - Pass fetched data */}
       {/* ProductCarousel is a Client Component but receives data from the Server Component */}
-      <ProductCarousel products={products} title="Популярные товары" />
+      <ProductCarousel products={products} title="" />
 
       {/* Team Advantages Section - Dynamically loaded Client Component */}
       <TeamAdvantages />
