@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "./header.module.css";
 const Header = () => {
-  const { data: session } = useSession();
+  useSession();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -61,13 +61,13 @@ const Header = () => {
       </div>
 
       {/* Поле поиска */}
-      <div className={`${styles.searchBar} ${""}`}>
-        <input
-          type="text"
-          placeholder="Поиск по каталогу..."
-          className={styles.searchInput}
-        />
-      </div>
+      {/* <div className={`${styles.searchBar} ${""}`}> */}
+      <input
+        type="text"
+        placeholder="Поиск по каталогу..."
+        className={styles.searchInput}
+      />
+      {/* </div> */}
 
       {/* Категории
       <div className={styles.categoryBar}>
