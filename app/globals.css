@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap'); /* <--- Импорт Russo One */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   --neon-blue: #00fff9;
   --neon-pink: #ff005a;
@@ -9,9 +12,11 @@
   --border-glow: 0 0 8px var(--neon-blue), 0 0 16px var(--neon-pink);
   --radius: 18px;
   --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --font-main: "Inter", "Segoe UI", Arial, sans-serif;
+  /* --- Обновляем основной шрифт --- */
+  --font-main: 'Russo One', sans-serif; /* <--- Применяем Russo One */
   background: #141220;
 }
+
 :root {
   --acme-canvas-color: oklch(0.967 0.003 264.542);
   --color-bg-dark: #0a0a0a;
@@ -36,26 +41,39 @@
     var(--color-accent)
   );
 }
+
 html {
   box-sizing: border-box;
   background-color: #131120;
 }
+
 *,
 *::before,
 *::after {
   box-sizing: inherit;
 }
+
+/* Применяем основной шрифт к body для глобального эффекта */
+body {
+  font-family: var(--font-main);
+}
+
+
 .range {
   --range-shdw: #3b82f6;
 }
+
 @theme {
   --color-*: initial;
   --color-orbiz-dark: #081025;
 }
+
 html {
-  margin-top: 87px;
-  margin-bottom: 50px;
+  /* Убираем дублирующийся html блок, оставляем только один */
+  /* margin-top: 87px; */ /* Вероятно, это лучше делать через layout */
+  /* margin-bottom: 50px; */ /* Вероятно, это лучше делать через layout */
 }
+
 @keyframes slide-in-bottom-to-top {
   from {
     transform: translateY(100%);
@@ -64,6 +82,7 @@ html {
     transform: translateY(0);
   }
 }
+
 @keyframes slide-out-top-to-bottom {
   from {
     transform: translateY(0);
@@ -72,12 +91,15 @@ html {
     transform: translateY(100%);
   }
 }
+
 .animate-slide-in-bottom-to-top {
   animation: slide-in-bottom-to-top 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
 .animate-slide-out-top-to-bottom {
   animation: slide-out-top-to-bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
 .styled-slider {
   width: 100%;
   height: 4px;
@@ -89,6 +111,7 @@ html {
   margin-bottom: 0.5rem;
   accent-color: #2563eb;
 }
+
 .styled-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -101,6 +124,7 @@ html {
   cursor: pointer;
   transition: background 0.3s;
 }
+
 .styled-slider::-moz-range-thumb {
   width: 22px;
   height: 22px;
@@ -111,6 +135,7 @@ html {
   cursor: pointer;
   transition: background 0.3s;
 }
+
 .styled-slider::-ms-thumb {
   width: 22px;
   height: 22px;
@@ -121,10 +146,12 @@ html {
   cursor: pointer;
   transition: background 0.3s;
 }
+
 .styled-slider:focus {
   outline: none;
   box-shadow: 0 0 0 2px #2563eb55;
 }
+
 .checkbox:checked,
 .checkbox[checked="true"],
 .checkbox[aria-checked="true"] {
@@ -143,3 +170,5 @@ html {
     ),
     linear-gradient(-45deg, white 50%, #3b82f6 50.99%);
 }
+
+/* Убрал дублирующийся блок html с margin */
