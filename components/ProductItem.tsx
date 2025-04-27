@@ -7,6 +7,7 @@ const SingleProductModal = dynamic(
     // loading: () => <p>Loading details...</p>
   }
 );
+import { useProductStore } from "@/app/_zustand/store";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
@@ -35,7 +36,17 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
       }
     }
   }, [product.images]);
+  const { addToCart } = useProductStore();
 
+  const handleAddToCart = () => {
+    addToCart({
+      id: product?.id.toString(),
+      title: product?.title,
+      price: product?.price,
+      images: product?.images,
+      amount: 1,
+    });
+  };
   // Prevent modal opening when clicking on interactive elements inside the card
   const handleArticleClick = (e: React.MouseEvent) => {
     // If the click originated from a button or a link, do nothing
@@ -103,9 +114,8 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
             aria-label={`В КОРЗИНУ: ${product.title}`}
             type="button"
             data-ignore-article-click
-            onClick={(e) => {
-              e.stopPropagation();
-              // Здесь можно добавить логику добавления в корзину
+            onClick={() => {
+              handleAddToCart();
             }}
           >
             <span>В КОРЗИНУ</span>
