@@ -9,11 +9,6 @@ import dynamic from "next/dynamic";
 // Replace with your actual API calls or data sources
 
 // Example Product type (adjust as needed)
-interface Product {
-  id: string | number;
-  title: string;
-  images: string;
-}
 
 // Example Review type (adjust as needed)
 interface Review {
