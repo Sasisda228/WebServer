@@ -1,4 +1,5 @@
 .container {
+	word-wrap : break-word;
   height: 100vh;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
