@@ -33,10 +33,10 @@ export default async function RootLayout({
       {/* Consider` dynamic theme switching if needed */}
       <body className={inter.className}>
         {" "}
-        <Header />
         {/* Applies optimized font class */}
         {/* SessionProvider MUST be a Client Component to manage session state via React Context */}
         <SessionProvider session={session}>
+          <Header />
           {/* Providers likely wraps Client Components like Toaster */}
           <Providers>
             {/* Main page content is rendered here */}
