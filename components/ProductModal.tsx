@@ -1,7 +1,6 @@
 "use client";
 import {
   AddToWishlistBtn,
-  ProductTabs,
   SingleProductDynamicFields,
   SingleProductRating,
   StockAvailabillity,
@@ -177,7 +176,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
           </div>
         </div>
         <div className={styles.tabsWrap}>
-          <ProductTabs product={product} />
+          {/* <ProductTabs product={product} /> */}
         </div>
       </div>
     </div>

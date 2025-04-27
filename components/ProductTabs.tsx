@@ -10,10 +10,7 @@
 
 "use client";
 
-import React, { useState } from "react";
-import RatingPercentElement from "./RatingPercentElement";
-import SingleReview from "./SingleReview";
-import { formatCategoryName } from "@/utils/categoryFormating";
+import { useState } from "react";
 
 const ProductTabs = ({ product }: { product: Product }) => {
   const [currentProductTab, setCurrentProductTab] = useState<number>(0);
@@ -60,9 +57,9 @@ const ProductTabs = ({ product }: { product: Product }) => {
                 <tr>
                   <th>Category:</th>
                   <td>
-                    {product?.category?.name
+                    {/* {product?.category?.name
                       ? formatCategoryName(product?.category?.name)
-                      : "No category"}
+                      : "No category"} */}
                   </td>
                 </tr>
                 {/* row 3 */}
