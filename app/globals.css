@@ -15,6 +15,24 @@
 
   background: #141220;
 }
+:root {
+  --bg-primary: #141220; /* Основной фон страницы */
+  --bg-secondary: #1d1a2d; /* Фон контейнеров/карточек */
+  --bg-input: #2a273a; /* Фон полей ввода */
+  --text-primary: #ffffff; /* Основной текст */
+  --text-secondary: #a09cb8; /* Вторичный текст */
+  --accent-primary: #ad1944; /* Основной акцент (розовый/красный) */
+  --accent-secondary: #671693; /* Вторичный акцент (фиолетовый) */
+  --accent-tertiary: #371b72; /* Третичный акцент (темно-фиолетовый) */
+  --glow-primary: #ad194466; /* Свечение основного акцента */
+  --glow-secondary: #6716934d; /* Свечение вторичного акцента */
+  --border-color: #3a364f; /* Цвет рамок */
+  --success-color: #2ecc40; /* Цвет успеха */
+  --radius-m: 12px; /* Средний радиус */
+  --radius-l: 18px; /* Большой радиус */
+  --transition-fast: 0.2s ease-in-out;
+  --transition-std: 0.3s ease-in-out;
+}
 
 :root {
   --acme-canvas-color: oklch(0.967 0.003 264.542);
