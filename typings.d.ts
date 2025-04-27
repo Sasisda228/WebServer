@@ -2,14 +2,14 @@ interface Product {
   id: string;
   slug: string;
   title: string;
+  images: string[];
   price: number;
   rating: number;
   description: string;
-  images: string[];
   manufacturer: string;
-  categoryId: string;
-  category: { name: string }?;
   inStock: number;
+  categoryId: string;
+  // category: { name: string }?;
 }
 
 interface SingleProductPageProps {
