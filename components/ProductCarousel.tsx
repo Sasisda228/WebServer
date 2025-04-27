@@ -100,6 +100,8 @@ export default function ProductCarousel({
               <div className={styles.emblaSlide} key={product.id}>
                 <div className={styles.productImageContainer}>
                   <img
+                    width={350}
+                    height={350}
                     src={
                       "https://ucarecdn.com/0cca0ce2-2ec2-4d7e-b20c-bffbd953d6a5/"
                     } // Use the calculated or fallback sourcesrc={imageUrl + "nth/0/"} // Use the calculated or fallback source                    alt={product.title}
