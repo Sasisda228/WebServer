@@ -7,21 +7,13 @@ import { useEffect, useRef, useState } from "react";
 import SingleProductModal from "./SingleProductModal";
 import styles from "./header.module.css";
 
-// Define the structure of a search result product
-interface SearchProduct {
-  id: string | number;
-  title: string;
-  slug: string;
-  images?: string;
-  price?: number;
-}
 
 const DEBOUNCE_DELAY = 300; // Delay in ms for debouncing search input
 const Header = () => {
   useSession();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [selectedProductSlug, setSelectedProductSlug] = useState<string | null>(
@@ -55,18 +47,13 @@ const Header = () => {
 
     const handler = setTimeout(async () => {
       try {
-
-        const baseUrl =
-          process.env.NEXT_PUBLIC_API_BASE_URL || "http://212.67.12.199:3001";
-        const response = await fetch(
-          `${baseUrl}/api/search?query=${encodeURIComponent(
-            searchQuery.trim()
-          )}`
+        const res = await fetch(
+          `http://212.67.12.199:3001/api/search?query=${searchQuery || ""}`
         );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data: SearchProduct[] = await response.json();
+          if (!res.ok) {
+            throw new Error("Network response was not ok");
+          }
+        const data: Product[] = await res.json();
         setSearchResults(data);
         setIsDropdownVisible(data.length > 0);
       } catch (error) {
@@ -108,7 +95,7 @@ const Header = () => {
   };
 
   // Handle clicking a search result item
-  const handleResultClick = (product: SearchProduct) => {
+  const handleResultClick = (product: Product) => {
     setSelectedProductSlug(product.slug);
     setIsModalOpen(true);
     setIsDropdownVisible(false);
