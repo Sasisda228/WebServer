@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -47,16 +48,11 @@ const Header = () => {
 
     const handler = setTimeout(async () => {
       try {
-        const res = await fetch(
-          `http://212.67.12.199:3001/api/search?query=${encodeURIComponent(
-            searchQuery
-          )}`
+        const productsRes = await axios.get(
+          `/apiv3/search?query=${encodeURIComponent(searchQuery)}`
         );
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
 
-        const data = await res.json();
+        const data = productsRes.data;
         setSearchResults(data);
         setIsDropdownVisible(data.length > 0);
       } catch (error) {
