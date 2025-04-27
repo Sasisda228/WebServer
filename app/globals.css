@@ -56,10 +56,6 @@ html {
   box-sizing: inherit;
 }
 
-/* Применяем основной шрифт к body для глобального эффекта */
-body {
-  font-family: var(--font-main);
-}
 
 
 .range {
