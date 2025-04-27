@@ -1,3 +1,4 @@
+import { Header } from "@/components";
 import NavBar from "@/components/NavBar"; // Imports the main navigation, likely a Client Component due to interactivity/hooks
 import Providers from "@/Providers"; // Imports Providers (e.g., for Toaster), likely a Client Component
 import SessionProvider from "@/utils/SessionProvider"; // Client Component wrapper for next-auth session state
@@ -29,9 +30,10 @@ export default async function RootLayout({
     // Standard HTML structure
     <html lang="en" data-theme="light">
       {" "}
-      {/* Consider dynamic theme switching if needed */}
+      {/* Consider` dynamic theme switching if needed */}
       <body className={inter.className}>
         {" "}
+        <Header />
         {/* Applies optimized font class */}
         {/* SessionProvider MUST be a Client Component to manage session state via React Context */}
         <SessionProvider session={session}>

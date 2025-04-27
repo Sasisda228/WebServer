@@ -1,16 +1,13 @@
 "use client";
 
-import Filters, { FiltersRef } from "@/components/Filters";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { FaFilter } from "react-icons/fa6";
+import { useEffect, useState } from "react";
 import styles from "./header.module.css";
 const Header = () => {
   const { data: session } = useSession();
   const [isScrolled, setIsScrolled] = useState(false);
-  const filtersRef = useRef<FiltersRef>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,7 +40,7 @@ const Header = () => {
               >
                 <FaSearch size={20} />
               </button> */}
-              <button
+              {/* <button
                 className="rounded-full"
                 aria-label="Open filters"
                 onClick={() => filtersRef.current?.toggle()}
@@ -57,7 +54,7 @@ const Header = () => {
               >
                 <FaFilter size={20} />
               </button>
-              <Filters ref={filtersRef} />
+              <Filters ref={filtersRef} /> */}
             </>
           )}
         </div>
