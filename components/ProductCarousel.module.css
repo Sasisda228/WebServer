@@ -16,7 +16,8 @@
 
 .carouselContainer {
   padding: 3rem 0;
-  background-color: var(--primary-color);
+  background: url("/public/phon.png");
+  background-size: auto;
   position: relative;
   overflow: hidden; /* Keep overflow on main container for controls */
 }
