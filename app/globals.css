@@ -46,7 +46,10 @@ html {
   box-sizing: border-box;
   background-color: #131120;
 }
-
+html {
+  margin-top: 87px;
+  margin-bottom: 50px;
+}
 *,
 *::before,
 *::after {
