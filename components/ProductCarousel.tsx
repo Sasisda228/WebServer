@@ -6,12 +6,7 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md"; // Simple icons
 import styles from "./ProductCarousel.module.css";
 
 // Define the Product type (using title, images, and price as per your interface)
-interface Product {
-  id: string | number;
-  title: string;
-  images: string; // Assuming a single image URL string based on interface
-  price: number; // Added price field
-}
+
 
 interface ProductCarouselProps {
   products: Product[];
@@ -74,7 +69,7 @@ export default function ProductCarousel({
         <div className={styles.emblaContainer}>
           {products.map((product) => {
             // --- Calculate albumGroupId locally for *this* product ---
-            const imageUrl = product.images; // Assuming product.images is the URL string
+            const imageUrl = product.images[0]; // Assuming product.images is the URL string
 
             if (
               imageUrl && // Check if imageUrl exists
