@@ -49,6 +49,8 @@ html {
 html {
   margin-top: 87px;
   margin-bottom: 50px;
+  font-family: var(--font-main);
+
 }
 *,
 *::before,
