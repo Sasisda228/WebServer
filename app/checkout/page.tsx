@@ -21,7 +21,7 @@ import styles from "./CheckoutPage.module.css";
 
 const SHIPPING_COST = 5;
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+  process.env.NEXT_PUBLIC_API_URL || "http://212.67.12.199:3001/api";
 
 // Helper function to get the correct product image URL (без изменений)
 function getProductImageUrl(product: {
