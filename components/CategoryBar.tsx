@@ -23,8 +23,7 @@ export default function CategoryBar({
 
   // Check if we're in the shop section
   useEffect(() => {
-    const isShopSection = pathname.includes("/shop");
-    setIsVisible(isShopSection);
+    setIsVisible(true);
   }, [pathname]);
 
   // Handle scroll arrows visibility
