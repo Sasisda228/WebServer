@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 // *********************
 // Role of the component: Component that displays all orders on admin dashboard page
 // Name of the component: AdminOrders.tsx
@@ -18,8 +19,9 @@ const AdminOrders = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const response = await fetch("http://212.67.12.199:3001/api/orders");
-      const data = await response.json();
+      const orderResponse = await axios.get(`/apiv3/orders`);
+
+      const data = await orderResponse.data;
       setOrders(data);
     };
     fetchOrders();
