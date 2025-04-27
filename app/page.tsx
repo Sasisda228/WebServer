@@ -1,8 +1,6 @@
 import LegalInfo from "@/components/LegalInfo";
 import ProductCarousel from "@/components/ProductCarousel";
 import ReviewsSection from "@/components/ReviewsSection";
-import SloganSection from "@/components/SloganSection"; // Import the new component
-import dynamic from "next/dynamic";
 
 // --- Data Fetching Functions (Server-Side) ---
 // Replace with your actual API calls or data sources
@@ -122,7 +120,7 @@ export default async function Home() {
     // Use a main tag for semantic structure
     <main>
       {/* --- Added Slogan Section --- */}
-      <SloganSection />
+      {/* <SloganSection /> */}
 
       {/* Product Carousel - Pass fetched data */}
       {/* ProductCarousel is a Client Component but receives data from the Server Component */}
