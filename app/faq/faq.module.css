@@ -1,105 +1,117 @@
-.container {
-	word-wrap : break-word;
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  background: var(--primary-color);
+/* app/faq/faq.module.css */
+.faqPageContainer {
+  padding: 4rem 2rem; /* Отступы сверху/снизу и по бокам */
+  max-width: 1200px; /* Ограничиваем максимальную ширину */
+  margin: 0 auto; /* Центрируем контейнер */
+  min-height: 80vh; /* Минимальная высота */
+  background-color: var(--primary-color, #141220); /* Фон страницы */
 }
 
-.fullpageSection {
-  height: 100vh;
-  scroll-snap-align: start;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 2rem;
-}
-
-.contentWrapper {
-  max-width: 80%;
-  width: 100%;
-  padding: 2.5rem;
-  background: rgba(29, 26, 45, 0.85);
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  color: var(--text-color);
-}
-
-.title {
+.pageTitle {
+  text-align: center;
   font-size: 2.8rem;
   font-weight: 700;
-  background: linear-gradient(90deg, #9a1840, #371b72);
+  color: var(--text-color, #fff);
+  margin-bottom: 3rem;
+  background: linear-gradient(90deg, var(--accent-color-1, #9a1840), var(--accent-color-2, #371b72));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  margin-bottom: 2rem;
-  text-align: center;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Добавляем стили для текста статьи */
-.articleContent {
-  font-size: 1.2rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.9);
-  text-align: justify;
-  margin-top: 1rem;
+.buttonsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Адаптивная сетка */
+  gap: 2rem; /* Промежутки между кнопками */
 }
 
-.progressBar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: #9a1840;
-  transform-origin: 0%;
-  z-index: 1000;
+.faqButton {
+  background-color: var(--secondary-color, #1d1a2d);
+  border-radius: var(--border-radius, 12px);
+  padding: 1.8rem 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  border: 2px solid transparent; /* Резервируем место для градиентной рамки */
+  transition: transform var(--transition, 0.3s), box-shadow var(--transition, 0.3s), border-color var(--transition, 0.3s);
+  display: flex;
+  flex-direction: column; /* Текст будет под заголовком */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  color: var(--text-color, #fff);
+  overflow: hidden; /* Чтобы градиентная рамка не вылезала */
 }
 
-@media (max-width: 1024px) {
-  .contentWrapper {
-    max-width: 85%;
-    padding: 2rem;
-  }
-  .title {
-    font-size: 2.4rem;
-  }
-  .articleContent {
-    font-size: 1.1rem;
-    line-height: 1.6;
-  }
+/* Стилизация градиентной рамки (если используется style в компоненте) */
+.faqButton[style*="border-image"] {
+  border-color: transparent; /* Убедимся, что обычная рамка не видна */
 }
 
+.faqButton:hover {
+   border-color: var(--accent-color-1, #9a1840); /* Цвет рамки при ховере, если нет градиента */
+}
+.faqButton[style*="border-image"]:hover {
+   /* Можно усилить тень или добавить свечение при ховере на градиентную кнопку */
+   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+
+.buttonText {
+  flex-grow: 1;
+}
+
+.buttonTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: var(--text-color, #fff);
+  /* Можно добавить градиент к заголовку */
+  /* background: linear-gradient(90deg, #eee, #bbb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; */
+}
+
+.buttonDescription {
+  font-size: 0.95rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.75));
+  line-height: 1.5;
+}
+
+/* Стили для состояний загрузки и ошибки */
+.loadingState,
+.errorState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  font-size: 1.5rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.errorState {
+  color: #ff4d4d; /* Красный для ошибки */
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
-  .contentWrapper {
-    max-width: 90%;
-    padding: 1.5rem;
+  .faqPageContainer {
+    padding: 3rem 1rem;
   }
-  .title {
-    font-size: 2rem;
+  .pageTitle {
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
   }
-  .articleContent {
-    font-size: 1rem;
-    text-align: left;
+  .buttonsGrid {
+    grid-template-columns: 1fr; /* Одна колонка на мобильных */
+    gap: 1.5rem;
   }
-}
-
-@media (max-width: 480px) {
-  .contentWrapper {
-    max-width: 95%;
-    padding: 1.2rem;
+  .faqButton {
+    padding: 1.5rem 1.2rem;
   }
-  .title {
-    font-size: 1.8rem;
+  .buttonTitle {
+    font-size: 1.2rem;
   }
-  .articleContent {
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-  .progressBar {
-    height: 4px;
+  .buttonDescription {
+    font-size: 0.9rem;
   }
 }

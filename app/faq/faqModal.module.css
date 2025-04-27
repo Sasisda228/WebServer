@@ -1,0 +1,102 @@
+/* app/faq/faqModal.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 10, 20, 0.85); /* Полупрозрачный темный фон */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Выше остального контента */
+  backdrop-filter: blur(5px); /* Эффект размытия фона */
+  padding: 1rem; /* Отступы для мобильных */
+}
+
+.modalContent {
+  background-color: var(--secondary-color, #1d1a2d);
+  padding: 2rem 2.5rem;
+  border-radius: var(--border-radius, 12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 700px; /* Максимальная ширина модалки */
+  width: 100%;
+  max-height: 90vh; /* Максимальная высота */
+  overflow-y: auto; /* Добавляем прокрутку, если контент не влезает */
+  position: relative; /* Для позиционирования кнопки закрытия */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Тонкая рамка */
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15); /* Разделитель */
+}
+
+.modalHeader h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-color, #fff);
+  margin: 0; /* Убираем отступы по умолчанию */
+  /* Можно добавить градиент */
+  /* background: linear-gradient(90deg, var(--accent-color-1), var(--accent-color-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; */
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 2.5rem; /* Размер крестика */
+  line-height: 1;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  cursor: pointer;
+  padding: 0 0.5rem; /* Небольшие отступы для кликабельности */
+  transition: color var(--transition, 0.3s), transform var(--transition, 0.3s);
+}
+
+.closeButton:hover {
+  color: var(--text-color, #fff);
+  transform: rotate(90deg);
+}
+
+.modalBody {
+  color: var(--text-secondary, rgba(255, 255, 255, 0.85));
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* Стили для контента внутри modalBody, если нужно */
+.modalBody p {
+  margin-bottom: 1rem;
+}
+.modalBody ul {
+  list-style: disc;
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.modalBody li {
+  margin-bottom: 0.5rem;
+}
+
+/* Адаптивность модалки */
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 1.5rem 1.8rem;
+    max-height: 85vh;
+  }
+  .modalHeader h2 {
+    font-size: 1.5rem;
+  }
+  .closeButton {
+    font-size: 2rem;
+  }
+  .modalBody {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
