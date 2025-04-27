@@ -24,7 +24,7 @@ export default function ProductCarousel({
 }: ProductCarouselProps) {
   // Initialize Embla Carousel
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true, // Enable looping
+    loop: false, // Enable looping
     align: "center", // Center the active slide
     containScroll: "trimSnaps", // Optional: Adjust scroll behavior
   });
@@ -74,7 +74,6 @@ export default function ProductCarousel({
         <div className={styles.emblaContainer}>
           {products.map((product) => {
             // --- Calculate albumGroupId locally for *this* product ---
-            let albumGroupId: string | null = null; // Use a local variable
             const imageUrl = product.images; // Assuming product.images is the URL string
 
             if (
@@ -85,7 +84,6 @@ export default function ProductCarousel({
               // Извлекаем ID альбома из URL
               const match = imageUrl.match(/ucarecdn\.com\/([^\/]+)/);
               if (match && match[1]) {
-                albumGroupId = match[1]; // Assign to the local variable
               }
             }
             // --- End of local calculation ---
