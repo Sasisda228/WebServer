@@ -404,9 +404,9 @@ const CheckoutPage = () => {
                 autoComplete="off"
                 noValidate
               >
-                <h3 className={styles.formSectionTitle}>
+                {/* <h3 className={styles.formSectionTitle}>
                   Контактная информация
-                </h3>
+                </h3> */}
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
                     <label htmlFor="name">Имя</label>
@@ -444,7 +444,7 @@ const CheckoutPage = () => {
                   />
                 </div>
 
-                <h3 className={styles.formSectionTitle}>Адрес доставки</h3>
+                {/* <h3 className={styles.formSectionTitle}>Адрес доставки</h3> */}
                 <div className={styles.formGroup}>
                   <label htmlFor="adress">Адрес</label>
                   <input
@@ -458,7 +458,7 @@ const CheckoutPage = () => {
                   />
                 </div>
 
-                <h3 className={styles.formSectionTitle}>Дополнительно</h3>
+                {/* <h3 className={styles.formSectionTitle}>Дополнительно</h3> */}
                 <div className={styles.formGroup}>
                   <label htmlFor="orderNotice">Комментарий к заказу</label>
                   <textarea
