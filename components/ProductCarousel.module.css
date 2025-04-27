@@ -197,7 +197,7 @@
      font-size: 1.5rem;
   }
   .productImageContainer {
-    max-width: 250px; /* Smaller image on mobile */
+    max-width: 450px; /* Smaller image on mobile */
   }
 }
 
