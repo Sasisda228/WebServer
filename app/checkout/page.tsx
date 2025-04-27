@@ -77,7 +77,7 @@ const CheckoutPage = () => {
     name: "",
     lastname: "",
     phone: "",
-    address: "",
+    adress: "",
     orderNotice: "",
   });
   const router = useRouter();
@@ -114,7 +114,7 @@ const CheckoutPage = () => {
       !checkoutForm.name ||
       !checkoutForm.lastname ||
       !checkoutForm.phone ||
-      !checkoutForm.address
+      !checkoutForm.adress
     ) {
       toast.error(
         "Пожалуйста, заполните все обязательные поля (Имя, Фамилия, Телефон, Адрес)"
@@ -146,7 +146,7 @@ const CheckoutPage = () => {
         phone: checkoutForm.phone,
         email: "-",
         company: "-",
-        address: checkoutForm.address,
+        adress: checkoutForm.adress,
         apartment: "-",
         postalCode: "-",
         status: "processing",
@@ -184,7 +184,7 @@ const CheckoutPage = () => {
         name: "",
         lastname: "",
         phone: "",
-        address: "",
+        adress: "",
         orderNotice: "",
       });
     } catch (error: any) {
@@ -422,7 +422,7 @@ const CheckoutPage = () => {
                     id="address"
                     name="address"
                     required
-                    value={checkoutForm.address}
+                    value={checkoutForm.adress}
                     onChange={handleOrderInput}
                     placeholder="Город, Улица, дом, квартира/офис"
                   />
