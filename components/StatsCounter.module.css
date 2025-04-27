@@ -12,17 +12,16 @@
   min-width: 200px; /* Минимальная ширина для наглядности */
 }
 
+/* .counterNumber теперь контейнер для цифр */
 .counterNumber {
-  font-size: 3.5rem; /* Крупный размер числа */
+  display: flex; /* Выстраиваем цифры в ряд */
+  justify-content: center; /* Центрируем блок цифр */
+  align-items: baseline; /* Выравниваем цифры по базовой линии */
+  font-size: 3.5rem; /* Базовый размер шрифта для цифр */
   font-weight: 700;
-  color: var(--accent-color-1, #9a1840); /* Цвет акцента для числа */
-  line-height: 1.1;
+  color: var(--accent-color-1, #9a1840);
+  line-height: 1; /* Уменьшаем line-height для плотности */
   margin-bottom: 0.5rem;
-  /* Можно добавить градиент, если нужно */
-  /* background: linear-gradient(90deg, var(--accent-color-1), var(--accent-color-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent; */
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
@@ -30,6 +29,15 @@
   font-size: 1.1rem;
   color: var(--text-secondary, rgba(255, 255, 255, 0.7));
   font-weight: 500;
+  margin-top: 0.5rem; /* Добавим небольшой отступ сверху */
+}
+
+/* Стили для отдельных цифр */
+.digit {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  margin: 0 2px; /* Небольшой отступ между цифрами */
 }
 
 /* Адаптивность */

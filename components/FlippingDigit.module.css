@@ -1,0 +1,30 @@
+/* components/FlippingDigit.module.css */
+.digitContainer {
+  display: inline-block; /* Чтобы цифры выстраивались в ряд */
+  perspective: 300px; /* Глубина 3D-сцены для эффекта */
+  position: relative;
+  overflow: hidden; /* Обрезаем анимацию, выходящую за границы */
+  /* Задаем размеры контейнера, чтобы цифры не прыгали */
+  width: 1.1em; /* Ширина зависит от размера шрифта */
+  height: 1.5em; /* Высота зависит от размера шрифта */
+  line-height: 1.5em; /* Выравниваем цифру по вертикали */
+  text-align: center;
+}
+
+.digit {
+  position: absolute; /* Позиционируем внутри контейнера */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden; /* Скрываем обратную сторону при повороте */
+  transform-origin: center center; /* Точка вращения */
+  /* Наследуем стили шрифта от родителя (.counterNumber) */
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-shadow: inherit;
+}

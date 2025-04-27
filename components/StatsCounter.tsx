@@ -1,41 +1,39 @@
 "use client";
 
-import { motion, useSpring, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
+import FlippingDigit from "./FlippingDigit"; // Импортируем новый компонент
 import styles from "./StatsCounter.module.css";
 
 interface StatsCounterProps {
-  initialValue?: number; // Начальное значение счетчика
-  label: string; // Текст под счетчиком
+  initialValue?: number;
+  label: string;
 }
 
 const StatsCounter = ({ initialValue = 1234, label }: StatsCounterProps) => {
   const [count, setCount] = useState(initialValue);
 
-  // Используем useSpring для плавной анимации числа
-  const spring = useSpring(count, { mass: 0.8, stiffness: 75, damping: 15 });
-  // Округляем значение для отображения целых чисел
-  const displayCount = useTransform(spring, (current) => Math.round(current));
-
   useEffect(() => {
-    // Обновляем целевое значение для useSpring при изменении count
-    spring.set(count);
-  }, [spring, count]);
-
-  useEffect(() => {
-    // Увеличиваем счетчик каждую секунду
     const interval = setInterval(() => {
       setCount((prevCount) => prevCount + 1);
     }, 1000); // Интервал в 1 секунду
 
-    // Очистка интервала при размонтировании компонента
     return () => clearInterval(interval);
-  }, []); // Пустой массив зависимостей - запускаем эффект один раз
+  }, []);
+
+  // Преобразуем число в массив цифр (строк)
+  const digits = String(count).split("").map(Number);
 
   return (
     <div className={styles.counterWrapper}>
-      {/* Это правильное использование displayCount с motion.span */}
-      <motion.span className={styles.counterNumber}>{displayCount}</motion.span>
+      <div className={styles.counterNumber}>
+        {" "}
+        {/* Обертка для цифр */}
+        {digits.map((digit, index) => (
+          // Используем FlippingDigit для каждой цифры
+          // Добавляем уникальный ключ, включающий индекс, на случай повторяющихся цифр
+          <FlippingDigit key={`${digit}-${index}`} digit={digit} />
+        ))}
+      </div>
       <span className={styles.counterLabel}>{label}</span>
     </div>
   );
