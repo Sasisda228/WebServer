@@ -157,7 +157,7 @@ const FAQPage = () => {
       {/* Убираем прогресс-бар */}
       {/* <motion.div className={styles.progressBar} style={{ scaleX: scrollYProgress }} /> */}
 
-      <h1 className={styles.pageTitle}>Часто задаваемые вопросы</h1>
+      <h1 className={styles.pageTitle}>Полезные статьи</h1>
 
       {/* Сетка для кнопок */}
       <motion.div
