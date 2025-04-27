@@ -253,7 +253,7 @@
      font-size: 1.8rem;
   }
   .productImageContainer {
-    max-width: 280px; /* Smaller image on mobile */
+    max-width: 380px; /* Smaller image on mobile */
   }
   .productInfo {
     max-width: 280px; /* Match image container */
@@ -262,7 +262,7 @@
 
 @media (max-width: 480px) {
    .productImageContainer {
-     max-width: 240px; /* Even smaller image */
+     max-width: 340px; /* Even smaller image */
    }
    .productInfo {
      max-width: 240px; /* Match image container */
