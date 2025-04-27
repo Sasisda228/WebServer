@@ -1,76 +1,104 @@
+/* === Checkout Page Redesign === */
+
+/* --- Переменные (можно вынести в :root в globals.css) --- */
+:root {
+  --bg-primary: #141220; /* Основной фон страницы */
+  --bg-secondary: #1d1a2d; /* Фон контейнеров/карточек */
+  --bg-input: #2a273a; /* Фон полей ввода */
+  --text-primary: #ffffff; /* Основной текст */
+  --text-secondary: #a09cb8; /* Вторичный текст */
+  --accent-primary: #ad1944; /* Основной акцент (розовый/красный) */
+  --accent-secondary: #671693; /* Вторичный акцент (фиолетовый) */
+  --accent-tertiary: #371b72; /* Третичный акцент (темно-фиолетовый) */
+  --glow-primary: #ad194466; /* Свечение основного акцента */
+  --glow-secondary: #6716934d; /* Свечение вторичного акцента */
+  --border-color: #3a364f; /* Цвет рамок */
+  --success-color: #2ecc40; /* Цвет успеха */
+  --radius-m: 12px; /* Средний радиус */
+  --radius-l: 18px; /* Большой радиус */
+  --transition-fast: 0.2s ease-in-out;
+  --transition-std: 0.3s ease-in-out;
+}
+
+/* --- Общая обертка страницы --- */
 .checkoutWrapper {
-  min-height: calc(100vh - 120px); /* header + navbar */
-
-  padding-bottom: 56px;
-  background: url(/pattern.png) repeat;
-
+  min-height: calc(100vh - 120px);
+  padding: 2rem 1rem 4rem 1rem; /* Увеличим отступы */
+  background-color: var(--bg-primary);
+  background-image: url(/pattern.png); /* Оставляем паттерн */
+  background-repeat: repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* --- Разделитель --- */
 .divider {
-  height: 2px;
-  background: linear-gradient(90deg, #261d5d 0%, #86233a 100%);
+  height: 3px; /* Чуть толще */
+  background: linear-gradient(90deg, var(--accent-tertiary) 0%, var(--accent-primary) 100%);
   border: none;
-  margin: 0.5rem 0;
-  border-radius: 2px;
-  opacity: 0.7;
+  margin: 0 0 2rem 0; /* Отступ только снизу */
+  border-radius: 3px;
+  opacity: 0.8;
+  width: 100%; /* На всю ширину */
+  box-shadow: 0 0 10px 1px var(--glow-primary); /* Добавим свечение */
 }
-/* Заголовок */
+
+/* --- Заголовок --- */
 .titleWrapper {
   text-align: center;
-  margin-bottom: 20px;
-  z-index: 2;
+  margin-bottom: 2.5rem; /* Увеличим отступ */
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #fff;
-  font-family: "RUSOONE", sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3rem); /* Адаптивный размер */
+  font-weight: 700; /* Russo One уже жирный, можно 700 */
+  color: var(--text-primary);
+  font-family: "Russo One", sans-serif; /* Убедимся, что шрифт применяется */
   line-height: 1.2;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 3px 15px rgba(0, 0, 0, 0.6); /* Усилим тень */
 }
 
 .titleGradient {
-  background: linear-gradient(90deg, #86233a, #261d5d);
+  /* Используем более контрастный градиент для заголовка */
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   display: inline-block;
 }
 
-.titleHighlight {
-  background: linear-gradient(90deg, #fff 30%, #86233a 50%, #fff 70%);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  padding: 0 5px;
-}
+/* Убираем titleHighlight, т.к. titleGradient уже есть */
+/* .titleHighlight { ... } */
 
+/* --- Основной контейнер --- */
 .checkoutContainer {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  background: #1412205b;
-  border-radius: 24px;
-  box-shadow: 0 8px 32px 0 #371b722d;
-  padding: 32px 24px;
+  background: rgba(29, 26, 45, 0.9); /* var(--bg-secondary) с прозрачностью */
+  backdrop-filter: blur(10px); /* Усилим блюр */
+  border-radius: var(--radius-l);
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Тонкая светлая рамка */
+  box-shadow: 0 10px 40px 5px var(--glow-secondary); /* Более заметное свечение */
+  padding: clamp(1.5rem, 5vw, 2.5rem); /* Адаптивные отступы */
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 2.5rem; /* Увеличим отступ между секциями */
 }
 
+/* --- Заголовок секции --- */
 .sectionTitle {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 24px;
+  font-size: clamp(1.5rem, 4vw, 1.8rem);
+  font-weight: 600; /* Чуть менее жирный, чем главный заголовок */
+  margin-bottom: 1.5rem;
   text-align: center;
-  color: #fff;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color); /* Добавим разделитель */
+  padding-bottom: 0.8rem;
 }
 
+/* --- Секции --- */
 .cartSection,
 .orderSection,
 .successSection {
@@ -78,302 +106,432 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 24px;
+  gap: 1.5rem; /* Отступ между элементами внутри секции */
 }
 
+/* --- Список товаров в корзине --- */
 .cartList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 1.2rem;
 }
 
+/* --- Элемент корзины --- */
 .cartItem {
   display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  background: #141220;
-  border-radius: 16px;
-  padding: 18px 16px;
+  align-items: center; /* Выравниваем по центру по вертикали */
+  gap: 1.5rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-m);
+  padding: 1rem 1.2rem;
   position: relative;
-  box-shadow: 0 8px 32px 0 #371b727a;
-  transition: box-shadow 0.2s;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
 .cartItem:hover {
-  box-shadow: 0 4px 16px #ad194420;
+  transform: translateY(-3px);
+  border-color: var(--accent-primary);
+  box-shadow: 0 8px 20px 2px var(--glow-primary); /* Свечение при ховере */
 }
 
+/* --- Изображение товара --- */
 .productImage {
   flex-shrink: 0;
-  width: 96px;
-  height: 96px;
-  border-radius: 12px;
+  width: 80px; /* Чуть меньше */
+  height: 80px;
+  border-radius: var(--radius-m);
   overflow: hidden;
-  background: #eae6f7;
+  background: var(--bg-input); /* Темный фон */
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--border-color);
 }
 
-.image {
+.image { /* Убедимся, что применяется к img внутри Uploadcare */
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* --- Информация о товаре --- */
 .productInfo {
   flex: 1 1 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.3rem; /* Уменьшим гэп */
   position: relative;
 }
 
 .productTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 500; /* Нормальный вес */
+  color: var(--text-primary);
+  line-height: 1.3;
 }
 
 .productPrice {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #ad1944;
+  font-size: 1.1rem; /* Крупнее */
+  font-weight: 600; /* Жирнее */
+  color: var(--accent-primary);
 }
 
 .productAmount {
-  font-size: 0.95rem;
-  color: #5e5a6e;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 
+/* --- Кнопка удаления --- */
 .removeBtn {
   position: absolute;
-  top: 0;
-  right: 0;
-  background: transparent;
-  border: none;
-  color: #ad1944;
+  top: -8px; /* Сдвинем чуть выше */
+  right: -8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   cursor: pointer;
-  padding: 4px;
+  padding: 0; /* Убираем паддинг */
+  width: 28px; /* Фиксированный размер */
+  height: 28px;
   border-radius: 50%;
-  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 .removeBtn:hover,
 .removeBtn:focus {
-  background: #f3e6f7;
+  background: var(--accent-primary);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 8px var(--glow-primary);
+  transform: scale(1.1);
+  outline: none;
 }
 
+/* --- Статус наличия --- */
 .stockStatus {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.95rem;
-  color: #5e5a6e;
-  margin-top: 4px;
+  font-size: 0.85rem; /* Мельче */
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
 }
 .inStockIcon {
-  color: #2ecc40;
+  color: var(--success-color);
 }
-.outStockIcon {
-  color: #f39c12;
-}
+/* .outStockIcon { ... } */
 
+/* --- Блоки итогов --- */
 .cartSummary,
 .orderSummary {
-  background: #141220;
-
-  border-radius: 14px;
-  padding: 18px 16px;
-  margin-top: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-m);
+  padding: 1.2rem 1.5rem;
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 8px 32px 0 #371b727a;
+  gap: 0.8rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1rem;
-  color: #fff;
+  font-size: 0.95rem; /* Чуть меньше */
+  color: var(--text-secondary);
+}
+.summaryRow span:last-child {
+  color: var(--text-primary); /* Цена - белым */
+  font-weight: 500;
 }
 
 .summaryTotal {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #ad1944;
-  margin-top: 8px;
+  font-size: 1.25rem; /* Крупнее */
+  font-weight: 600; /* Жирнее */
+  color: var(--text-primary); /* "Итого" - белым */
+  border-top: 1px dashed var(--border-color); /* Разделитель */
+  padding-top: 0.8rem;
+  margin-top: 0.5rem;
+}
+.summaryTotal span:last-child {
+  color: var(--accent-primary); /* Итоговая цена - акцентным */
 }
 
 .infoIcon {
   margin-left: 6px;
-  color: #ad1944;
+  color: var(--text-secondary);
   vertical-align: middle;
-  cursor: pointer;
+  cursor: help; /* Меняем курсор */
+  transition: color var(--transition-fast);
+}
+.infoIcon:hover {
+  color: var(--accent-primary);
 }
 
+/* --- Пустая корзина --- */
 .emptyCart {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
-  padding: 48px 0;
-  color: #ad1944;
+  gap: 1.5rem;
+  padding: 3rem 0;
+  color: var(--text-secondary);
+  text-align: center;
 }
-
-.backToShopBtn {
-  display: inline-block;
-  background: #fff;
-  color: #ad1944;
-  border: 1.5px solid #ad1944;
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.18s, color 0.18s;
-}
-.backToShopBtn:hover {
-  background: #ad1944;
-  color: #fff;
-}
-
-.nextBtn {
-  width: 100%;
-  background: #ad1944;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 14px 0;
+.emptyCart p {
   font-size: 1.1rem;
-  font-weight: 600;
-  margin-top: 18px;
-  cursor: pointer;
-  transition: background 0.18s;
-}
-.nextBtn:hover {
-  background: #671693;
 }
 
+/* --- Кнопки --- */
+/* Общий стиль для кнопок */
+.baseButton {
+  display: inline-flex; /* Используем inline-flex для выравнивания */
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-m);
+  padding: 0.8rem 1.8rem; /* Стандартный паддинг */
+  font-size: 1rem;
+  font-weight: 600; /* Жирный шрифт для кнопок */
+  font-family: "Russo One", sans-serif; /* Применяем шрифт */
+  cursor: pointer;
+  text-decoration: none; /* Для Link */
+  transition: background var(--transition-std), color var(--transition-std), box-shadow var(--transition-std), transform var(--transition-std);
+  text-transform: uppercase; /* Все кнопки капсом */
+  letter-spacing: 0.5px;
+}
+.baseButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+.baseButton:hover:enabled {
+  transform: translateY(-2px); /* Небольшой подъем */
+}
+.baseButton:active:enabled {
+  transform: translateY(0px); /* Возврат при нажатии */
+}
+
+/* Основная кнопка (Оформить, Оплатить) */
+.primaryButton {
+  composes: baseButton;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  color: var(--text-primary);
+  box-shadow: 0 4px 15px -2px var(--glow-primary);
+}
+.primaryButton:hover:enabled {
+  background: linear-gradient(90deg, #c72a58, #7e2aa0); /* Чуть темнее/ярче */
+  box-shadow: 0 6px 20px 0px var(--glow-primary);
+}
+
+/* Вторичная/Контурная кнопка (Назад, В магазин) */
+.secondaryButton {
+  composes: baseButton;
+  background: transparent;
+  color: var(--accent-primary);
+  border: 2px solid var(--accent-primary);
+  box-shadow: 0 0 0 0 transparent; /* Убираем тень по умолчанию */
+}
+.secondaryButton:hover:enabled {
+  background: var(--accent-primary);
+  color: var(--text-primary);
+  box-shadow: 0 4px 15px -2px var(--glow-primary);
+}
+
+/* Применяем стили к конкретным кнопкам */
+.backToShopBtn {
+  composes: secondaryButton;
+}
+.nextBtn {
+  composes: primaryButton;
+  width: 100%; /* На всю ширину в блоке итогов */
+  margin-top: 1rem;
+}
+.backBtn {
+  composes: secondaryButton;
+}
+.payBtn {
+  composes: primaryButton;
+}
+
+/* --- Форма заказа --- */
 .orderForm {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 1.5rem; /* Отступ между группами полей */
 }
 
 .formRow {
-  display: flex;
-  gap: 18px;
+  display: grid; /* Используем grid для лучшего контроля */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Адаптивные колонки */
+  gap: 1.2rem;
 }
 .formGroup {
-  flex: 1 1 0;
+  /* flex: 1 1 0; */ /* Убираем flex, т.к. используем grid */
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.5rem; /* Отступ между label и input */
 }
 
 .formGroup label {
-  font-size: 1rem;
+  font-size: 0.9rem; /* Чуть меньше */
   font-weight: 500;
-  color: #fff;
+  color: var(--text-secondary);
+  text-transform: uppercase; /* Метки капсом */
+  letter-spacing: 0.5px;
 }
 
 .formGroup input,
 .formGroup textarea {
-  border: 1.5px solid #d1cbe6;
-  border-radius: 8px;
-  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-m);
+  padding: 0.8rem 1rem; /* Увеличим паддинг */
   font-size: 1rem;
-  background: #141220;
-  color: #fff;
-  transition: border 0.18s;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  font-family: inherit; /* Наследуем основной шрифт */
+}
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+  color: #6b6880; /* Цвет плейсхолдера */
+  opacity: 0.8;
 }
 .formGroup input:focus,
 .formGroup textarea:focus {
-  border: 1.5px solid #ad1944;
+  border-color: var(--accent-secondary);
   outline: none;
+  box-shadow: 0 0 0 3px var(--glow-secondary); /* Свечение при фокусе */
+}
+.formGroup textarea {
+  resize: vertical; /* Разрешаем изменять размер только по вертикали */
+  min-height: 80px;
 }
 
+/* --- Действия в форме --- */
 .orderActions {
   display: flex;
-  gap: 16px;
-  margin-top: 12px;
-  justify-content: flex-end;
+  flex-wrap: wrap; /* Перенос кнопок на мобильных */
+  gap: 1rem;
+  margin-top: 1.5rem;
+  justify-content: space-between; /* Разносим кнопки по краям */
+  border-top: 1px dashed var(--border-color);
+  padding-top: 1.5rem;
 }
 
-.backBtn {
-  background: #fff;
-  color: #ad1944;
-  border: 1.5px solid #ad1944;
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.18s, color 0.18s;
-}
-.backBtn:hover {
-  background: #ad1944;
-  color: #fff;
-}
-
-.payBtn {
-  background: #ad1944;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.18s;
-}
-.payBtn:disabled {
-  background: #d1cbe6;
-  color: #fff;
-  cursor: not-allowed;
-}
-.payBtn:hover:enabled {
-  background: #671693;
-}
-
+/* --- Секция успеха --- */
 .successSection {
   align-items: center;
   justify-content: center;
-  min-height: 400px;
-  gap: 18px;
+  min-height: 350px; /* Меньше высота */
+  gap: 1.2rem;
+  text-align: center;
 }
 .successIcon {
-  color: #2ecc40;
-  margin-bottom: 12px;
+  color: var(--success-color);
+  margin-bottom: 0.5rem;
+  /* Анимация появления иконки */
+  animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0.2s backwards;
 }
 .successText {
-  color: #fff;
-  font-size: 1.1rem;
-  margin-bottom: 18px;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 450px; /* Ограничим ширину текста */
+  margin-bottom: 1.5rem;
+}
+.successSection .backToShopBtn { /* Стилизуем кнопку возврата */
+  composes: secondaryButton;
 }
 
+/* --- Анимация для иконки успеха --- */
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- Сообщение об ошибке API --- */
+.apiError {
+    background-color: rgba(255, 77, 77, 0.1); /* Красный фон с прозрачностью */
+    color: #ff4d4d; /* Красный текст */
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    border-radius: var(--radius-m);
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem; /* Отступ снизу */
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+
+/* --- Адаптивность --- */
 @media (max-width: 700px) {
+  .checkoutWrapper {
+    padding: 1rem 0.5rem 3rem 0.5rem;
+  }
   .checkoutContainer {
-    padding: 16px 4px;
-    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    border-radius: var(--radius-m);
+    gap: 1.5rem;
+  }
+  .title {
+    font-size: 2rem;
+  }
+  .sectionTitle {
+    font-size: 1.4rem;
   }
   .cartItem {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 12px 8px;
+    /* Оставляем flex-direction: row, но делаем перенос */
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 0.8rem;
   }
   .productImage {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+  }
+  .productInfo {
+    /* Занимаем всю оставшуюся ширину */
+    flex-basis: calc(100% - 60px - 0.8rem);
+  }
+  .removeBtn {
+    top: -4px;
+    right: -4px;
+    width: 24px;
+    height: 24px;
+  }
+  .cartSummary, .orderSummary {
+    padding: 1rem;
+  }
+  .summaryRow {
+    font-size: 0.9rem;
+  }
+  .summaryTotal {
+    font-size: 1.1rem;
+  }
+  .baseButton {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
   }
   .formRow {
-    flex-direction: column;
-    gap: 0;
+    grid-template-columns: 1fr; /* Всегда одна колонка */
+    gap: 1rem; /* Уменьшаем гэп */
+  }
+  .orderActions {
+    flex-direction: column-reverse; /* Кнопка оплаты сверху */
+    align-items: stretch; /* Кнопки на всю ширину */
   }
 }
