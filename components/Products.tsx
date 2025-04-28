@@ -14,9 +14,6 @@ const Products = ({ slug }: any) => {
 
       const inStockNum = slug?.searchParams?.inStock === "true" ? 1 : 0;
       const outOfStockNum = slug?.searchParams?.outOfStock === "true" ? 1 : 0;
-      const page = slug?.searchParams?.page
-        ? Number(slug?.searchParams?.page)
-        : 1;
 
       let stockMode: string = "lte";
       if (inStockNum === 1) stockMode = "equals";
@@ -27,14 +24,14 @@ const Products = ({ slug }: any) => {
       try {
         const response = await axios.get(
           `/apiv3/products?filters[price][$lte]=${
-            slug?.searchParams?.price || 3000
+            slug?.searchParams?.price || 100000
           }&filters[rating][$gte]=${
             Number(slug?.searchParams?.rating) || 0
           }&filters[inStock][$${stockMode}]=1&${
             slug?.params?.slug?.length > 0
               ? `filters[category][$equals]=${slug?.params?.slug}&`
               : ""
-          }sort=${slug?.searchParams?.sort}&page=${page}`
+          }sort=${slug?.searchParams?.sort}`
         );
         if (isMounted) setProducts(response.data);
       } catch (error) {
