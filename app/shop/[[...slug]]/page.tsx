@@ -1,6 +1,6 @@
 "use client";
 
-import { Filters } from "@/components";
+import { Filters, Products } from "@/components";
 import styles from "./ShopPage.module.css";
 
 // improve readability of category text, for example category text "smart-watches" will be "smart watches"
