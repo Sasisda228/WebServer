@@ -28,7 +28,7 @@ interface InputCategory {
 const defaultInputCategory: InputCategory = {
   inStock: { text: "instock", isChecked: true },
   outOfStock: { text: "outofstock", isChecked: true },
-  priceFilter: { text: "price", value: 3000 },
+  priceFilter: { text: "price", value: 300000 },
   ratingFilter: { text: "rating", value: 0 },
 };
 
