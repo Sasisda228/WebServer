@@ -1,6 +1,6 @@
 "use client";
 
-import { Filters, Pagination, Products } from "@/components";
+import { Filters } from "@/components";
 import styles from "./ShopPage.module.css";
 
 // improve readability of category text, for example category text "smart-watches" will be "smart watches"
@@ -21,7 +21,6 @@ const ShopPage = (slug: any) => {
             </div>
             <Filters />
             <Products slug={slug} />
-            <Pagination />
           </div>
         </div>
       </div>
