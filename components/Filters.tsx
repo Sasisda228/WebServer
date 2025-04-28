@@ -425,7 +425,7 @@ const Filters: ForwardRefRenderFunction<FiltersRef, {}> = (_, ref) => {
                 <input
                   type="range"
                   min={0}
-                  max={3000}
+                  max={300000}
                   step={10}
                   value={inputCategory.priceFilter.value}
                   className={styles.styledSlider}

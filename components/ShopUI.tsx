@@ -84,7 +84,7 @@ export const Filters = ({
         <input
           type="range"
           min={0}
-          max={3000}
+          max={300000}
           step={10}
           value={filters.price}
           onChange={(e) =>
