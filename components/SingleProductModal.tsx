@@ -321,7 +321,7 @@ export default function SingleProductModal({
         >
           <img
             alt={`Product image ${current + 1}`}
-            src={`https://ucarecdn.com/${albumGroupId}/nth/${current}/`}
+            src={`https://ucarecdn.com/${albumGroupId}/nth/${current}/-/preview/751x1000/`}
             width={600}
             height={800}
             style={{
@@ -357,7 +357,7 @@ export default function SingleProductModal({
             >
               <img
                 alt={`Product image ${idx + 1}`}
-                src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/`}
+                src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/-/preview/751x1000/`}
                 width="32"
                 height="32"
                 style={{ objectFit: "cover" }}

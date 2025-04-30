@@ -79,7 +79,7 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
         >
           {albumGroupId && (
             <img
-              src={`https://ucarecdn.com/${albumGroupId}/nth/0/`}
+              src={`https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/751x1000/`}
               alt={`Product image 1`}
               width={200}
               height={200}

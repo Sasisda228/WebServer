@@ -31,7 +31,7 @@ function getProductImageUrl(product: {
       const match = firstImage.match(/ucarecdn\.com\/([^/]+)/);
       if (match && match[1]) {
         const groupId = match[1];
-        return `https://ucarecdn.com/${groupId}/nth/0/`;
+        return `https://ucarecdn.com/${groupId}/nth/0/-/preview/751x1000/`;
       }
     }
     return firstImage;

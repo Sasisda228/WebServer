@@ -31,7 +31,7 @@ const CartPage = () => {
       if (match && match[1]) {
         const groupId = match[1];
         // Show the first image in the album (nth/0/)
-        return `https://ucarecdn.com/${groupId}/nth/0/`;
+        return `https://ucarecdn.com/${groupId}/nth/0/-/preview/751x1000/`;
       }
     }
 
