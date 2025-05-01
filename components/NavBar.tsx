@@ -71,10 +71,12 @@ export default function NavBar() {
     // Handle category selection display
     if (pathname.startsWith("/shop/")) {
       const category = pathname.split("/")[2];
+      // setSelectedCategory(
+      //   categories.find((ctg) => ctg.cat.toLowerCase() === category)
+      // );
       setSelectedCategory(
-        categories.find((ctg) => ctg.cat.toLowerCase() === category)
+        categories.filter((ctg) => ctg.cat.toLowerCase() === category)
       );
-      // setSelectedCategory(categories.filter(ctg => ctg.cat === category))
     } else {
       setSelectedCategory(null);
     }
