@@ -1,12 +1,12 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import styles from "./CategoryBar.module.css";
 interface category {
   label: string;
-  cat: string;
+  cat?: string; // Mark as optional for safety
 }
 interface CategoryBarProps {
   categories: category[];
@@ -30,27 +30,27 @@ export default function CategoryBar({
   }, [pathname]);
 
   // Handle scroll arrows visibility
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } =
         scrollContainerRef.current;
       setShowLeftArrow(scrollLeft > 0);
       setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
     }
-  };
+  }, []);
 
   // Scroll functions
-  const scrollLeft = () => {
+  const scrollLeft = useCallback(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
     }
-  };
+  }, []);
 
-  const scrollRight = () => {
+  const scrollRight = useCallback(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
     }
-  };
+  }, []);
 
   // Set up scroll event listener
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function CategoryBar({
       handleScroll();
 
       // Scroll to active category if exists
-      if (currentCategory) {
+      if (currentCategory?.cat) {
         const activeElement = scrollContainer.querySelector(
           `[data-category="${currentCategory.cat.toLowerCase()}"]`
         );
@@ -84,14 +84,24 @@ export default function CategoryBar({
         scrollContainer.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [currentCategory, isVisible]);
+  }, [currentCategory, isVisible, handleScroll]);
 
   // Handle category selection
-  const handleCategoryClick = (category: string) => {
-    router.push(`/shop/${category.toLowerCase()}`);
-  };
+  const handleCategoryClick = useCallback(
+    (categoryCat?: string) => {
+      if (categoryCat) {
+        router.push(`/shop/${categoryCat.toLowerCase()}`);
+      }
+    },
+    [router]
+  );
 
   if (!isVisible) return null;
+
+  // Filter out categories with undefined or empty cat
+  const validCategories = categories.filter(
+    (category) => typeof category.cat === "string" && category.cat.trim() !== ""
+  );
 
   return (
     <AnimatePresence>
@@ -118,18 +128,21 @@ export default function CategoryBar({
 
         {/* Categories scroll container */}
         <div className={styles.categoriesContainer} ref={scrollContainerRef}>
-          {categories.map((category, index) => {
+          {validCategories.map((category) => {
+            // Defensive: category.cat is guaranteed to be a non-empty string here
+            const catLower = category.cat!.toLowerCase();
             const isActive =
-              currentCategory?.cat.toLowerCase() === category.cat.toLowerCase();
+              currentCategory?.cat &&
+              currentCategory.cat.toLowerCase() === catLower;
 
             return (
               <motion.button
-                key={index}
+                key={catLower}
                 className={`${styles.categoryItem} ${
                   isActive ? styles.active : ""
                 }`}
                 onClick={() => handleCategoryClick(category.cat)}
-                data-category={category.cat.toLowerCase()}
+                data-category={catLower}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
