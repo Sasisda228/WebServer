@@ -162,7 +162,6 @@
   border: 1px solid #371b72; /* Use theme border color */
   border-radius: 8px;
   color: #fff;
-  font-family: "RUSOONE";
   font-size: 16px;
   transition: all 0.3s;
   outline: none; /* Remove default outline */
@@ -290,7 +289,6 @@
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   color: #fff;
-  font-family: "RUSOONE";
   font-size: 14px;
   padding: 8px 16px;
   transition: all 0.3s;
