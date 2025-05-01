@@ -15,7 +15,7 @@ import styles from "./NavBar.module.css";
 import ProfileModal from "./ProfileModal";
 interface category {
   label: string;
-  category: string;
+  cat: string;
 }
 interface NavItem {
   label: string;
@@ -44,12 +44,12 @@ const navItems: NavItem[] = [
 ];
 
 const categories: category[] = [
-  { category: "Rifles", label: "Автоматы" },
-  { category: "Pistols", label: "Пистолеты" },
-  { category: "Packs", label: "наборы" },
-  { category: "Orbiz", label: "Орбизы" },
-  { category: "Sights", label: "Прицелы" },
-  { category: "Other", label: "Дополнительно" },
+  { cat: "Rifles", label: "Автоматы" },
+  { cat: "Pistols", label: "Пистолеты" },
+  { cat: "Packs", label: "наборы" },
+  { cat: "Orbiz", label: "Орбизы" },
+  { cat: "Sights", label: "Прицелы" },
+  { cat: "Other", label: "Дополнительно" },
 ]; // Keep categories if CategoryBar is still used
 
 export default function NavBar() {
@@ -72,7 +72,7 @@ export default function NavBar() {
     if (pathname.startsWith("/shop/")) {
       const category = pathname.split("/")[2];
       setSelectedCategory(
-        category ? category.charAt(0).toUpperCase() + category.slice(1) : null
+        categories.find((categories) => categories.cat === category)
       );
     } else {
       setSelectedCategory(null);

@@ -6,7 +6,7 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import styles from "./CategoryBar.module.css";
 interface category {
   label: string;
-  category: string;
+  cat: string;
 }
 interface CategoryBarProps {
   categories: category[];
@@ -63,7 +63,7 @@ export default function CategoryBar({
       // Scroll to active category if exists
       if (currentCategory) {
         const activeElement = scrollContainer.querySelector(
-          `[data-category="${currentCategory.category.toLowerCase()}"]`
+          `[data-category="${currentCategory.cat.toLowerCase()}"]`
         );
         if (activeElement) {
           const containerWidth = scrollContainer.clientWidth;
@@ -120,8 +120,7 @@ export default function CategoryBar({
         <div className={styles.categoriesContainer} ref={scrollContainerRef}>
           {categories.map((category, index) => {
             const isActive =
-              currentCategory?.category.toLowerCase() ===
-              category.category.toLowerCase();
+              currentCategory?.cat.toLowerCase() === category.cat.toLowerCase();
 
             return (
               <motion.button
@@ -129,8 +128,8 @@ export default function CategoryBar({
                 className={`${styles.categoryItem} ${
                   isActive ? styles.active : ""
                 }`}
-                onClick={() => handleCategoryClick(category.category)}
-                data-category={category.category.toLowerCase()}
+                onClick={() => handleCategoryClick(category.cat)}
+                data-category={category.cat.toLowerCase()}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
