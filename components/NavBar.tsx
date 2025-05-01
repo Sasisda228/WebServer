@@ -13,7 +13,10 @@ import {
 import CategoryBar from "./CategoryBar";
 import styles from "./NavBar.module.css";
 import ProfileModal from "./ProfileModal";
-
+interface category {
+  label: string;
+  category: string;
+}
 interface NavItem {
   label: string;
   route: string; // Route or identifier
@@ -40,13 +43,22 @@ const navItems: NavItem[] = [
   }, // Use a unique route/key for modal action
 ];
 
-const categories = ["Rifles", "Pistols", "Sights", "Bullets"]; // Keep categories if CategoryBar is still used
+const categories: category[] = [
+  { category: "Rifles", label: "Автоматы" },
+  { category: "Pistols", label: "Пистолеты" },
+  { category: "Packs", label: "наборы" },
+  { category: "Orbiz", label: "Орбизы" },
+  { category: "Sights", label: "Прицелы" },
+  { category: "Other", label: "Дополнительно" },
+]; // Keep categories if CategoryBar is still used
 
 export default function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
   const [, setActiveItem] = useState(pathname);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<category | null>(
+    null
+  );
   const [modalOpen, setModalOpen] = useState(false);
   // navRef removed as it wasn't used in the provided snippet logic
 
