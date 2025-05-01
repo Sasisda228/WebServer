@@ -44,12 +44,12 @@ const navItems: NavItem[] = [
 ];
 
 const categories: category[] = [
-  { cat: "Rifles", label: "Автоматы" },
-  { cat: "Pistols", label: "Пистолеты" },
-  { cat: "Packs", label: "наборы" },
-  { cat: "Orbiz", label: "Орбизы" },
-  { cat: "Sights", label: "Прицелы" },
-  { cat: "Other", label: "Дополнительно" },
+  { label: "Автоматы", cat: "Rifles" },
+  { label: "Пистолеты", cat: "Pistols" },
+  { label: "наборы", cat: "Packs" },
+  { label: "Орбизы", cat: "Orbiz" },
+  { label: "Прицелы", cat: "Sights" },
+  { label: "Дополнительно", cat: "Other" },
 ]; // Keep categories if CategoryBar is still used
 
 export default function NavBar() {
