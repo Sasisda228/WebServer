@@ -23,7 +23,7 @@
   color: #86233a;
   text-shadow: 0 0 8px #261d5d, 0 0 16px #86233a;
   animation: neonPulse 2.5s infinite alternate;
-  font-family: "RUSOONE", sans-serif;
+  font-family: "RUSOONE";
   line-height: 1.2;
 }
 

@@ -36,7 +36,7 @@
   font-size: clamp(2.2rem, 5vw, 3rem); /* Адаптивный размер */
   font-weight: 700; /* Russo One уже жирный, можно 700 */
   color: var(--text-primary);
-  font-family: "Russo One", sans-serif; /* Убедимся, что шрифт применяется */
+  font-family: "Russo One"; /* Убедимся, что шрифт применяется */
   line-height: 1.2;
   text-shadow: 0 3px 15px rgba(0, 0, 0, 0.6); /* Усилим тень */
 }
@@ -287,7 +287,7 @@
   padding: 0.8rem 1.8rem; /* Стандартный паддинг */
   font-size: 1rem;
   font-weight: 600; /* Жирный шрифт для кнопок */
-  font-family: "Russo One", sans-serif; /* Применяем шрифт */
+  font-family: "Russo One"; /* Применяем шрифт */
   cursor: pointer;
   text-decoration: none; /* Для Link */
   transition: background var(--transition-std), color var(--transition-std), box-shadow var(--transition-std), transform var(--transition-std);
