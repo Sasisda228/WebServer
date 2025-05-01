@@ -4,8 +4,7 @@ import Providers from "@/Providers"; // Imports Providers (e.g., for Toaster), l
 import SessionProvider from "@/utils/SessionProvider"; // Client Component wrapper for next-auth session state
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth"; // Fetches session server-side efficiently
-import { Inter } from "next/font/google"; // Optimized font loading via next/font
-import localFont from "next/font/local";
+import { Inter, Russo_One } from "next/font/google"; // Optimized font loading via next/font
 import "svgmap/dist/svgMap.min.css"; // Global CSS import for svgmap - ensure this is needed globally
 import "./globals.css"; // Global styles
 
@@ -18,7 +17,11 @@ export const metadata: Metadata = {
   description:
     "47ak лучший бренд в истории. Мы продаем всё, связанное с оруженой тематикой", // TODO: Update with actual app description
 };
-const myFont = localFont({ src: "../public/RussoOne-Regular.ttf" });
+const russoOne = Russo_One({
+  weight: "400", // Russo One имеет только вес 400
+  subsets: ["latin", "cyrillic"], // Укажите нужные подмножества
+  style: "normal",
+});
 
 // RootLayout is a Server Component by default
 export default async function RootLayout({
@@ -31,7 +34,7 @@ export default async function RootLayout({
 
   return (
     // Standard HTML structure
-    <html lang="en" data-theme="light" className={`${myFont.className}`}>
+    <html lang="en" data-theme="light" className={russoOne.className}>
       {" "}
       {/* Consider` dynamic theme switching if needed */}
       <body className={inter.className}>
