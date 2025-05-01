@@ -4,12 +4,11 @@ import Providers from "@/Providers"; // Imports Providers (e.g., for Toaster), l
 import SessionProvider from "@/utils/SessionProvider"; // Client Component wrapper for next-auth session state
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth"; // Fetches session server-side efficiently
-import { Inter, Russo_One } from "next/font/google"; // Optimized font loading via next/font
+import { Russo_One } from "next/font/google"; // Optimized font loading via next/font
 import "svgmap/dist/svgMap.min.css"; // Global CSS import for svgmap - ensure this is needed globally
 import "./globals.css"; // Global styles
 
 // Initialize optimized font loader
-const inter = Inter({ subsets: ["latin"] });
 
 // Standard Next.js metadata
 export const metadata: Metadata = {
@@ -37,7 +36,7 @@ export default async function RootLayout({
     <html lang="en" data-theme="light" className={russoOne.className}>
       {" "}
       {/* Consider` dynamic theme switching if needed */}
-      <body className={inter.className}>
+      <body className={russoOne.className}>
         {" "}
         {/* Applies optimized font class */}
         {/* SessionProvider MUST be a Client Component to manage session state via React Context */}
