@@ -75,7 +75,7 @@ export default function NavBar() {
       //   categories.find((ctg) => ctg.cat.toLowerCase() === category)
       // );
       setSelectedCategory(
-        categories.filter((ctg) => ctg.cat.toLowerCase() === category)
+        categories.filter((ctg) => ctg.cat.toLowerCase() === category)[0]
       );
     } else {
       setSelectedCategory(null);
