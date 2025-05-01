@@ -20,8 +20,6 @@ export const metadata: Metadata = {
 const russoOne = Russo_One({
   weight: "400", // Russo One имеет только вес 400
   subsets: ["latin", "cyrillic"], // Укажите нужные подмножества
-  display: "swap", // Рекомендуемая стратегия отображения
-  variable: "--font-russo-one", // Создаем CSS-переменную (опционально, но удобно)
 });
 
 // RootLayout is a Server Component by default
@@ -35,7 +33,7 @@ export default async function RootLayout({
 
   return (
     // Standard HTML structure
-    <html lang="en" data-theme="light" className={`${russoOne.variable}`}>
+    <html lang="en" data-theme="light" className={`${russoOne.className}`}>
       {" "}
       {/* Consider` dynamic theme switching if needed */}
       <body className={inter.className}>
