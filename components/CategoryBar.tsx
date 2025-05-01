@@ -10,7 +10,7 @@ interface category {
 }
 interface CategoryBarProps {
   categories: category[];
-  currentCategory: category | null;
+  currentCategory?: category | null;
 }
 
 export default function CategoryBar({
@@ -119,8 +119,10 @@ export default function CategoryBar({
         {/* Categories scroll container */}
         <div className={styles.categoriesContainer} ref={scrollContainerRef}>
           {categories.map((category, index) => {
-            const isActive =
-              currentCategory.cat.toLowerCase() === category.cat.toLowerCase();
+            const isActive = currentCategory
+              ? currentCategory?.cat.toLowerCase() ===
+                category.cat.toLowerCase()
+              : false;
 
             return (
               <motion.button
