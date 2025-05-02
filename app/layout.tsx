@@ -1,3 +1,4 @@
+"use client";
 import { Header } from "@/components";
 import NavBar from "@/components/NavBar"; // Imports the main navigation, likely a Client Component due to interactivity/hooks
 import Providers from "@/Providers"; // Imports Providers (e.g., for Toaster), likely a Client Component
