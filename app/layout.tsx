@@ -1,10 +1,9 @@
-"use client";
 import { Header } from "@/components";
 import NavBar from "@/components/NavBar"; // Imports the main navigation, likely a Client Component due to interactivity/hooks
 import Providers from "@/Providers"; // Imports Providers (e.g., for Toaster), likely a Client Component
 import SessionProvider from "@/utils/SessionProvider"; // Client Component wrapper for next-auth session state
 import type { Metadata } from "next";
-import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth"; // Fetches session server-side efficiently
 import { Russo_One } from "next/font/google"; // Optimized font loading via next/font
 import "svgmap/dist/svgMap.min.css"; // Global CSS import for svgmap - ensure this is needed globally
 import "./globals.css"; // Global styles
@@ -30,7 +29,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   // Fetch session data on the server - efficient way to pass initial state
-  const { data: session } = useSession();
+  const session = await getServerSession();
 
   return (
     // Standard HTML structure
