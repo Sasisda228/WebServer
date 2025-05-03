@@ -29,7 +29,7 @@ model Product {
   images         Json
   price          Int                      @default(0)
   rating         Int                      @default(0)
-  description    String
+  description    String                   @db.Text
   manufacturer   String
   inStock        Int                      @default(1)
   categoryId     String
