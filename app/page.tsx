@@ -106,7 +106,9 @@ export default async function Home() {
           backgroundColor: "var(--primary-color)",
         }}
       >
-        <Counter />
+        <div className="justify-center bg-gray-800">
+          <Counter />
+        </div>
       </section>
       {/* Product Carousel - Pass fetched data */}
       {/* ProductCarousel is a Client Component but receives data from the Server Component */}
