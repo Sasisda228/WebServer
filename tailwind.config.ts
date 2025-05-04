@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      height: {
+        "10": "2.5rem", // 40px
+      },
       colors: {
         "custom-yellow": "#FED700",
       },
