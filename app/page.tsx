@@ -1,4 +1,4 @@
-import Counter from "@/components/counter";
+import Counter from "@/components/Counter";
 import LegalInfo from "@/components/LegalInfo";
 import ProductCarousel from "@/components/ProductCarousel";
 import ReviewsSection from "@/components/ReviewsSection";
