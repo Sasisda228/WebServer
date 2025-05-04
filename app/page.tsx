@@ -106,7 +106,7 @@ export default async function Home() {
           backgroundColor: "var(--primary-color)",
         }}
       >
-        <h1 className="font-bold text-2xl text-white flex justify-center">
+        <h1 className="font-bold text-2xl text-white mb-2 flex justify-center">
           Вооружено бойцов
         </h1>
 
