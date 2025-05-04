@@ -18,7 +18,6 @@ async function getAllProducts(request, response) {
     let sortByValue = "defaultSort";
 
     // getting current page
-    const page = Number(request.query.page) ? Number(request.query.page) : 1;
 
     if (dividerLocation !== -1) {
       const queryArray = request.url
@@ -168,8 +167,8 @@ async function getAllProducts(request, response) {
     if (Object.keys(filterObj).length === 0) {
       products = await prisma.product.findMany({
         // this is formula for pagination: (page - 1) * limit(take)
-        skip: (page - 1) * 10,
-        take: 12,
+        // skip: (page - 1) * 10,
+        // take: 12,
         include: {
           category: {
             select: {
@@ -184,8 +183,8 @@ async function getAllProducts(request, response) {
       if (filterObj.category && filterObj.category.equals) {
         products = await prisma.product.findMany({
           // this is formula for pagination: (page - 1) * limit(take)
-          skip: (page - 1) * 10,
-          take: 12,
+          // skip: (page - 1) * 10,
+          // take: 12,
           include: {
             category: {
               select: {
