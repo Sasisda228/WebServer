@@ -299,6 +299,10 @@
 
 /* Адаптивные стили */
 @media (min-width: 768px) {
+  .carouselImage{
+    display: flex;
+    align-items: center;
+  }
   .modalContent {
     max-width: 100%;
     height: 100vh;

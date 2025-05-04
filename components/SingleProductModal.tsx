@@ -313,7 +313,7 @@ export default function SingleProductModal({
 
         <motion.div
           key={current}
-          className={styles.carouselImage}
+          className={modalStyles.carouselImage}
           initial={prefersReducedMotion ? {} : { opacity: 0.7, scale: 0.98 }}
           animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
