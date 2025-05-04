@@ -32,8 +32,9 @@
 }
 
 .faqButton {
-  background-color: var(--secondary-color, #1d1a2d);
-  border-radius: var(--border-radius, 12px);
+  background-color: var(--secondary-color, #141220);
+  border-color: var(--border-color,#CDACDE);
+  border-radius: var(--border-radius, 5px);
   padding: 1.8rem 1.5rem;
   text-align: left;
   cursor: pointer;
@@ -41,7 +42,6 @@
   transition: transform var(--transition, 0.3s), box-shadow var(--transition, 0.3s), border-color var(--transition, 0.3s);
   display: flex;
   flex-direction: column; /* Текст будет под заголовком */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   color: var(--text-color, #fff);
   overflow: hidden; /* Чтобы градиентная рамка не вылезала */
 }
