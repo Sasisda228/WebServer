@@ -12,7 +12,10 @@
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
 }
-
+.carouselImage{
+  display: flex;
+  align-items: center;
+}
 .modalContent {
   background: #141220;
   border-radius: 24px 24px 0 0;
