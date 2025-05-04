@@ -102,7 +102,7 @@ export default async function Home() {
       <section
         className="stats-section-wrapper"
         style={{
-          padding: "3rem 1rem",
+          padding: ".5rem 1rem",
           backgroundColor: "var(--primary-color)",
         }}
       >
