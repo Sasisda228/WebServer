@@ -1,7 +1,7 @@
-import type { NextApiResponse } from "next";
+// app/api/count/route.ts
 
-export default function handler(res: NextApiResponse) {
+export async function GET() {
   // Здесь можно подключиться к БД или другому источнику данных
   // Для демонстрации возвращаем фиксированное значение
-  res.status(200).json({ count: 12345 });
+  return Response.json({ count: 12345 });
 }
