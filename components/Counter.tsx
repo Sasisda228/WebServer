@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import Digit from "./Digit";
+"use client";
+
+import { useEffect, useState } from "react"
+import Digit from "./Digit"
 
 export default function Counter() {
   const [count, setCount] = useState<number | null>(null);
