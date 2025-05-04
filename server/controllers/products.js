@@ -207,8 +207,8 @@ async function getAllProducts(request, response) {
         // If no category filter, use whereClause
         products = await prisma.product.findMany({
           // this is formula for pagination: (page - 1) * limit(take)
-          skip: (page - 1) * 10,
-          take: 12,
+          // skip: (page - 1) * 10,
+          // take: 12,
           include: {
             category: {
               select: {

@@ -296,7 +296,9 @@
     transform: translateX(-50%) translateY(-5px);
   }
 }
-
+/* .imageImBlya{
+  box-shadow: ;
+} */
 /* Адаптивные стили */
 @media (min-width: 768px) {
   .carouselImage{

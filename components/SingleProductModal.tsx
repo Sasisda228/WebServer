@@ -320,6 +320,7 @@ export default function SingleProductModal({
           style={{ width: "100%", aspectRatio: "3/4", maxWidth: "100vw" }}
         >
           <img
+            className={modalStyles.imageImBlya}
             alt={`Product image ${current + 1}`}
             src={`https://ucarecdn.com/${albumGroupId}/nth/${current}/-/preview/751x1000/`}
             width={600}
