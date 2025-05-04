@@ -1,8 +1,8 @@
+import Counter from "@/components/counter";
 import LegalInfo from "@/components/LegalInfo";
 import ProductCarousel from "@/components/ProductCarousel";
 import ReviewsSection from "@/components/ReviewsSection";
 import SloganSection from "@/components/SloganSection";
-import StatsCounter from "@/components/StatsCounter";
 import dynamic from "next/dynamic";
 
 // --- Data Fetching Functions (Server-Side) ---
@@ -106,7 +106,7 @@ export default async function Home() {
           backgroundColor: "var(--primary-color)",
         }}
       >
-        <StatsCounter label="Вооруженно бойцов" initialValue={1357} />
+        <Counter />
       </section>
       {/* Product Carousel - Pass fetched data */}
       {/* ProductCarousel is a Client Component but receives data from the Server Component */}
