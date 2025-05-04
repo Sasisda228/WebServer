@@ -11,40 +11,44 @@ export default function Digit({ digit }: DigitProps) {
   const digitRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Small delay before starting animation for smoothness
+    // Небольшая задержка перед началом анимации для плавности
     const timer = setTimeout(() => {
       setCurrentDigit(digit);
     }, 50);
 
-    return () => clearTimeout(timer); // Cleanup timer
-  }, [digit]); // Effect runs when digit changes
+    return () => clearTimeout(timer); // Очистка таймера
+  }, [digit]); // Эффект запускается при изменении digit
 
-  // Height of one digit element (h-10 -> 2.5rem in Tailwind by default)
-  const digitHeight = 2.5; // in rem
+  // Высота одного элемента цифры (h-10 -> 2.5rem в Tailwind по умолчанию)
+  const digitHeight = 2.5; // в rem
 
   return (
-    <div
-      className="inline-block h-10 overflow-hidden mr-1 relative"
-      style={{ height: `${digitHeight}rem` }}
-    >
-      {/* Container for all digits 0-9 */}
+    // Внешний контейнер для стилизации ячейки
+    <div className="inline-block p-1 bg-gray-800 rounded-md shadow-md mr-1 border border-gray-700">
+      {/* Внутренний контейнер для механизма прокрутки */}
       <div
-        ref={digitRef}
-        className="flex flex-col transition-transform duration-1000 ease-in-out"
-        style={{
-          transform: `translateY(-${currentDigit * digitHeight}rem)`, // Shift container up
-          height: `${digitHeight * 10}rem`, // Total height of all digits
-        }}
+        className="h-10 overflow-hidden relative" // Убрали inline-block и mr-1 отсюда
+        style={{ height: `${digitHeight}rem`, width: "1.75rem" }} // Задаем ширину явно (w-7) или подберите под шрифт
       >
-        {[...Array(10)].map((_, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-center text-4xl font-bold"
-            style={{ height: `${digitHeight}rem` }} // Explicitly set height
-          >
-            {i}
-          </div>
-        ))}
+        {/* Контейнер для всех цифр 0-9 */}
+        <div
+          ref={digitRef}
+          className="flex flex-col transition-transform duration-1000 ease-in-out" // Настройте duration и ease по вкусу
+          style={{
+            transform: `translateY(-${currentDigit * digitHeight}rem)`, // Сдвигаем контейнер вверх
+            height: `${digitHeight * 10}rem`, // Общая высота всех цифр
+          }}
+        >
+          {[...Array(10)].map((_, i) => (
+            <div
+              key={i}
+              className="h-10 flex items-center justify-center text-4xl font-bold text-white" // Цвет текста изменен на белый для контраста
+              style={{ height: `${digitHeight}rem` }} // Явно задаем высоту
+            >
+              {i}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
