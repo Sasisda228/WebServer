@@ -106,7 +106,8 @@ export default async function Home() {
           backgroundColor: "var(--primary-color)",
         }}
       >
-        <div className="flex justify-center bg-gray-800">
+        <div className="flex justify-center">
+          <h1>Вооружено бойцов</h1>
           <Counter />
         </div>
       </section>
