@@ -7,21 +7,21 @@ import {
   BuyNowSingleProductBtn,
   StockAvailabillity,
 } from "@/components";
-import axios from "axios"
+import axios from "axios";
 import {
   AnimatePresence,
   motion,
   useMotionValue,
   useReducedMotion,
   useTransform,
-} from "framer-motion"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { FaChevronDown } from "react-icons/fa6"
-import { IoShareSocialOutline } from "react-icons/io5"
+} from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { FaChevronDown } from "react-icons/fa6";
+import { IoShareSocialOutline } from "react-icons/io5";
 import {
   default as modalStyles,
   default as styles,
-} from "./SingleProductModal.module.css"
+} from "./SingleProductModal.module.css";
 
 interface ImageItem {
   imageID: string;
@@ -326,7 +326,6 @@ export default function SingleProductModal({
             height={800}
             style={{
               width: "100%",
-              height: "100%",
               maxHeight: "calc(100vh - 200px)",
             }}
           />
