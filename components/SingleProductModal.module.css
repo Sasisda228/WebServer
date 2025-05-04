@@ -127,7 +127,7 @@
   flex-direction: column;
   background: #141220;
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: auto;
 }
 
 .productDetailsSection {
@@ -336,6 +336,6 @@
   }
 
   .productImageSection {
-    aspect-ratio: 1/1;
+    aspect-ratio: auto;
   }
 }
