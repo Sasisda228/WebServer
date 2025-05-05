@@ -62,8 +62,8 @@ const DashboardProductDetails = ({
     }
 
     setIsLoading(true);
-
     try {
+      await axios.delete(`/apiv3/products/${id}`);
       toast.success("Product deleted successfully");
       router.push("/admin/products");
     } catch (error: any) {
