@@ -33,7 +33,7 @@
 
 .faqButton {
   background-color: var(--secondary-color, #141220);
-  border-color: var(--border-color,#CDACDE);
+  border-color: #CDACDE;
   border-radius: var(--border-radius, 5px);
   padding: 1.8rem 1.5rem;
   text-align: left;
@@ -46,10 +46,7 @@
   overflow: hidden; /* Чтобы градиентная рамка не вылезала */
 }
 
-/* Стилизация градиентной рамки (если используется style в компоненте) */
-.faqButton[style*="border-image"] {
-  border-color: transparent; /* Убедимся, что обычная рамка не видна */
-}
+
 
 .faqButton:hover {
    border-color: var(--accent-color-1, #9a1840); /* Цвет рамки при ховере, если нет градиента */
