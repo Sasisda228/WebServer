@@ -180,16 +180,16 @@ const FAQPage = () => {
             }}
             whileTap={{ scale: 0.97 }}
             // Добавляем стиль для градиентной рамки или фона, если есть градиент
-            style={
-              article.gradient
-                ? {
-                    borderImage: `${article.gradient} 1`,
-                    borderImageSlice: 1,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                  }
-                : {}
-            }
+            // style={
+            //   article.gradient
+            //     ? {
+            //         borderImage: `${article.gradient} 1`,
+            //         borderImageSlice: 1,
+            //         borderWidth: "2px",
+            //         borderStyle: "solid",
+            //       }
+            //     : {}
+            // }
           >
             {/* Можно добавить иконку, если нужно */}
             {/* <div className={styles.buttonIconWrapper}>...</div> */}
