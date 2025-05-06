@@ -377,7 +377,7 @@ export default function SingleProductModal({
               >
                 <img
                   alt={`Thumbnail ${idx + 1}`}
-                  src={`https://ucarecdn.com/${albumGroupId}/nth/${index}/-/preview/100x133/`}
+                  src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/-/preview/100x133/`}
                   width="50"
                   height="67"
                   style={{ objectFit: "cover" }}
