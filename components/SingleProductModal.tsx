@@ -115,8 +115,10 @@ export default function SingleProductModal({
 
       // Извлекаем UUID всех файлов в группе для использования с Embla Carousel
       if (data.files && Array.isArray(data.files)) {
-        const fileUUIDs = data.files.map((file: any) => file.uuid);
-        setAlbumImages(fileUUIDs);
+        const imageUrls = data.files.map(
+          (file: any) => file.original_file_url || file.cdn_url
+        );
+        setAlbumImages(imageUrls);
       }
     } catch (error) {
       console.error("Error fetching album images:", error);
@@ -252,28 +254,37 @@ export default function SingleProductModal({
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-    const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-    const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-    const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
+    const scrollPrev = useCallback(
+      () => emblaApi && emblaApi.scrollPrev(),
+      [emblaApi]
+    );
+    const scrollNext = useCallback(
+      () => emblaApi && emblaApi.scrollNext(),
+      [emblaApi]
+    );
+    const scrollTo = useCallback(
+      (index: number) => emblaApi && emblaApi.scrollTo(index),
+      [emblaApi]
+    );
 
     useEffect(() => {
       if (!emblaApi) return;
-      
+
       const onInit = () => {
         setScrollSnaps(emblaApi.scrollSnapList());
       };
-      
+
       const onSelect = () => {
         setSelectedIndex(emblaApi.selectedScrollSnap());
       };
-      
+
       emblaApi.on("select", onSelect);
       emblaApi.on("reInit", onInit);
       emblaApi.on("reInit", onSelect);
 
       onInit();
       onSelect();
-      
+
       return () => {
         emblaApi.off("select", onSelect);
         emblaApi.off("reInit", onInit);
@@ -283,14 +294,17 @@ export default function SingleProductModal({
 
     if (!albumGroupId || albumImages.length === 0) {
       return (
-        <div className={modalStyles.carouselImage} style={{ 
-          width: "100%", 
-          aspectRatio: "3/4", 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          background: '#f0f0f0' 
-        }}>
+        <div
+          className={modalStyles.carouselImage}
+          style={{
+            width: "100%",
+            aspectRatio: "3/4",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#f0f0f0",
+          }}
+        >
           <span>Нет изображений</span>
         </div>
       );
@@ -304,14 +318,16 @@ export default function SingleProductModal({
               <div className={styles.emblaSlide} key={uuid + index}>
                 <motion.div
                   className={modalStyles.carouselImage}
-                  initial={prefersReducedMotion ? {} : { opacity: 0.7, scale: 0.98 }}
+                  initial={
+                    prefersReducedMotion ? {} : { opacity: 0.7, scale: 0.98 }
+                  }
                   animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4 }}
                 >
                   <img
                     className={styles.emblaSlideImg}
                     alt={`Product image ${index + 1}`}
-                    src={`https://ucarecdn.com/${albumGroupId}/${uuid}/-/preview/800x1067/-/quality/smart/-/format/auto/`}
+                    src={`https://ucarecdn.com/${albumGroupId}/nth/${index}/-/preview/751x1000/`}
                     style={{
                       width: "100%",
                       height: "auto",
