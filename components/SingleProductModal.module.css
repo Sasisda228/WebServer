@@ -123,6 +123,156 @@
   width: 100%;
 }
 
+/* === Embla Carousel Styles === */
+
+.emblaCarouselWrapper {
+  position: relative;
+  width: 100%; /* Занимает всю ширину родительского блока */
+  overflow: hidden; /* Необходимо для Embla */
+}
+
+.emblaViewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Класс is-dragging добавляется Embla Carousel автоматически */
+.emblaViewport.is-dragging {
+  cursor: grabbing;
+}
+
+.emblaContainer {
+  display: flex;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -khtml-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.emblaSlide {
+  position: relative;
+  flex: 0 0 100%; /* Слайд занимает всю ширину */
+  min-width: 0; /* Важно для flexbox */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emblaSlideImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  /* Ограничение высоты, чтобы влезали кнопки и остальной интерфейс модалки */
+  max-height: calc(100vh - 220px); /* Можно подстроить значение 220px */
+  aspect-ratio: 3/4; /* Сохраняем пропорции как в старом варианте */
+}
+
+/* Кнопки навигации (Вперед/Назад) */
+.emblaButton {
+  appearance: none;
+  touch-action: manipulation;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  width: 3.2rem; /* Немного уменьшил для компактности */
+  height: 3.2rem;
+  z-index: 1;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.7); /* Цвет иконок, как в swipeIndicator */
+  background: rgba(0, 0, 0, 0.3); /* Полупрозрачный темный фон */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.emblaButton:disabled {
+  color: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.2);
+  cursor: default;
+  box-shadow: none;
+}
+
+.emblaButton:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.emblaButtonPrev {
+  left: 0.75rem; /* Отступ от края */
+}
+
+.emblaButtonNext {
+  right: 0.75rem; /* Отступ от края */
+}
+
+/* Миниатюры */
+.emblaThumbnails {
+  display: flex;
+  justify-content: center;
+  gap: 8px; /* Расстояние между миниатюрами */
+  margin-top: 12px; /* Отступ сверху от основного изображения */
+  padding: 0 8px; /* Небольшие отступы по бокам контейнера миниатюр */
+  flex-wrap: wrap; /* Перенос на новую строку, если не влезают */
+}
+
+.emblaThumbBtn {
+  appearance: none;
+  background-color: transparent;
+  touch-action: manipulation;
+  cursor: pointer;
+  border: 2px solid transparent; /* Граница для выделения активной */
+  padding: 2px;
+  margin: 0;
+  border-radius: 6px; /* Скругление углов */
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.emblaThumbBtn img {
+  display: block;
+  width: 50px;
+  height: 67px; /* Пропорционально 3/4 */
+  object-fit: cover;
+  border-radius: 4px; /* Скругление для самого изображения внутри кнопки */
+}
+
+.emblaThumbActive {
+  border-color: rgba(173, 25, 68, 0.9); /* Акцентный красный цвет для активной миниатюры */
+  box-shadow: 0 0 8px rgba(173, 25, 68, 0.4);
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 767px) { /* Используем вашу точку перелома */
+  .emblaSlideImg {
+    max-height: calc(100vh - 180px); /* Меньше отступ на мобильных */
+  }
+  .emblaButton {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+  .emblaButtonPrev {
+    left: 0.5rem;
+  }
+  .emblaButtonNext {
+    right: 0.5rem;
+  }
+  .emblaThumbnails {
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .emblaThumbBtn img {
+    width: 40px;
+    height: 53px; /* Пропорционально */
+  }
+}
 .productImageSection {
   position: relative;
   padding: 0;

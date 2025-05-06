@@ -8,6 +8,7 @@ import {
   StockAvailabillity,
 } from "@/components";
 import axios from "axios";
+import useEmblaCarousel from "embla-carousel-react";
 import {
   AnimatePresence,
   motion,
@@ -16,7 +17,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown, FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { IoShareSocialOutline } from "react-icons/io5";
 import {
   default as modalStyles,
@@ -112,12 +113,10 @@ export default function SingleProductModal({
 
       const data = await response.json();
 
-      // Извлекаем URL всех файлов в группе
+      // Извлекаем UUID всех файлов в группе для использования с Embla Carousel
       if (data.files && Array.isArray(data.files)) {
-        const imageUrls = data.files.map(
-          (file: any) => file.original_file_url || file.cdn_url
-        );
-        setAlbumImages(imageUrls);
+        const fileUUIDs = data.files.map((file: any) => file.uuid);
+        setAlbumImages(fileUUIDs);
       }
     } catch (error) {
       console.error("Error fetching album images:", error);
@@ -241,7 +240,7 @@ export default function SingleProductModal({
     },
   };
 
-  // Карусель с улучшенным UX и полноэкранными изображениями
+  // Карусель с Embla для улучшенного UX и полноэкранных изображений
   function ProductCarousel({
     images,
     mainImage,
@@ -249,122 +248,128 @@ export default function SingleProductModal({
     images: ImageItem[];
     mainImage: string;
   }) {
-    const allImages = albumImages;
-    const [current, setCurrent] = useState(0);
-    const [touchStart, setTouchStart] = useState(0);
-    const [touchEnd, setTouchEnd] = useState(0);
-    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-    const prev = () => {
-      if (isTransitioning) return;
-      setIsTransitioning(true);
-      setCurrent((c) => (c === 0 ? allImages.length - 1 : c - 1));
-      setTimeout(() => setIsTransitioning(false), 300);
-    };
+    const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+    const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+    const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
 
-    const next = () => {
-      if (isTransitioning) return;
-      setIsTransitioning(true);
-      setCurrent((c) => (c === allImages.length - 1 ? 0 : c + 1));
-      setTimeout(() => setIsTransitioning(false), 300);
-    };
+    useEffect(() => {
+      if (!emblaApi) return;
+      
+      const onInit = () => {
+        setScrollSnaps(emblaApi.scrollSnapList());
+      };
+      
+      const onSelect = () => {
+        setSelectedIndex(emblaApi.selectedScrollSnap());
+      };
+      
+      emblaApi.on("select", onSelect);
+      emblaApi.on("reInit", onInit);
+      emblaApi.on("reInit", onSelect);
 
-    const select = (idx: number) => {
-      if (isTransitioning || idx === current) return;
-      setIsTransitioning(true);
-      setCurrent(idx);
-      setTimeout(() => setIsTransitioning(false), 300);
-    };
+      onInit();
+      onSelect();
+      
+      return () => {
+        emblaApi.off("select", onSelect);
+        emblaApi.off("reInit", onInit);
+        emblaApi.off("reInit", onSelect);
+      };
+    }, [emblaApi]);
 
-    // Свайп для мобильных устройств
-    const handleTouchStart = (e: React.TouchEvent) => {
-      setTouchStart(e.targetTouches[0].clientX);
-    };
-
-    const handleTouchMove = (e: React.TouchEvent) => {
-      setTouchEnd(e.targetTouches[0].clientX);
-    };
-
-    const handleTouchEnd = () => {
-      if (touchStart - touchEnd > 100) {
-        next();
-      }
-      if (touchStart - touchEnd < -100) {
-        prev();
-      }
-    };
+    if (!albumGroupId || albumImages.length === 0) {
+      return (
+        <div className={modalStyles.carouselImage} style={{ 
+          width: "100%", 
+          aspectRatio: "3/4", 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          background: '#f0f0f0' 
+        }}>
+          <span>Нет изображений</span>
+        </div>
+      );
+    }
 
     return (
-      <div
-        className={styles.carouselWrapper}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* <button
-          className={`${styles.carouselBtn} ${styles.carouselBtnLeft}`}
-          onClick={prev}
-          aria-label="Предыдущее фото"
-          type="button"
-          disabled={isTransitioning}
-        >
-          <FaChevronLeft size={22} />
-        </button> */}
-
-        <motion.div
-          key={current}
-          className={modalStyles.carouselImage}
-          initial={prefersReducedMotion ? {} : { opacity: 0.7, scale: 0.98 }}
-          animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
-          style={{ width: "100%", aspectRatio: "3/4", maxWidth: "100vw" }}
-        >
-          <img
-            className={modalStyles.imageImBlya}
-            alt={`Product image ${current + 1}`}
-            src={`https://ucarecdn.com/${albumGroupId}/nth/${current}/-/preview/751x1000/`}
-            width={600}
-            height={800}
-            style={{
-              width: "100%",
-              maxHeight: "calc(100vh - 200px)",
-            }}
-          />
-        </motion.div>
-
-        {/* <button
-          className={`${styles.carouselBtn} ${styles.carouselBtnRight}`}
-          onClick={next}
-          aria-label="Следующее фото"
-          type="button"
-          disabled={isTransitioning}
-        >
-          <FaChevronRight size={22} />
-        </button> */}
-
-        {/* Thumbnails */}
-        <div className={styles.carouselThumbnails}>
-          {albumImages.map((img, idx) => (
-            <button
-              key={img + idx}
-              className={`${styles.carouselThumbBtn} ${
-                idx === current ? styles.active : ""
-              }`}
-              onClick={() => select(idx)}
-              aria-label={`Фото ${idx + 1}`}
-              type="button"
-              disabled={isTransitioning}
-            >
-              <img
-                alt={`Product image ${idx + 1}`}
-                src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/-/preview/751x1000/`}
-                width="32"
-                height="32"
-                style={{ objectFit: "cover" }}
-              />
-            </button>
-          ))}
+      <div className={styles.emblaCarouselWrapper}>
+        <div className={styles.emblaViewport} ref={emblaRef}>
+          <div className={styles.emblaContainer}>
+            {albumImages.map((uuid, index) => (
+              <div className={styles.emblaSlide} key={uuid + index}>
+                <motion.div
+                  className={modalStyles.carouselImage}
+                  initial={prefersReducedMotion ? {} : { opacity: 0.7, scale: 0.98 }}
+                  animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <img
+                    className={styles.emblaSlideImg}
+                    alt={`Product image ${index + 1}`}
+                    src={`https://ucarecdn.com/${albumGroupId}/${uuid}/-/preview/800x1067/-/quality/smart/-/format/auto/`}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      aspectRatio: "3/4",
+                      maxHeight: "calc(100vh - 200px)",
+                      objectFit: "contain",
+                    }}
+                  />
+                </motion.div>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {albumImages.length > 1 && (
+          <>
+            <button
+              className={`${styles.emblaButton} ${styles.emblaButtonPrev}`}
+              onClick={scrollPrev}
+              aria-label="Предыдущее фото"
+              type="button"
+            >
+              <FaChevronLeft size={22} />
+            </button>
+            <button
+              className={`${styles.emblaButton} ${styles.emblaButtonNext}`}
+              onClick={scrollNext}
+              aria-label="Следующее фото"
+              type="button"
+            >
+              <FaChevronRight size={22} />
+            </button>
+          </>
+        )}
+
+        {albumImages.length > 1 && (
+          <div className={styles.emblaThumbnails}>
+            {albumImages.map((uuid, idx) => (
+              <button
+                key={uuid + idx + "-thumb"}
+                className={`${styles.emblaThumbBtn} ${
+                  idx === selectedIndex ? styles.emblaThumbActive : ""
+                }`}
+                onClick={() => scrollTo(idx)}
+                aria-label={`Фото ${idx + 1}`}
+                type="button"
+              >
+                <img
+                  alt={`Thumbnail ${idx + 1}`}
+                  src={`https://ucarecdn.com/${albumGroupId}/${uuid}/-/preview/100x133/-/quality/smart/-/format/auto/`}
+                  width="50"
+                  height="67"
+                  style={{ objectFit: "cover" }}
+                />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
