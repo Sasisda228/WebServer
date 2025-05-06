@@ -191,13 +191,6 @@ export default function SingleProductModal({
     }
   }, [open]);
 
-  // Обработка свайпа вниз
-  const handleDragEnd = (_event: any, info: any) => {
-    if (info.offset.y > 100) {
-      onClose();
-    }
-  };
-
   // Поделиться товаром
   const handleShare = async () => {
     if (navigator.share) {
@@ -451,10 +444,10 @@ export default function SingleProductModal({
             className={modalStyles.modalContent}
             ref={modalRef}
             style={{ opacity: modalOpacity, scale: modalScale }}
-            drag="y"
-            dragConstraints={dragConstraints}
-            dragElastic={0.1}
-            onDragEnd={handleDragEnd}
+            // drag="y"
+            // dragConstraints={dragConstraints}
+            // dragElastic={0.1}
+            // onDragEnd={handleDragEnd}
             {...modalAnimation}
             onClick={(e) => e.stopPropagation()}
             aria-modal="true"
@@ -466,11 +459,11 @@ export default function SingleProductModal({
               ref={initialFocusRef}
               tabIndex={-1}
             >
-              <div
+              {/* <div
                 className={modalStyles.handle}
                 title="Свайп вниз для закрытия"
                 role="presentation"
-              />
+              /> */}
             </div>
 
             <div className={modalStyles.body} ref={dragConstraints}>
