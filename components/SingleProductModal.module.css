@@ -12,6 +12,12 @@
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
 }
+
+/* Helper class to initially hide elements before animation or if not open */
+.hiddenInitially {
+  opacity: 0;
+  visibility: hidden;
+}
 .carouselImage{
   display: flex;
   align-items: center;
@@ -59,9 +65,28 @@
   background: rgba(255, 255, 255, 0.5);
 }
 
-/* Удаляем кнопку закрытия, так как будем использовать свайп */
-.closeBtn {
-  display: none;
+/* Кнопка закрытия */
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10; /* Ensure it's above the handle if they overlap */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .body {
@@ -316,12 +341,13 @@
 
 /* Анимации */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @keyframes slideUp {
@@ -337,6 +363,79 @@
 
 .animatedElement {
   animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Modal Overlay Animations */
+.modalOverlayEnter, .modalOverlayExitActive {
+  opacity: 0;
+}
+.modalOverlayEnterActive, .modalOverlayExit {
+  opacity: 1;
+}
+.modalOverlayEnterActive {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+.modalOverlayExitActive {
+  animation: fadeOut 0.2s ease-in forwards;
+}
+
+/* Modal Content Animations */
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideOutDown {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(100%); }
+}
+
+.modalContentEnter, .modalContentExitActive {
+  opacity: 0;
+  transform: translateY(100%);
+}
+.modalContentEnterActive, .modalContentExit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.modalContentEnterActive {
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; /* Mimic spring-like ease */
+}
+.modalContentExitActive {
+  animation: slideOutDown 0.3s ease-in forwards;
+}
+
+/* Product Details Staggered Animation */
+@keyframes fadeInSlideUpDetail {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.detailItemAnimated {
+  opacity: 0; /* Initial state before animation with delay */
+  animation-name: fadeInSlideUpDetail;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards; /* Keep final state */
+}
+
+/* Tab Content Animation */
+@keyframes tabContentFadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tabContentAnimated {
+  animation: tabContentFadeInSlideUp 0.3s ease-out forwards;
 }
 
 /* Премиум-элементы */
@@ -429,6 +528,11 @@
   color: rgba(255, 255, 255, 0.7);
   animation: bounce 1.5s infinite;
   pointer-events: none;
+}
+
+.swipeIndicatorAnimated {
+  animation: fadeIn 0.5s ease-out forwards;
+  /* You might want to add an exit animation if it can be hidden dynamically beyond the initial timeout */
 }
 
 @keyframes bounce {
