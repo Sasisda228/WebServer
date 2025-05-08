@@ -18,8 +18,8 @@ import {
 import { IoShareSocialOutline } from "react-icons/io5";
 import { default as modalStyles } from "./SingleProductModal.module.css";
 
-import useEmblaCarousel, { EmblaOptionsType } from "embla-carousel-react";
-
+import type { EmblaOptionsType } from "embla-carousel"; // ← Типы теперь здесь
+import useEmblaCarousel from "embla-carousel-react";
 // Helper to manage CSS classes for animations
 const manageAnimation = (
   elementRef: React.RefObject<HTMLElement>,
