@@ -370,7 +370,7 @@ export default function SingleProductModal({
                 <img
                   className={modalStyles.emblaSlideImg}
                   alt={`Product image ${index + 1}`}
-                  src={`https://ucarecdn.com/${albumGroupId}/${uuid}/-/preview/800x1067/-/quality/smart/-/format/auto/`}
+                  src={`https://ucarecdn.com/${albumGroupId}/nth/${index}/-/preview/751x1000/`}
                   style={{
                     width: "100%",
                     height: "auto",
@@ -421,7 +421,7 @@ export default function SingleProductModal({
               >
                 <img
                   alt={`Thumbnail ${idx + 1}`}
-                  src={`https://ucarecdn.com/${albumGroupId}/${uuid}/-/preview/100x133/-/quality/smart/-/format/auto/`}
+                  src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/-/preview/100x131/`}
                   width="50"
                   height="67"
                   style={{ objectFit: "cover" }}
