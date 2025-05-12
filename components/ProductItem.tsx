@@ -27,12 +27,13 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
 
   useEffect(() => {
     const firstImage = product.images[0];
-
-    if (firstImage.includes("ucarecdn.com") && firstImage.includes("/")) {
-      // Извлекаем ID альбома из URL
-      const match = firstImage.match(/ucarecdn\.com\/([^\/]+)/);
-      if (match && match[1]) {
-        setAlbumGroupId(match[1]);
+    if (firstImage) {
+      if (firstImage.includes("ucarecdn.com") && firstImage.includes("/")) {
+        // Извлекаем ID альбома из URL
+        const match = firstImage.match(/ucarecdn\.com\/([^\/]+)/);
+        if (match && match[1]) {
+          setAlbumGroupId(match[1]);
+        }
       }
     }
   }, [product.images]);
