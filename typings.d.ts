@@ -9,6 +9,7 @@ interface Product {
   manufacturer: string;
   inStock: number;
   categoryId: string;
+  position: number?;
   // category: { name: string }?;
 }
 

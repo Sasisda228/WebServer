@@ -14,10 +14,12 @@ datasource db {
 }
 
 model FaqArticle {
-  id        String   @id @default(uuid())
-  title     String
-  content   String   @db.Text // Используем TEXT для длинного контента
-  gradient  String? // Градиент может быть необязательным
+  id       String  @id @default(uuid())
+  title    String
+  content  String  @db.Text // Используем TEXT для длинного контента
+  gradient String? // Градиент может быть необязательным
+  imageUrl String? // ссылка на фото, вариативный
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -36,6 +38,7 @@ model Product {
   category       Category                 @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   customerOrders customer_order_product[]
   Wishlist       Wishlist[]
+  position       Int                      @default(0)
 }
 
 model User {
