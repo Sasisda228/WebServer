@@ -446,7 +446,7 @@ const AddNewProduct = () => {
           <button
             onClick={addProduct}
             type="button"
-            className={`fixed bottom-16 right-8 w-16 h-16 rounded-full flex items-center justify-center shadow-lg focus:outline-none focus:ring-2 z-50 ${
+            className={`fixed bottom-16 right-8 w-12 h-12 rounded-full flex items-center justify-center shadow-lg focus:outline-none focus:ring-2 z-50 ${
               isLoading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600"
