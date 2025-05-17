@@ -1,6 +1,4 @@
-import Counter from "@/components/Counter";
 import LegalInfo from "@/components/LegalInfo";
-import ProductCarousel from "@/components/ProductCarousel";
 import ReviewsSection from "@/components/ReviewsSection";
 import SloganSection from "@/components/SloganSection";
 import dynamic from "next/dynamic";
@@ -88,7 +86,7 @@ const TeamAdvantages = dynamic(() => import("@/components/TeamAdvantages"), {
 
 export default async function Home() {
   // Fetch data in parallel on the server
-  const [products, reviews] = await Promise.all([
+  const [, reviews] = await Promise.all([
     getFeaturedProducts(),
     getRecentReviews(),
   ]);
@@ -98,7 +96,7 @@ export default async function Home() {
     <main>
       {/* Hero Section or other introductory content could go here */}
       <SloganSection />
-      <section
+      {/* <section
         className="stats-section-wrapper"
         style={{
           padding: ".5rem 1rem",
@@ -112,10 +110,10 @@ export default async function Home() {
         <div className="flex justify-center">
           <Counter />
         </div>
-      </section>
+      </section> */}
       {/* Product Carousel - Pass fetched data */}
       {/* ProductCarousel is a Client Component but receives data from the Server Component */}
-      <ProductCarousel products={products} title="" />
+      {/* <ProductCarousel products={products} title="" /> */}
 
       {/* Team Advantages Section - Dynamically loaded Client Component */}
       <TeamAdvantages />
