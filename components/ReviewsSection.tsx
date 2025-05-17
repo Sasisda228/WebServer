@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import styles from "./ReviewsSection.module.css";
 
 // Define the Review type
@@ -19,15 +18,12 @@ export default function ReviewsSection({
   reviews = [],
   title = "Что о нас говорят",
 }: ReviewsSectionProps) {
-  const containerRef = useRef(null);
-  // Trigger animation when the container is slightly in view
-
   if (!reviews || reviews.length === 0) {
     return null;
   }
 
   return (
-    <section className={styles.reviewsContainer} ref={containerRef}>
+    <section className={styles.reviewsContainer}>
       <h2 className={styles.reviewsHeader}>{title}</h2>
       <div className={styles.reviewsGrid}>
         {reviews.map((review) => (
