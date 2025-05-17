@@ -27,7 +27,7 @@ export default function ReviewsSection({
       <h2 className={styles.reviewsHeader}>{title}</h2>
       <div className={styles.reviewsGrid}>
         {reviews.map((review) => (
-          <div className={styles.reviewCard}>
+          <div className={styles.reviewCard} key={review.id}>
             <p className={styles.reviewText}>{review.text}</p>
             <p className={styles.reviewAuthor}>{review.author}</p>
           </div>
