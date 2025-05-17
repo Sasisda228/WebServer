@@ -1,12 +1,6 @@
 // components/TeamAdvantages/TeamAdvantages.tsx
 "use client";
 
-import {
-  AnimatePresence,
-  motion,
-  useAnimation,
-  useInView,
-} from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./TeamAdvantages.module.css"; // Основные стили
 import modalStyles from "./TeamAdvantagesModal.module.css"; // Стили модалки
@@ -122,19 +116,6 @@ const sectionsData: SectionInfo[] = [
   },
 ];
 
-// Варианты анимации для элементов
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.1, // Задержка для последовательного появления
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  }),
-};
 
 // Компонент модального окна
 interface ModalProps {
@@ -173,55 +154,61 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
     };
   }, [isOpen, onClose]);
 
+  if (!isOpen) return null;
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className={modalStyles.overlay}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }} // Чуть дольше для плавности
-          onClick={handleOverlayClick}
-        >
-          <motion.div
-            className={modalStyles.modalContent}
-            initial={{ scale: 0.95, opacity: 0, y: 30 }} // Начальное состояние чуть ниже
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 30 }} // Конечное состояние чуть ниже
-            transition={{ duration: 0.3, ease: "easeOut" }}
+    <div
+      className={`${modalStyles.overlay} ${
+        isOpen ? modalStyles.overlayVisible : ""
+      }`}
+      onClick={handleOverlayClick}
+    >
+      <div
+        className={`${modalStyles.modalContent} ${
+          isOpen ? modalStyles.modalVisible : ""
+        }`}
+      >
+        <div className={modalStyles.modalHeader}>
+          <h2>{title}</h2>
+          <button
+            onClick={onClose}
+            className={modalStyles.closeButton}
+            aria-label="Закрыть"
           >
-            <div className={modalStyles.modalHeader}>
-              <h2>{title}</h2>
-              <button
-                onClick={onClose}
-                className={modalStyles.closeButton}
-                aria-label="Закрыть"
-              >
-                &times; {/* Крестик */}
-              </button>
-            </div>
-            <div className={modalStyles.modalBody}>{children}</div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            &times; {/* Крестик */}
+          </button>
+        </div>
+        <div className={modalStyles.modalBody}>{children}</div>
+      </div>
+    </div>
   );
 };
 
 // Основной компонент
 const TeamAdvantages: React.FC = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 }); // Срабатывание чуть раньше
-  const controls = useAnimation();
-
+  const [isVisible, setIsVisible] = useState(false);
   const [activeModal, setActiveModal] = useState<SectionInfo | null>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isInView) {
-      controls.start("visible");
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
     }
-  }, [isInView, controls]);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const handleOpenModal = (sectionId: SectionInfo["id"]) => {
     const section = sectionsData.find((s) => s.id === sectionId);
@@ -236,33 +223,30 @@ const TeamAdvantages: React.FC = () => {
 
   return (
     <>
-      <section className={styles.section} ref={ref}>
-        <motion.div
-          className={styles.container}
-          initial="hidden"
-          animate={controls}
-          variants={{
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
+      <section className={styles.section} ref={sectionRef}>
+        <div
+          className={`${styles.container} ${
+            isVisible ? styles.containerVisible : ""
+          }`}
         >
-          <motion.h2
-            className={styles.title}
-            variants={itemVariants}
-            custom={0}
+          <h2
+            className={`${styles.title} ${
+              isVisible ? styles.itemVisible : styles.itemHidden
+            }`}
+            style={{ animationDelay: "0ms" }}
           >
             Мы - <span className={styles.highlight}>47</span>
-          </motion.h2>
+          </h2>
 
           <div className={styles.buttonsGrid}>
             {sectionsData.map((section, i) => (
-              <motion.button
+              <button
                 key={section.id}
-                className={styles.advantageButton}
+                className={`${styles.advantageButton} ${
+                  isVisible ? styles.itemVisible : styles.itemHidden
+                }`}
                 onClick={() => handleOpenModal(section.id)}
-                variants={itemVariants}
-                custom={i + 1}
-                whileHover={{ y: -5, scale: 1.02 }} // Небольшой подъем и увеличение при ховере
-                whileTap={{ scale: 0.97 }} // Небольшое сжатие при нажатии
+                style={{ animationDelay: `${(i + 1) * 100}ms` }}
               >
                 <div className={styles.buttonIconWrapper}>
                   <span className={styles.buttonIcon}>{section.icon}</span>
@@ -273,20 +257,19 @@ const TeamAdvantages: React.FC = () => {
                     {section.shortDescription}
                   </p>
                 </div>
-                {/* Эффект градиентного свечения можно добавить сюда, если нужно */}
-                {/* <div className={styles.buttonGlow} /> */}
-              </motion.button>
+              </button>
             ))}
           </div>
 
-          <motion.div
-            className={styles.footer}
-            variants={itemVariants}
-            custom={sectionsData.length + 1}
+          <div
+            className={`${styles.footer} ${
+              isVisible ? styles.itemVisible : styles.itemHidden
+            }`}
+            style={{ animationDelay: `${(sectionsData.length + 1) * 100}ms` }}
           >
             <p>Узнайте больше о каждом направлении</p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Модальное окно */}

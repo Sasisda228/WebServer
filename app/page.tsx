@@ -3,8 +3,8 @@ import LegalInfo from "@/components/LegalInfo";
 import ProductCarousel from "@/components/ProductCarousel";
 import ReviewsSection from "@/components/ReviewsSection";
 import SloganSection from "@/components/SloganSection";
+import TeamAdvantages from "@/components/TeamAdvantages";
 import dynamic from "next/dynamic";
-
 // --- Data Fetching Functions (Server-Side) ---
 // Replace with your actual API calls or data sources
 
@@ -69,7 +69,7 @@ async function getRecentReviews(): Promise<Review[]> {
 
 // TeamAdvantages - Keep dynamic if it's heavy and uses client-side features extensively
 const TeamAdvantages = dynamic(() => import("@/components/TeamAdvantages"), {
-  ssr: false, // Keep SSR false if it relies heavily on client-side APIs/hooks like framer-motion
+  ssr: true, // Keep SSR false if it relies heavily on client-side APIs/hooks like framer-motion
   loading: () => (
     <div
       style={{

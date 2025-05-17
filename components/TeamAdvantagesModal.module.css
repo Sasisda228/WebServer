@@ -9,6 +9,14 @@
   z-index: 1000;
   padding: 15px; /* Отступы для мобильных */
   backdrop-filter: blur(5px); /* Эффект размытия фона (опционально) */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlayVisible {
+  opacity: 1;
+  visibility: visible;
 }
 
 .modalContent {
@@ -23,6 +31,15 @@
   display: flex;
   flex-direction: column;
   border: 1px solid #371B72; /* Граница акцентным цветом */
+  opacity: 0;
+  transform: scale(0.95) translateY(30px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.modalVisible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
 .modalHeader {
@@ -115,6 +132,33 @@
 }
 
 /* Адаптация для больших экранов */
+/* Animation for modal exit */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleDown {
+  from {
+    transform: scale(1) translateY(0);
+  }
+  to {
+    transform: scale(0.95) translateY(30px);
+  }
+}
+
+.modalClosing {
+  animation: fadeOut 0.3s ease forwards, scaleDown 0.3s ease forwards;
+}
+
+.overlayClosing {
+  animation: fadeOut 0.3s ease forwards;
+}
+
 @media (min-width: 640px) {
   .modalContent {
     padding: 30px;
