@@ -14,21 +14,6 @@ interface Review {
   text: string;
 }
 
-async function getFeaturedProducts(): Promise<Product[]> {
-  // TODO: Replace with your actual API endpoint or data fetching logic
-  // Example fetching logic:
-  const res = await fetch(`${process.env.API_URL}/api/products`, {
-    cache: "no-store",
-  }); // Or configure caching
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
-  }
-  const data = await res.json();
-  return data;
-
-  // --- End Placeholder Data ---
-}
-
 async function getRecentReviews(): Promise<Review[]> {
   // TODO: Replace with your actual API endpoint or data fetching logic
   // Example:
@@ -86,10 +71,7 @@ const TeamAdvantages = dynamic(() => import("@/components/TeamAdvantages"), {
 
 export default async function Home() {
   // Fetch data in parallel on the server
-  const [, reviews] = await Promise.all([
-    getFeaturedProducts(),
-    getRecentReviews(),
-  ]);
+  const [reviews] = await Promise.all([getRecentReviews()]);
 
   return (
     // Use a main tag for semantic structure
