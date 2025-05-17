@@ -1,5 +1,3 @@
-"use client"; // Needs client-side hooks for animation
-
 import { useRef } from "react";
 import styles from "./ReviewsSection.module.css";
 
