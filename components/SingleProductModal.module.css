@@ -42,7 +42,7 @@
 
 .header {
   position: relative;
-  padding: 12px 16px; /* Уменьшенные отступы */
+  padding: 12px 16px; /* Уменьшенные отс��упы */
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -284,7 +284,7 @@
     height: 2.8rem;
   }
   .emblaButtonPrev {
-    left: 0.3rem; /* Еще меньше отступ на мобильных */
+    left: 0.3rem; /* Еще меньше отступ на мо��ильных */
   }
   .emblaButtonNext {
     right: 0.3rem; /* Еще меньше отступ на мобильных */

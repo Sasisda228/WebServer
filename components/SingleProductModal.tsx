@@ -1,12 +1,6 @@
 "use client";
 
 import pageStyles from "@/app/product/[productSlug]/page.module.css"
-import {
-  AddToCartSingleProductBtn,
-  AddToWishlistBtn,
-  BuyNowSingleProductBtn,
-  StockAvailabillity,
-} from "@/components";
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -557,10 +551,6 @@ export default function SingleProductModal({
                   }
                 >
                   <span className={pageStyles.price}>{product?.price} ₽</span>
-                  <StockAvailabillity
-                    stock={product?.stock ?? 0}
-                    inStock={product?.inStock}
-                  />
                 </div>
 
                 <div
