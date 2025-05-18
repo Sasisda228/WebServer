@@ -68,7 +68,7 @@ export default function Home() {
 
   return (
     <main>
-      <section className="relative h-3/4 overflow-hidden">
+      <section className="relative h-[90vh] overflow-hidden">
         {/* Background image with parallax effect */}
         <div
           className="absolute inset-0 xl:h-[180vh] h-[100vh] w-full bg-cover bg-center bg-no-repeat"
