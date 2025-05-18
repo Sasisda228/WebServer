@@ -214,7 +214,7 @@
     font-size: 1.25rem;
     border-radius: 80px;
     letter-spacing: 0.05em;
-    margin-top: 0.15rem; /* Added margin to separate from title */
+    margin-top: 0rem; /* Added margin to separate from title */
   }
   
   .card::after {
