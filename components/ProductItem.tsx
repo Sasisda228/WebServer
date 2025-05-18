@@ -1,17 +1,16 @@
 "use client";
+import { useProductStore } from "@/app/_zustand/store";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import styles from "./ProductCard.module.css";
+
+// Dynamic import of modal component
 const SingleProductModal = dynamic(
   () => import("@/components/SingleProductModal"),
   {
     ssr: false, // Modals are client-side interactive elements
-    // Optional: Add loading state if needed, but often not necessary for modals
-    // loading: () => <p>Loading details...</p>
   }
 );
-import { useProductStore } from "@/app/_zustand/store";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-
-import styles from "./ProductCard.module.css";
 interface Product {
   id: string | number;
   title: string;
@@ -39,7 +38,8 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
   }, [product.images]);
   const { addToCart } = useProductStore();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
     addToCart({
       id: product?.id.toString(),
       title: product?.title,
@@ -48,9 +48,10 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
       amount: 1,
     });
   };
-  // Prevent modal opening when clicking on interactive elements inside the card
-  const handleArticleClick = (e: React.MouseEvent) => {
-    // If the click originated from a button or a link, do nothing
+
+  // Handle card click to open modal
+  const handleCardClick = (e: React.MouseEvent) => {
+    // If the click originated from a button, do nothing
     const target = e.target as HTMLElement;
     if (
       target.closest("button") ||
@@ -67,7 +68,7 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
         className={styles.card}
         tabIndex={0}
         aria-label={product.title}
-        onClick={handleArticleClick}
+        onClick={handleCardClick}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") setModalOpen(true);
         }}
@@ -78,46 +79,40 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
           className={styles.imageWrapper}
           aria-label={`View ${product.title}`}
         >
-          {albumGroupId && (
+          {albumGroupId ? (
             <img
               src={`https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/751x1000/`}
-              alt={`Product image 1`}
-              width={200}
-              height={200}
-              sizes="(max-width: 600px) 100vw, 180px"
+              alt={product.title}
+              className={styles.image}
+              loading="lazy"
+            />
+          ) : (
+            <img
+              src="/product_placeholder.jpg"
+              alt={product.title}
+              className={styles.image}
+              loading="lazy"
             />
           )}
-
-          {/* <Image
-            src={
-              product.mainImage
-                ? `/${product.mainImage}`
-                : "/product_placeholder.jpg"
-            }
-            alt={product.title}
-            fill
-            className={styles.image}
-            sizes="(max-width: 600px) 100vw, 180px"
-            priority
-            draggable={false}
-          /> */}
+          <div className={styles.imageOverlay}></div>
         </div>
+
         <div className={styles.cardContent}>
-          <div className={styles.title} tabIndex={0}>
+          <h3 className={styles.title} tabIndex={0}>
             {product.title}
-          </div>
+          </h3>
+
           <div className={styles.priceRow}>
             <span className={styles.price}>{product?.price} ₽</span>
           </div>
+
           <button
             className={styles.buyButton}
             tabIndex={0}
             aria-label={`В КОРЗИНУ: ${product.title}`}
             type="button"
             data-ignore-article-click
-            onClick={() => {
-              handleAddToCart();
-            }}
+            onClick={handleAddToCart}
           >
             <span>В КОРЗИНУ</span>
           </button>
