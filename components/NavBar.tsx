@@ -138,7 +138,7 @@ export default function NavBar() {
                   {/* Show selected category name if active and available, otherwise default label */}
                   <span className={styles.navLabel}>
                     {item.route === "/shop" && isActive && selectedCategory
-                      ? selectedCategory.cat
+                      ? selectedCategory.label
                       : item.label}
                   </span>
                   {isActive && (
