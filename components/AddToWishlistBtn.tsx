@@ -67,12 +67,11 @@ const AddToWishlistBtn = ({ product }: AddToWishlistBtnProps) => {
           slug: product?.slug,
           stockAvailabillity: product?.inStock,
         });
-        toast.success("Product added to the wishlist");
-      } catch (error) {
-        toast.error("Failed to add product to the wishlist");
+        toast.success("Товар был добавлен в лист желаемого") {
+        toast.error("Не удалось добавить товар в лист желаемого");
       }
     } else {
-      toast.error("You need to be logged in to add a product to the wishlist");
+      toast.error("Войдите в аккаунт для добавления товара в лист желаемого");
     }
   };
 
@@ -85,9 +84,9 @@ const AddToWishlistBtn = ({ product }: AddToWishlistBtnProps) => {
         await axios.delete(`/apiv3/wishlist/${userId}/${product?.id}`);
 
         removeFromWishlist(product?.id);
-        toast.success("Product removed from the wishlist");
+        toast.success("Товар удален из листа желаемого");
       } catch (error) {
-        toast.error("Failed to remove product from the wishlist");
+        toast.error("Не удалось удалить товар из листа желаемого");
       }
     }
   };
@@ -125,7 +124,7 @@ const AddToWishlistBtn = ({ product }: AddToWishlistBtnProps) => {
           onClick={removeFromWishlistFun}
         >
           <FaHeartCrack className="text-xl text-custom-black" />
-          <span className="text-lg">REMOVE FROM WISHLIST</span>
+          <span className="text-lg">Удалить из желаемого</span>
         </p>
       ) : (
         <p
@@ -133,7 +132,7 @@ const AddToWishlistBtn = ({ product }: AddToWishlistBtnProps) => {
           onClick={addToWishlistFun}
         >
           <FaHeart className="text-xl text-custom-black" />
-          <span className="text-lg">ADD TO WISHLIST</span>
+          <span className="text-lg">Добавить в желаемое</span>
         </p>
       )}
     </>
