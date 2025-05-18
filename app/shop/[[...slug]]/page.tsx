@@ -10,12 +10,12 @@ const ShopPage = (slug: any) => {
     <div className={styles.root}>
       <div className={styles.container}>
         <div className={styles.divider}></div>
-        <div className={styles.titleWrapper}>
+        {/* <div className={styles.titleWrapper}>
           <h1 className={styles.title}>
             <span className={styles.titleGradient}>47STORE</span>
             <br />
           </h1>
-        </div>
+        </div> */}
         <div>
           <Filters />
           <Products slug={slug} />
