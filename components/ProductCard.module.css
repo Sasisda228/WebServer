@@ -162,11 +162,113 @@
   box-shadow: 0 4px 16px rgba(37, 99, 235, 0.18);
 }
 
-/* Responsive design - optimized for both mobile and desktop */
-@media (min-width: 1200px) {
+/* SIGNIFICANTLY LARGER DESKTOP STYLES */
+@media (min-width: 1400px) {
+  /* Extra large desktop styles */
+  .card {
+    width: 340px;
+    height: 480px;
+    border-radius: 14px;
+    border-width: 3px;
+  }
+  
+  .imageWrapper {
+    height: 75%;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .cardContent {
+    height: 25%;
+    padding: 1rem 1.2rem;
+  }
+  
+  .title {
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.06em;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: auto;
+    max-height: 3rem;
+    line-height: 1.2;
+  }
+  
+  .price {
+    font-size: 1.6rem;
+  }
+  
+  .rating {
+    font-size: 1.3rem;
+    margin-left: 0.5rem;
+  }
+  
+  .buyButton {
+    width: 240px;
+    height: 46px;
+    font-size: 1.25rem;
+    border-radius: 80px;
+    letter-spacing: 0.05em;
+  }
+  
+  .card::after {
+    width: 32px;
+    height: 32px;
+    top: 15px;
+    right: 15px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
   /* Large desktop styles */
   .card {
-    width: 280px;
+    width: 300px;
+    height: 440px;
+    border-radius: 12px;
+  }
+  
+  .imageWrapper {
+    height: 75%;
+  }
+  
+  .cardContent {
+    height: 25%;
+    padding: 0.9rem 1.1rem;
+  }
+  
+  .title {
+    font-size: 1.3rem;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.05em;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: auto;
+    max-height: 2.8rem;
+  }
+  
+  .price {
+    font-size: 1.4rem;
+  }
+  
+  .rating {
+    font-size: 1.2rem;
+  }
+  
+  .buyButton {
+    width: 220px;
+    height: 42px;
+    font-size: 1.2rem;
+    border-radius: 75px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  /* Medium desktop styles */
+  .card {
+    width: 270px;
     height: 400px;
   }
   
@@ -182,7 +284,6 @@
   .title {
     font-size: 1.2rem;
     margin-bottom: 0.3rem;
-    letter-spacing: 0.05em;
     white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -207,8 +308,8 @@
   }
 }
 
-@media (min-width: 768px) and (max-width: 1199px) {
-  /* Medium desktop styles */
+@media (min-width: 768px) and (max-width: 991px) {
+  /* Small desktop styles */
   .card {
     width: 240px;
     height: 360px;
@@ -250,7 +351,7 @@
 }
 
 @media (min-width: 601px) and (max-width: 767px) {
-  /* Small desktop/tablet styles */
+  /* Tablet styles */
   .card {
     width: 220px;
     height: 320px;
