@@ -1,6 +1,5 @@
 "use client";
 
-import { Category } from "@/typings"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { formatCategoryName } from "../../../../utils/categoryFormating"
