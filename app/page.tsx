@@ -76,7 +76,7 @@ export default function Home() {
             backgroundImage: "url('/background.png')",
             backgroundPositionY: isDesktop ? "-20rem" : "top",
             transform: isDesktop
-              ? `translateY(${-scrollPosition * 0.8}px)`
+              ? `translateY(${-scrollPosition * 0.5}px)`
               : "none",
           }}
         />
