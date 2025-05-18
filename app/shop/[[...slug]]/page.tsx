@@ -8,16 +8,17 @@ import styles from "./ShopPage.module.css";
 const ShopPage = (slug: any) => {
   return (
     <div className={styles.root}>
-      <h1 className={styles.title}>
-        <span className={styles.titleGradient}>47STORE</span>
-        <br />
-      </h1>
       <div className={styles.container}>
         <div className={styles.divider}></div>
 
         <div className={styles.grid}>
           <div>
-            <div className={styles.titleWrapper}></div>
+            <div className={styles.titleWrapper}>
+              <h1 className={styles.title}>
+                <span className={styles.titleGradient}>47STORE</span>
+                <br />
+              </h1>
+            </div>
             <Filters />
             <Products slug={slug} />
           </div>
