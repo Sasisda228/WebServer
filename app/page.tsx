@@ -5,10 +5,6 @@ import SloganSection from "@/components/SloganSection";
 import TeamAdvantages from "@/components/TeamAdvantages";
 import { useEffect, useState } from "react";
 
-// Указываем Next.js, что эта страница должна быть статической
-// Можно также добавить revalidate, если нужно периодическое обновление
-export const revalidate = 3600; // обновление раз в час
-
 // Example Review type (adjust as needed)
 interface Review {
   id: string | number;
