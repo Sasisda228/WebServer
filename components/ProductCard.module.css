@@ -180,6 +180,9 @@
   .cardContent {
     height: 25%;
     padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   
   .title {
@@ -191,8 +194,9 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     height: auto;
-    max-height: 3rem;
-    line-height: 2.2;
+    max-height: 3.4rem;
+    line-height: 1.2; /* Fixed line height */
+    overflow: visible; /* Ensure text is visible */
   }
   
   .price {
@@ -210,6 +214,7 @@
     font-size: 1.25rem;
     border-radius: 80px;
     letter-spacing: 0.05em;
+    margin-top: 0.5rem; /* Added margin to separate from title */
   }
   
   .card::after {
@@ -235,6 +240,9 @@
   .cardContent {
     height: 25%;
     padding: 0.9rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   
   .title {
@@ -246,7 +254,9 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     height: auto;
-    max-height: 2.8rem;
+    max-height: 3.2rem;
+    line-height: 1.2; /* Fixed line height */
+    overflow: visible; /* Ensure text is visible */
   }
   
   .price {
@@ -262,6 +272,7 @@
     height: 42px;
     font-size: 1.2rem;
     border-radius: 75px;
+    margin-top: 0.4rem; /* Added margin to separate from title */
   }
 }
 
@@ -279,6 +290,9 @@
   .cardContent {
     height: 25%;
     padding: 0.8rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   
   .title {
@@ -289,7 +303,9 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     height: auto;
-    max-height: 2.6rem;
+    max-height: 3rem;
+    line-height: 1.2; /* Fixed line height */
+    overflow: visible; /* Ensure text is visible */
   }
   
   .price {
@@ -305,6 +321,7 @@
     height: 38px;
     font-size: 1.1rem;
     border-radius: 70px;
+    margin-top: 0.3rem; /* Added margin to separate from title */
   }
 }
 
@@ -322,6 +339,9 @@
   .cardContent {
     height: 25%;
     padding: 0.7rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   
   .title {
@@ -332,7 +352,9 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     height: auto;
-    max-height: 2.4rem;
+    max-height: 2.8rem;
+    line-height: 1.2; /* Fixed line height */
+    overflow: visible; /* Ensure text is visible */
   }
   
   .price {
@@ -347,6 +369,7 @@
     width: 180px;
     height: 34px;
     font-size: 1rem;
+    margin-top: 0.2rem; /* Added margin to separate from title */
   }
 }
 
@@ -363,6 +386,9 @@
   
   .cardContent {
     height: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   
   .title {
@@ -373,7 +399,8 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     height: auto;
-    max-height: 2.2rem;
+    max-height: 2.4rem;
+    line-height: 1.2; /* Fixed line height */
   }
   
   .buyButton {
@@ -410,6 +437,7 @@
     -webkit-box-orient: vertical;
     height: auto;
     max-height: 2.2rem;
+    line-height: 1.1;
   }
   
   .priceRow {
