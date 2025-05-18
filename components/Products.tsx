@@ -46,7 +46,7 @@ const Products = ({ slug }: any) => {
 
   return (
     <div className="justify-center">
-      <div className=" grid grid-cols-3 justify-items-center max-lg:gap-x-2 gap-x-48 gap-y-5 max-[1300px]:grid-cols-4 max-lg:grid-cols-2 max-[500px]:grid-cols-2 ">
+      <div className=" grid grid-cols-3 justify-items-center max-lg:gap-x-2 gap-x-32 gap-y-5 max-[1300px]:grid-cols-4 max-lg:grid-cols-2 max-[500px]:grid-cols-2 ">
         {products.length > 0 ? (
           products.map((product: Product) => (
             <ProductItem key={product.id} product={product} />
