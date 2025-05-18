@@ -1,9 +1,25 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 
-const Products = ({ slug }: any) => {
+interface Product {
+  id: string | number;
+  title: string;
+  images: string[];
+  price: number;
+  rating?: number;
+  slug: string;
+}
+
+interface ProductsProps {
+  slug: {
+    params: {
+      slug: string;
+    };
+  };
+}
+
+const Products = ({ slug }: ProductsProps) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,11 +29,18 @@ const Products = ({ slug }: any) => {
       setLoading(true);
 
       try {
-        const response = await axios.get(
+        const response = await fetch(
           `/apiv3/products?category=${slug?.params?.slug}`
         );
-        if (isMounted) setProducts(response.data);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await response.json();
+        if (isMounted) setProducts(data);
       } catch (error) {
+        console.error("Error fetching products:", error);
         if (isMounted) setProducts([]);
       } finally {
         if (isMounted) setLoading(false);
@@ -39,13 +62,15 @@ const Products = ({ slug }: any) => {
   }
 
   return (
-    <div className="grid grid-cols-3 justify-items-center gap-x-2 gap-y-5 max-[1300px]:grid-cols-3 max-lg:grid-cols-2 max-[500px]:grid-cols-2 ">
+    <div className="grid grid-cols-4 gap-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 justify-items-center">
       {products.length > 0 ? (
         products.map((product: Product) => (
-          <ProductItem key={product.id} product={product} />
+          <div key={product.id} className="w-full">
+            <ProductItem product={product} />
+          </div>
         ))
       ) : (
-        <h3 className="text-3xl mt-5 text-center w-full col-span-full max-[1000px]:text-2xl max-[500px]:text-lg">
+        <h3 className="text-xl font-medium mt-5 text-center w-full col-span-full">
           No products found for specified query
         </h3>
       )}

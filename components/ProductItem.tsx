@@ -82,7 +82,7 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
         >
           {albumGroupId ? (
             <img
-              src={`https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/500x600/`}
+              src={`https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/751x1000/`}
               alt={product.title}
               className={styles.image}
               loading="lazy"
