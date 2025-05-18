@@ -24,11 +24,13 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
 
+  const { addToCart } = useProductStore();
+
   useEffect(() => {
     const firstImage = product.images[0];
     if (firstImage) {
       if (firstImage.includes("ucarecdn.com") && firstImage.includes("/")) {
-        // Извлекаем ID альбома из URL
+        // Extract album ID from URL
         const match = firstImage.match(/ucarecdn\.com\/([^\/]+)/);
         if (match && match[1]) {
           setAlbumGroupId(match[1]);
@@ -36,7 +38,6 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
       }
     }
   }, [product.images]);
-  const { addToCart } = useProductStore();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click
@@ -81,7 +82,7 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
         >
           {albumGroupId ? (
             <img
-              src={`https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/751x1000/`}
+              src={`https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/500x600/`}
               alt={product.title}
               className={styles.image}
               loading="lazy"
@@ -104,6 +105,9 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
 
           <div className={styles.priceRow}>
             <span className={styles.price}>{product?.price} ₽</span>
+            {product.rating && (
+              <span className={styles.rating}>★ {product.rating}</span>
+            )}
           </div>
 
           <button
