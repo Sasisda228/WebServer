@@ -67,7 +67,8 @@ const AddToWishlistBtn = ({ product }: AddToWishlistBtnProps) => {
           slug: product?.slug,
           stockAvailabillity: product?.inStock,
         });
-        toast.success("Товар был добавлен в лист желаемого") {
+        toast.success("Товар был добавлен в лист желаемого");
+      } catch (error) {
         toast.error("Не удалось добавить товар в лист желаемого");
       }
     } else {
