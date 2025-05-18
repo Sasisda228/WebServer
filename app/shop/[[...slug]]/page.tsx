@@ -16,11 +16,9 @@ const ShopPage = (slug: any) => {
             <br />
           </h1>
         </div>
-        <div className={styles.grid}>
-          <div>
-            <Filters />
-            <Products slug={slug} />
-          </div>
+        <div>
+          <Filters />
+          <Products slug={slug} />
         </div>
       </div>
     </div>
