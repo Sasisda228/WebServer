@@ -41,7 +41,9 @@ export default function Home() {
   const reviews = getRecentReviews();
   const [scrollPosition, setScrollPosition] = useState(0);
   const [windowWidth, setWindowWidth] = useState(0);
-
+  const [displayText, setDisplayText] = useState("");
+  const fullText = "47club";
+  const [showCursor, setShowCursor] = useState(true);
   useEffect(() => {
     // Set initial window width
     setWindowWidth(window.innerWidth);
@@ -53,6 +55,21 @@ export default function Home() {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
+    // Typing animation
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= fullText.length) {
+        setDisplayText(fullText.substring(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 200); // Adjust typing speed here (milliseconds)
+
+    // Blinking cursor animation
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 500);
 
     // Add event listeners
     window.addEventListener("scroll", handleScroll);
@@ -62,6 +79,8 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
+      clearInterval(typingInterval);
+      clearInterval(cursorInterval);
     };
   }, []);
   const isDesktop = windowWidth >= 1024;
@@ -96,7 +115,14 @@ export default function Home() {
 
             {/* Text content */}
             <h1 className="relative text-4xl font-bold text-white drop-shadow-lg text-center lg:text-6xl">
-              47club
+              {displayText}
+              <span
+                className={`${
+                  showCursor ? "opacity-100" : "opacity-0"
+                } ml-1 animate-pulse`}
+              >
+                |
+              </span>
             </h1>
           </div>
         </div>
