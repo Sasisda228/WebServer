@@ -2,24 +2,7 @@
 import { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 
-interface Product {
-  id: string | number;
-  title: string;
-  images: string[];
-  price: number;
-  rating?: number;
-  slug: string;
-}
-
-interface ProductsProps {
-  slug: {
-    params: {
-      slug: string;
-    };
-  };
-}
-
-const Products = ({ slug }: ProductsProps) => {
+const Products = ({ slug }: any) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,15 +45,13 @@ const Products = ({ slug }: ProductsProps) => {
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 justify-items-center">
+    <div className="grid grid-cols-3 justify-items-center gap-x-2 gap-y-5 max-[1300px]:grid-cols-3 max-lg:grid-cols-2 max-[500px]:grid-cols-2 ">
       {products.length > 0 ? (
         products.map((product: Product) => (
-          <div key={product.id} className="w-full">
-            <ProductItem product={product} />
-          </div>
+          <ProductItem key={product.id} product={product} />
         ))
       ) : (
-        <h3 className="text-xl font-medium mt-5 text-center w-full col-span-full">
+        <h3 className="text-3xl mt-5 text-center w-full col-span-full max-[1000px]:text-2xl max-[500px]:text-lg">
           No products found for specified query
         </h3>
       )}
