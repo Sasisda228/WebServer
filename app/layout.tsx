@@ -1,4 +1,6 @@
-import Providers from "@/Providers";
+import { Header } from "@/components";
+import NavBar from "@/components/NavBar"; // Imports the main navigation, likely a Client Component due to interactivity/hooks
+import Providers from "@/Providers"; // Imports Providers (e.g., for Toaster), likely a Client Component
 import SessionProvider from "@/utils/SessionProvider"; // Client Component wrapper for next-auth session state
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth"; // Fetches session server-side efficiently
@@ -39,14 +41,14 @@ export default async function RootLayout({
         {/* Applies optimized font class */}
         {/* SessionProvider MUST be a Client Component to manage session state via React Context */}
         <SessionProvider session={session}>
-          {/* <Header /> */}
+          <Header />
           {/* Providers likely wraps Client Components like Toaster */}
           <Providers>
             {/* Main page content is rendered here */}
             {children}
           </Providers>
           {/* NavBar is likely a Client Component due to hooks (useState, usePathname, etc.) and interactivity */}
-          {/* <NavBar /> */}
+          <NavBar />
         </SessionProvider>
       </body>
     </html>

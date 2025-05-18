@@ -1,11 +1,12 @@
 import LegalInfo from "@/components/LegalInfo";
 import ReviewsSection from "@/components/ReviewsSection";
 import SloganSection from "@/components/SloganSection";
-import dynamic from "next/dynamic";
-// --- Data Fetching Functions (Server-Side) ---
-// Replace with your actual API calls or data sources
+import TeamAdvantages from "@/components/TeamAdvantages";
 
-// Example Product type (adjust as needed)
+// Указываем Next.js, что эта страница должна быть статической
+export const dynamic = "force-static";
+// Можно также добавить revalidate, если нужно периодическое обновление
+export const revalidate = 3600; // обновление раз в час
 
 // Example Review type (adjust as needed)
 interface Review {
@@ -14,19 +15,10 @@ interface Review {
   text: string;
 }
 
-async function getRecentReviews(): Promise<Review[]> {
-  // TODO: Replace with your actual API endpoint or data fetching logic
-  // Example:
-  // const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/reviews/recent`, { cache: 'no-store' });
-  // if (!res.ok) {
-  //   throw new Error('Failed to fetch reviews');
-  // }
-  // const data = await res.json();
-  // return data;
-
-  // --- Placeholder Data ---
-  console.log("Fetching recent reviews (server-side)...");
-  await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate network delay
+// Для статической страницы данные должны быть предопределены
+// или получены во время сборки
+function getRecentReviews(): Review[] {
+  // Статические данные без имитации задержки
   return [
     {
       id: "r1",
@@ -44,67 +36,18 @@ async function getRecentReviews(): Promise<Review[]> {
       text: "Заказал пушку неделю назад – работает как часы! Шарики летят по ощущениям метров на 5-10, точность отличная. Корпус реально похож на настоящий, но безопасный. Супер-весело играть на улице!",
     },
   ];
-  // --- End Placeholder Data ---
 }
 
-// --- Dynamic Imports (Client Components) ---
-
-// TeamAdvantages - Keep dynamic if it's heavy and uses client-side features extensively
-const TeamAdvantages = dynamic(() => import("@/components/TeamAdvantages"), {
-  ssr: true, // Keep SSR false if it relies heavily on client-side APIs/hooks like framer-motion
-  loading: () => (
-    <div
-      style={{
-        height: "300px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "var(--text-secondary)",
-      }}
-    >
-      Загрузка преимуществ...
-    </div>
-  ), // Simple loading state
-});
-
-// --- Homepage Component (Server Component) ---
-
-export default async function Home() {
-  // Fetch data in parallel on the server
-  const [reviews] = await Promise.all([getRecentReviews()]);
+// Главная страница теперь не async
+export default function Home() {
+  // Получаем данные синхронно для статической генерации
+  const reviews = getRecentReviews();
 
   return (
-    // Use a main tag for semantic structure
     <main>
-      {/* Hero Section or other introductory content could go here */}
       <SloganSection />
-      {/* <section
-        className="stats-section-wrapper"
-        style={{
-          padding: ".5rem 1rem",
-          backgroundColor: "var(--primary-color)",
-        }}
-      >
-        <h1 className="font-bold text-2xl text-white mb-2 flex justify-center">
-          Вооружено бойцов
-        </h1>
-
-        <div className="flex justify-center">
-          <Counter />
-        </div>
-      </section> */}
-      {/* Product Carousel - Pass fetched data */}
-      {/* ProductCarousel is a Client Component but receives data from the Server Component */}
-      {/* <ProductCarousel products={products} title="" /> */}
-
-      {/* Team Advantages Section - Dynamically loaded Client Component */}
       <TeamAdvantages />
-
-      {/* Reviews Section - Pass fetched data */}
-      {/* ReviewsSection is a Client Component using framer-motion */}
       <ReviewsSection reviews={reviews} title="Отзывы наших клиентов" />
-
-      {/* Legal Info Footer - Server Component */}
       <LegalInfo />
     </main>
   );
