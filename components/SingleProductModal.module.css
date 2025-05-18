@@ -601,8 +601,8 @@
   }
 
   .productTitle {
-    font-size: 2.2rem; /* Еще больше на десктопе */
-    margin-bottom: 8px;
+    font-size: 2.5rem; /* Еще больше на десктопе */
+    margin-bottom: 4px;
   }
 
   .productPrice {
