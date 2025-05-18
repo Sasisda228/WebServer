@@ -1,10 +1,11 @@
+"use client";
 import LegalInfo from "@/components/LegalInfo";
 import ReviewsSection from "@/components/ReviewsSection";
 import SloganSection from "@/components/SloganSection";
 import TeamAdvantages from "@/components/TeamAdvantages";
+import { useEffect, useState } from "react";
 
 // Указываем Next.js, что эта страница должна быть статической
-export const dynamic = "force-static";
 // Можно также добавить revalidate, если нужно периодическое обновление
 export const revalidate = 3600; // обновление раз в час
 
@@ -42,9 +43,58 @@ function getRecentReviews(): Review[] {
 export default function Home() {
   // Получаем данные синхронно для статической генерации
   const reviews = getRecentReviews();
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    // Set initial window width
+    setWindowWidth(window.innerWidth);
+
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Add event listeners
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+
+    // Clean up event listeners
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  const isDesktop = windowWidth >= 1024;
 
   return (
     <main>
+      <section className="relative h-screen overflow-hidden">
+        {/* Background image with parallax effect */}
+        <div
+          className="absolute inset-0 xl:h-[180vh] h-[100vh] w-full bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/background.png')",
+            backgroundPositionY: isDesktop ? "-20rem" : "top",
+            transform: isDesktop
+              ? `translateY(${-scrollPosition * 0.8}px)`
+              : "none",
+          }}
+        />
+
+        {/* Container for centered text */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1 className="text-6xl font-bold text-white drop-shadow-lg">
+            47club
+          </h1>
+        </div>
+
+        {/* Bottom gradient overlay for smooth transition */}
+        <div className="absolute bottom-0 h-32 w-full bg-gradient-to-t from-black/80 to-transparent"></div>
+      </section>
       <SloganSection />
       <TeamAdvantages />
       <ReviewsSection reviews={reviews} title="Отзывы наших клиентов" />
