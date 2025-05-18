@@ -14,6 +14,9 @@ import { default as modalStyles } from "./SingleProductModal.module.css";
 
 import type { EmblaOptionsType } from "embla-carousel"; // ← Типы теперь здесь
 import useEmblaCarousel from "embla-carousel-react";
+import AddToCartSingleProductBtn from "./AddToCartSingleProductBtn";
+import AddToWishlistBtn from "./AddToWishlistBtn";
+import BuyNowSingleProductBtn from "./BuyNowSingleProductBtn";
 // Helper to manage CSS classes for animations
 const manageAnimation = (
   elementRef: React.RefObject<HTMLElement>,
