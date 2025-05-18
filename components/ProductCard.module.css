@@ -187,7 +187,7 @@
   
   .title {
     font-size: 1.4rem;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.2rem;
     letter-spacing: 0.06em;
     white-space: normal;
     display: -webkit-box;
@@ -214,7 +214,7 @@
     font-size: 1.25rem;
     border-radius: 80px;
     letter-spacing: 0.05em;
-    margin-top: 0.5rem; /* Added margin to separate from title */
+    margin-top: 0.15rem; /* Added margin to separate from title */
   }
   
   .card::after {
