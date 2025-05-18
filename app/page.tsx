@@ -82,10 +82,23 @@ export default function Home() {
         />
 
         {/* Container for centered text */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <h1 className="text-6xl font-bold text-white drop-shadow-lg">
-            47club
-          </h1>
+        <div className="absolute inset-0 flex items-center justify-center px-4">
+          <div className="relative">
+            {/* Radial gradient background behind text */}
+            <div
+              className="absolute inset-0 -m-8 rounded-full blur-md"
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(0, 0, 0, 0.7) 0%, rgba(255,255,255,0) 70%)",
+                transform: "scale(2)",
+              }}
+            ></div>
+
+            {/* Text content */}
+            <h1 className="relative text-4xl font-bold text-white drop-shadow-lg text-center lg:text-6xl">
+              47club
+            </h1>
+          </div>
         </div>
 
         {/* Bottom gradient overlay for smooth transition */}
