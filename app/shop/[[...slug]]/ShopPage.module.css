@@ -6,6 +6,7 @@
   padding-top: 10px;
   padding-bottom: 32px;
   animation: fadeInBg 1.2s;
+  justify-content: center;
 }
 
 .titleWrapper {
