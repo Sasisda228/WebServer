@@ -1,7 +1,18 @@
 import { DashboardSidebar } from "@/components";
-import { Suspense } from "react";
-import AddCategoryButton from "./AddCategoryButton";
-import CategoryTable from "./CategoryTable";
+import dynamic from "next/dynamic";
+
+// Dynamically import client components with no SSR to reduce bundle size
+const CategoryTable = dynamic(() => import("./CategoryTable"), {
+  ssr: false,
+  loading: () => <div>Loading categories...</div>,
+});
+
+const AddCategoryButton = dynamic(() => import("./AddCategoryButton"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-[110px] h-[38px] bg-gray-200 animate-pulse rounded"></div>
+  ),
+});
 
 export default function DashboardCategory() {
   return (
@@ -15,9 +26,7 @@ export default function DashboardCategory() {
           <AddCategoryButton />
         </div>
         <div className="xl:ml-5 w-full max-xl:mt-5 overflow-auto w-full h-[80vh]">
-          <Suspense fallback={<div>Loading categories...</div>}>
-            <CategoryTable />
-          </Suspense>
+          <CategoryTable />
         </div>
       </div>
     </div>

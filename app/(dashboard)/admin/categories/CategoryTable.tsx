@@ -2,7 +2,17 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { formatCategoryName } from "../../../../utils/categoryFormating"
+
+// Define minimal type to avoid importing from large type files
+type Category = {
+  id: string;
+  name: string;
+};
+
+// Simple formatter function to avoid importing utils
+const formatCategoryName = (name: string): string => {
+  return name.charAt(0).toUpperCase() + name.slice(1);
+};
 
 export default function CategoryTable() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -10,23 +20,33 @@ export default function CategoryTable() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Use AbortController for cleanup
+    const controller = new AbortController();
+
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/apiv3/categories");
+        const response = await fetch("/apiv3/categories", {
+          signal: controller.signal,
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch categories");
         }
         const data = await response.json();
         setCategories(data);
       } catch (err) {
-        console.error("Error fetching categories:", err);
-        setError("Failed to load categories. Please try again later.");
+        if (!(err instanceof DOMException && err.name === "AbortError")) {
+          console.error("Error fetching categories:", err);
+          setError("Failed to load categories. Please try again later.");
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchCategories();
+
+    // Cleanup function
+    return () => controller.abort();
   }, []);
 
   if (isLoading) return <div>Loading categories...</div>;
