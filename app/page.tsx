@@ -92,7 +92,7 @@ export default function Home() {
         <div
           className="absolute inset-0 xl:h-[180vh] h-[100vh] w-full bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('/background.png')",
+            backgroundImage: "url('/background.jpg')",
             backgroundPositionY: isDesktop ? "-20rem" : "top",
             transform: isDesktop
               ? `translateY(${-scrollPosition * 0.5}px)`
