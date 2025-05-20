@@ -5,8 +5,10 @@ import { FileInfo } from "@uploadcare/react-widget"; // Import FileInfo type fro
 import axios from "axios";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import "quill/dist/quill.snow.css";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import ReactQuill from "react-quill";
 import {
   convertCategoryNameToURLFriendly as convertSlugToURLFriendly,
   formatCategoryName,
@@ -484,17 +486,17 @@ const DashboardProductDetails = ({
         {/* Product description div - start */}
         <div>
           <label className="form-control">
-            <div className="label">
-              <span className="label-text">Product description:</span>
-            </div>
-            <textarea
-              className="textarea textarea-bordered h-24"
+            <ReactQuill
+              theme="snow"
               value={product.description}
-              onChange={(e) =>
-                setProduct({ ...product, description: e.target.value })
-              }
-              disabled={isLoading}
-            ></textarea>
+              onChange={(content) => {
+                // content — это уже строка с HTML!
+                setProduct({
+                  ...product,
+                  description: content,
+                });
+              }}
+            />
           </label>
         </div>
         {/* Product description div - end */}
