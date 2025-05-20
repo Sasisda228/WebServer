@@ -30,7 +30,7 @@
   --radius-l: 18px; /* Большой радиус */
   --transition-fast: 0.2s ease-in-out;
   --transition-std: 0.3s ease-in-out;
-  --header-height: 118px; /* Высота хедера */
+  --header-height: 125px; /* Высота хедера */
   --navbar-height: 82px; /* Высота навбара */
 }
 
