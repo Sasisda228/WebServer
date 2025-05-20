@@ -32,6 +32,21 @@ interface Category {
   name: string;
 }
 
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "color",
+  "background",
+];
+
 interface Product {
   id: string;
   title: string;
@@ -496,6 +511,7 @@ const DashboardProductDetails = ({
                   description: content,
                 });
               }}
+              formats={formats}
             />
           </label>
         </div>

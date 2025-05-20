@@ -461,9 +461,8 @@ export default function SingleProductModal({
           className={`${pageStyles.tabContent} ${
             !isReducedMotion ? modalStyles.tabContentAnimated : ""
           }`}
-        >
-          {getCurrentTabContent()}
-        </div>
+          dangerouslySetInnerHTML={{ __html: getCurrentTabContent() }}
+        ></div>
       </div>
     );
   }
