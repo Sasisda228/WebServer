@@ -1,5 +1,4 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
@@ -94,75 +93,49 @@ export default function CategoryBar({
   if (!isVisible) return null;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className={styles.categoryBarContainer}
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+    <div className={styles.categoryBarContainer}>
+      {/* Left scroll arrow */}
+      <button
+        className={`${styles.scrollArrow} ${styles.leftArrow} ${
+          showLeftArrow ? styles.visible : ""
+        }`}
+        onClick={scrollLeft}
       >
-        {/* Left scroll arrow */}
-        <motion.button
-          className={`${styles.scrollArrow} ${styles.leftArrow} ${
-            showLeftArrow ? styles.visible : ""
-          }`}
-          onClick={scrollLeft}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: showLeftArrow ? 1 : 0 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <MdChevronLeft />
-        </motion.button>
+        <MdChevronLeft />
+      </button>
 
-        {/* Categories scroll container */}
-        <div className={styles.categoriesContainer} ref={scrollContainerRef}>
-          {categories.map((category, index) => {
-            const isActive = currentCategory
-              ? currentCategory?.cat.toLowerCase() ===
-                category.cat.toLowerCase()
-              : false;
+      {/* Categories scroll container */}
+      <div className={styles.categoriesContainer} ref={scrollContainerRef}>
+        {categories.map((category, index) => {
+          const isActive = currentCategory
+            ? currentCategory?.cat.toLowerCase() === category.cat.toLowerCase()
+            : false;
 
-            return (
-              <motion.button
-                key={index}
-                className={`${styles.categoryItem} ${
-                  isActive ? styles.active : ""
-                }`}
-                onClick={() => handleCategoryClick(category.cat)}
-                data-category={category.cat.toLowerCase()}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              >
-                {category.label}
-                {isActive && (
-                  <motion.div
-                    className={styles.activeIndicator}
-                    layoutId="categoryIndicator"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
+          return (
+            <button
+              key={index}
+              className={`${styles.categoryItem} ${
+                isActive ? styles.active : ""
+              }`}
+              onClick={() => handleCategoryClick(category.cat)}
+              data-category={category.cat.toLowerCase()}
+            >
+              {category.label}
+              {isActive && <div className={styles.activeIndicator} />}
+            </button>
+          );
+        })}
+      </div>
 
-        {/* Right scroll arrow */}
-        <motion.button
-          className={`${styles.scrollArrow} ${styles.rightArrow} ${
-            showRightArrow ? styles.visible : ""
-          }`}
-          onClick={scrollRight}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: showRightArrow ? 1 : 0 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <MdChevronRight />
-        </motion.button>
-      </motion.div>
-    </AnimatePresence>
+      {/* Right scroll arrow */}
+      <button
+        className={`${styles.scrollArrow} ${styles.rightArrow} ${
+          showRightArrow ? styles.visible : ""
+        }`}
+        onClick={scrollRight}
+      >
+        <MdChevronRight />
+      </button>
+    </div>
   );
 }

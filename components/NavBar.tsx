@@ -27,7 +27,12 @@ interface NavItem {
 // Updated navItems array
 const navItems: NavItem[] = [
   { label: "Главная", route: "/", icon: MdHome, action: "navigate" },
-  { label: "Каталог", route: "/shop", icon: MdExplore, action: "navigate" },
+  {
+    label: "Каталог",
+    route: "/shop/Rifles",
+    icon: MdExplore,
+    action: "navigate",
+  },
   // Items for the right side
   {
     label: "Корзина",
