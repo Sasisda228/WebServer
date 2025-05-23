@@ -3,6 +3,7 @@ import { DashboardSidebar } from "@/components";
 import { convertCategoryNameToURLFriendly as convertSlugToURLFriendly } from "@/utils/categoryFormating";
 import UploadcareImage from "@uploadcare/nextjs-loader";
 import "@uploadcare/react-uploader/core.css";
+import { FileInfo } from "@uploadcare/react-widget";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
@@ -15,30 +16,16 @@ const ReactQuill = dynamic(() => import("react-quill"), {
   loading: () => <p>Loading editor...</p>,
 });
 
-// Import Widget type from Uploadcare
-import { FileInfo, Widget as UploadcareWidget } from "@uploadcare/react-widget"
+// Dynamically import the CSS for ReactQuill only on client side
 
-// Extend the Widget props type to include customFileUploader
-interface ExtendedWidgetProps extends React.ComponentProps<typeof UploadcareWidget> {
-  customFileUploader?: (file: File, callback: (file: File) => void) => void;
-}
-
-// Dynamically import Widget from Uploadcare with extended props
+// Dynamically import Widget from Uploadcare
 const Widget = dynamic(
-  () =>
-    import("@uploadcare/react-widget").then((mod) => {
-      // Return a component that accepts our extended props
-      return function ExtendedWidget(props: ExtendedWidgetProps) {
-        return <mod.Widget {...props} />;
-      };
-    }),
+  () => import("@uploadcare/react-widget").then((mod) => mod.Widget),
   {
     ssr: false,
     loading: () => <p>Loading image uploader...</p>,
   }
 );
-
-// Dynamically import image compression library
 
 // Типы данных для работы с Prisma
 interface Category {
@@ -87,63 +74,6 @@ const AddNewProduct = () => {
   const [uploadingImages, setUploadingImages] = useState<boolean>(false);
   const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
   const [albumImages, setAlbumImages] = useState<string[]>([]);
-  const [compressionStatus, setCompressionStatus] = useState<string>("");
-
-  // Function to compress images before upload
-  const compressImage = async (file: File): Promise<File> => {
-    if (!file || !file.type.startsWith("image/")) {
-      return file; // Return original if not an image
-    }
-
-    try {
-      setCompressionStatus(`Compressing ${file.name}...`);
-
-      const options = {
-        maxSizeMB: 9.5, // Target size just under 10MB limit
-        maxWidthOrHeight: 4000, // Maintain reasonable quality
-        useWebWorker: true, // Use web worker for better performance
-        fileType: file.type, // Maintain original file type if possible
-      };
-
-      // Dynamic import of the compression library
-      const ImageCompressor = (await import("browser-image-compression"))
-        .default;
-      const compressedFile = await ImageCompressor(file, options);
-
-      console.log(`Original size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
-      console.log(
-        `Compressed size: ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`
-      );
-
-      // Create a new File object with the compressed data
-      const newFile = new File([compressedFile], file.name, {
-        type: compressedFile.type,
-      });
-
-      setCompressionStatus("");
-      return newFile;
-    } catch (error) {
-      console.error("Compression error:", error);
-      setCompressionStatus("");
-      toast.error(`Failed to compress ${file.name}`);
-      return file; // Return original on error
-    }
-  };
-
-  // Custom file uploader for Uploadcare that compresses images first
-  const customUploader = async (file: File, callback: (file: File) => void) => {
-    if (file.type.startsWith("image/")) {
-      try {
-        const compressedFile = await compressImage(file);
-        callback(compressedFile);
-      } catch (error) {
-        console.error("Error in custom uploader:", error);
-        callback(file); // Use original if compression fails
-      }
-    } else {
-      callback(file); // Non-image files pass through unchanged
-    }
-  };
 
   const addProduct = async () => {
     // Валидация полей
@@ -427,33 +357,6 @@ const AddNewProduct = () => {
                     <p className="mb-2">
                       Upload multiple images to create an album:
                     </p>
-                    {compressionStatus && (
-                      <div className="mb-2 text-blue-600 font-medium">
-                        <div className="flex items-center">
-                          <svg
-                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-600"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                          {compressionStatus}
-                        </div>
-                      </div>
-                    )}
                     <Widget
                       publicKey={
                         process.env.NEXT_PUBLIC_UPLOADCARE_KEY ||
@@ -468,7 +371,6 @@ const AddNewProduct = () => {
                       tabs="file camera url"
                       clearable
                       systemDialog
-                      customFileUploader={customUploader}
                       validators={[
                         (fileInfo: any) => {
                           if (fileInfo.isImage === false) {
@@ -477,7 +379,7 @@ const AddNewProduct = () => {
                         },
                       ]}
                     />
-                    {uploadingImages && !compressionStatus && (
+                    {uploadingImages && (
                       <p className="text-blue-500 mt-2">Uploading...</p>
                     )}
                   </>
