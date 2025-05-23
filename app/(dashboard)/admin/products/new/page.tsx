@@ -1,13 +1,14 @@
 "use client";
 import { DashboardSidebar } from "@/components";
 import { convertCategoryNameToURLFriendly as convertSlugToURLFriendly } from "@/utils/categoryFormating";
+import { compressMultipleImages } from "@/utils/imageCompression";
 import UploadcareImage from "@uploadcare/nextjs-loader";
 import "@uploadcare/react-uploader/core.css";
 import { FileInfo } from "@uploadcare/react-widget";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 // Dynamically import ReactQuill with ssr: false to prevent document is not defined error
@@ -74,6 +75,8 @@ const AddNewProduct = () => {
   const [uploadingImages, setUploadingImages] = useState<boolean>(false);
   const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
   const [albumImages, setAlbumImages] = useState<string[]>([]);
+  const [compressedFiles, setCompressedFiles] = useState<File[]>([]);
+  const widgetRef = useRef<any>(null);
 
   const addProduct = async () => {
     // Валидация полей
@@ -223,6 +226,39 @@ const AddNewProduct = () => {
     setUploadingImages(true);
   };
 
+  // Handler for file input change to compress images before upload
+  const handleFileInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    try {
+      setUploadingImages(true);
+      toast.loading("Compressing images...", { id: "compressing" });
+
+      // Compress the selected images
+      const compressed = await compressMultipleImages(Array.from(files), {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        quality: 0.8,
+      });
+
+      setCompressedFiles(compressed);
+      toast.success("Images compressed successfully!", { id: "compressing" });
+
+      // Open Uploadcare Widget with compressed files
+      if (widgetRef.current) {
+        widgetRef.current.openDialog(compressed);
+      }
+    } catch (err) {
+      console.error("Error compressing images:", err);
+      toast.error("Error compressing images", { id: "compressing" });
+      setUploadingImages(false);
+    }
+  };
+
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
       {/* Import Quill styles only on client side */}
@@ -357,28 +393,53 @@ const AddNewProduct = () => {
                     <p className="mb-2">
                       Upload multiple images to create an album:
                     </p>
-                    <Widget
-                      publicKey={
-                        process.env.NEXT_PUBLIC_UPLOADCARE_KEY ||
-                        "75ae123269ffcd1362e6"
-                      }
-                      onChange={handleGroupUpload}
-                      onDialogOpen={handleUploadStart}
-                      multiple
-                      multipleMax={10}
-                      imagesOnly
-                      previewStep
-                      tabs="file camera url"
-                      clearable
-                      systemDialog
-                      validators={[
-                        (fileInfo: any) => {
-                          if (fileInfo.isImage === false) {
-                            throw new Error("Only images are allowed");
-                          }
-                        },
-                      ]}
-                    />
+                    <div className="flex flex-col gap-3">
+                      <div className="border border-dashed border-gray-300 rounded-md p-4">
+                        <p className="text-sm text-gray-500 mb-2">
+                          Select images to compress before uploading:
+                        </p>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleFileInputChange}
+                          disabled={uploadingImages}
+                          className="file-input file-input-bordered w-full max-w-xs"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">
+                          Images will be compressed to reduce size before
+                          uploading
+                        </p>
+                      </div>
+
+                      <p className="text-sm font-medium">
+                        OR use direct Uploadcare uploader:
+                      </p>
+
+                      <Widget
+                        ref={widgetRef}
+                        publicKey={
+                          process.env.NEXT_PUBLIC_UPLOADCARE_KEY ||
+                          "75ae123269ffcd1362e6"
+                        }
+                        onChange={handleGroupUpload}
+                        onDialogOpen={handleUploadStart}
+                        multiple
+                        multipleMax={10}
+                        imagesOnly
+                        previewStep
+                        tabs="file camera url"
+                        clearable
+                        systemDialog
+                        validators={[
+                          (fileInfo: any) => {
+                            if (fileInfo.isImage === false) {
+                              throw new Error("Only images are allowed");
+                            }
+                          },
+                        ]}
+                      />
+                    </div>
                     {uploadingImages && (
                       <p className="text-blue-500 mt-2">Uploading...</p>
                     )}
