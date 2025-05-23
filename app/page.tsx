@@ -101,7 +101,7 @@ export default function Home() {
         />
 
         {/* Container for centered text */}
-        <div className="absolute inset-0 flex items-start justify-center px-4">
+        <div className="absolute inset-0 flex items-start justify-center px-4 top-4">
           <div className="relative">
             {/* Radial gradient background behind text */}
             <div
