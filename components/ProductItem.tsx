@@ -1,9 +1,9 @@
 "use client";
 import { useProductStore } from "@/app/_zustand/store";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "./ProductCard.module.css";
+
 // Dynamic import of modal component
 const SingleProductModal = dynamic(
   () => import("@/components/SingleProductModal"),
@@ -81,14 +81,14 @@ const ProductItem: React.FC<{ product: Product }> = ({ product }) => {
           aria-label={`View ${product.title}`}
         >
           {albumGroupId ? (
-            <Image
+            <img
               src={`https://ucarecdn.com/${albumGroupId}/nth/0/-/preview/751x1000/`}
               alt={product.title}
               className={styles.image}
               loading="lazy"
             />
           ) : (
-            <Image
+            <img
               src="/product_placeholder.jpg"
               alt={product.title}
               className={styles.image}
