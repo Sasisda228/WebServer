@@ -6,9 +6,11 @@ import "@uploadcare/react-uploader/core.css";
 import { FileInfo } from "@uploadcare/react-widget";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import "quill/dist/quill.snow.css";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ReactQuill from "react-quill";
+
 const Widget = dynamic(
   () => import("@uploadcare/react-widget").then((mod) => mod.Widget),
   {
@@ -443,9 +445,6 @@ const AddNewProduct = () => {
 
         <div>
           <label className="form-control">
-            <div className="label">
-              <span className="label-text">Product description:</span>
-            </div>
             <ReactQuill
               theme="snow"
               value={product.description}
