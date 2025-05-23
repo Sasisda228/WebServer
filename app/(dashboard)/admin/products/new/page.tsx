@@ -8,7 +8,6 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import ReactQuill from "react-quill";
 const Widget = dynamic(
   () => import("@uploadcare/react-widget").then((mod) => mod.Widget),
   {
@@ -16,20 +15,6 @@ const Widget = dynamic(
     loading: () => <p>Loading image uploader...</p>,
   }
 );
-const formats = [
-  "header",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "color",
-  "background",
-];
 // Типы данных для работы с Prisma
 interface Category {
   id: string;
@@ -446,7 +431,7 @@ const AddNewProduct = () => {
             <div className="label">
               <span className="label-text">Product description:</span>
             </div>
-            <ReactQuill
+            {/* <ReactQuill
               theme="snow"
               value={product.description}
               onChange={(content) => {
@@ -457,7 +442,7 @@ const AddNewProduct = () => {
                 });
               }}
               formats={formats}
-            />
+            /> */}
           </label>
         </div>
 
