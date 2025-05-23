@@ -9,8 +9,16 @@ import dynamic from "next/dynamic";
 import "quill/dist/quill.snow.css";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import ReactQuill from "react-quill";
 
+// Dynamically import ReactQuill with ssr: false to prevent document is not defined error
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading editor...</p>,
+});
+
+// Dynamically import the CSS for ReactQuill only on client side
+
+// Dynamically import Widget from Uploadcare
 const Widget = dynamic(
   () => import("@uploadcare/react-widget").then((mod) => mod.Widget),
   {
@@ -18,11 +26,13 @@ const Widget = dynamic(
     loading: () => <p>Loading image uploader...</p>,
   }
 );
+
 // Типы данных для работы с Prisma
 interface Category {
   id: string;
   name: string;
 }
+
 const formats = [
   "header",
   "bold",
@@ -37,8 +47,6 @@ const formats = [
   "color",
   "background",
 ];
-
-// Интерфейс для информации о группе файлов Uploadcare
 
 const AddNewProduct = () => {
   const [product, setProduct] = useState<{
@@ -66,6 +74,7 @@ const AddNewProduct = () => {
   const [uploadingImages, setUploadingImages] = useState<boolean>(false);
   const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
   const [albumImages, setAlbumImages] = useState<string[]>([]);
+
   const addProduct = async () => {
     // Валидация полей
     if (
@@ -216,6 +225,7 @@ const AddNewProduct = () => {
 
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
+      {/* Import Quill styles only on client side */}
       <DashboardSidebar />
       <div className="flex flex-col gap-y-7 xl:ml-5 max-xl:px-5 w-full">
         <h1 className="text-3xl font-semibold">Add new product</h1>
@@ -445,18 +455,21 @@ const AddNewProduct = () => {
 
         <div>
           <label className="form-control">
-            <ReactQuill
-              theme="snow"
-              value={product.description}
-              onChange={(content) => {
-                // content — это уже строка с HTML!
-                setProduct({
-                  ...product,
-                  description: content,
-                });
-              }}
-              formats={formats}
-            />
+            {/* Only render ReactQuill on client side */}
+            {typeof window !== "undefined" && (
+              <ReactQuill
+                theme="snow"
+                value={product.description}
+                onChange={(content) => {
+                  // content — это уже строка с HTML!
+                  setProduct({
+                    ...product,
+                    description: content,
+                  });
+                }}
+                formats={formats}
+              />
+            )}
           </label>
         </div>
 
