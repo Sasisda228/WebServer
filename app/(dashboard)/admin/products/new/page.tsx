@@ -75,7 +75,7 @@ const AddNewProduct = () => {
   const [uploadingImages, setUploadingImages] = useState<boolean>(false);
   const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
   const [albumImages, setAlbumImages] = useState<string[]>([]);
-  const [, setCompressedFiles] = useState<File[]>([]);
+  const [compressedFiles, setCompressedFiles] = useState<File[]>([]);
   const widgetRef = useRef<any>(null);
 
   const addProduct = async () => {
@@ -424,7 +424,6 @@ const AddNewProduct = () => {
                         }
                         onChange={handleGroupUpload}
                         onDialogOpen={handleUploadStart}
-                        onDialogClose={() => setUploadingImages(false)} // <--- добавьте это!
                         multiple
                         multipleMax={10}
                         imagesOnly
