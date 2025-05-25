@@ -51,7 +51,7 @@ export default function FAQSection({
               >
                 <button
                   onClick={() => toggleItem(faq.id)}
-                  className="w-full px-4 md:px-6 py-3 md:py-4 flex items-center justify-between text-left transition-colors duration-300 hover:bg-[rgba(255,255,255,0.05)] group"
+                  className="w-full px-4 md:px-6 py-3 md:py-4 flex items-center justify-between text-left transition-colors duration-300  group"
                 >
                   <span className="text-sm md:text-base lg:text-lg text-white font-medium pr-3 md:pr-4 leading-relaxed">
                     {faq.question}
