@@ -51,17 +51,13 @@ const AdminSingleOrder = () => {
 
   useEffect(() => {
     const fetchOrderData = async () => {
-      const response = await fetch(
-        `http://212.67.12.199:3001/api/orders/${params?.id}`
-      );
+      const response = await fetch(`/apiv3/orders/${params?.id}`);
       const data: Order = await response.json();
       setOrder(data);
     };
 
     const fetchOrderProducts = async () => {
-      const response = await fetch(
-        `http://212.67.12.199:3001/api/order-product/${params?.id}`
-      );
+      const response = await fetch(`/apiv3/order-product/${params?.id}`);
       const data: OrderProduct[] = await response.json();
       setOrderProducts(data);
     };
@@ -98,7 +94,7 @@ const AdminSingleOrder = () => {
         return;
       }
 
-      fetch(`http://212.67.12.199:3001/api/orders/${order?.id}`, {
+      fetch(`/apiv3/orders/${order?.id}`, {
         method: "PUT", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -112,9 +108,7 @@ const AdminSingleOrder = () => {
             throw Error("There was an error while updating a order");
           }
         })
-        .catch((error) =>
-          toast.error("There was an error while updating a order")
-        );
+        .catch(() => toast.error("There was an error while updating a order"));
     } else {
       toast.error("Please fill all fields");
     }
@@ -125,14 +119,8 @@ const AdminSingleOrder = () => {
       method: "DELETE",
     };
 
-    fetch(
-      `http://212.67.12.199:3001/api/order-product/${order?.id}`,
-      requestOptions
-    ).then((response) => {
-      fetch(
-        `http://212.67.12.199:3001/api/orders/${order?.id}`,
-        requestOptions
-      ).then((response) => {
+    fetch(`/apiv3/order-product/${order?.id}`, requestOptions).then(() => {
+      fetch(`/apiv3/orders/${order?.id}`, requestOptions).then(() => {
         toast.success("Order deleted successfully");
         router.push("/admin/orders");
       });
