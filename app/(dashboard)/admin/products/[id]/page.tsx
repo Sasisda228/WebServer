@@ -500,7 +500,7 @@ const DashboardProductDetails = ({
                   <video
                     controls
                     className="max-w-md rounded-lg shadow-lg"
-                    src={`/uploads/videos/${product.videoName}`}
+                    src={`/server/uploads/videos/${product.videoName}`}
                   >
                     Your browser does not support the video tag.
                   </video>
