@@ -6,7 +6,7 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import "quill/dist/quill.snow.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import ReactQuill from "react-quill";
 import {
@@ -58,6 +58,7 @@ interface Product {
   categoryId: string;
   images: string[];
   mainImage?: string;
+  videoName?: string;
   category?: Category;
 }
 
@@ -71,6 +72,81 @@ const DashboardProductDetails = ({
   const [albumGroupId, setAlbumGroupId] = useState<string | null>(null);
   const [albumImages, setAlbumImages] = useState<string[]>([]);
   const router = useRouter();
+  const [uploadingVideo, setUploadingVideo] = useState<boolean>(false);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Проверка типа файла
+    const allowedTypes = [
+      "video/mp4",
+      "video/mpeg",
+      "video/quicktime",
+      "video/x-msvideo",
+      "video/x-ms-wmv",
+      "video/webm",
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error(
+        "Only video files are allowed (mp4, mpeg, mov, avi, wmv, webm)"
+      );
+      return;
+    }
+
+    // Проверка размера файла (500MB)
+    if (file.size > 500 * 1024 * 1024) {
+      toast.error("File size must be less than 500MB");
+      return;
+    }
+
+    setUploadingVideo(true);
+    const formData = new FormData();
+    formData.append("video", file);
+
+    try {
+      const { data } = await axios.post("/apiv3/videos/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (data.filename) {
+        setProduct((prev) =>
+          prev ? { ...prev, videoName: data.filename } : null
+        );
+        toast.success("Video uploaded successfully");
+      }
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      toast.error("Failed to upload video");
+    } finally {
+      setUploadingVideo(false);
+      if (videoInputRef.current) {
+        videoInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleVideoDelete = async () => {
+    if (!product?.videoName) return;
+
+    if (!confirm("Are you sure you want to delete this video?")) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await axios.delete(`/apiv3/videos/${product.videoName}`);
+      setProduct({ ...product, videoName: undefined });
+      toast.success("Video deleted successfully");
+    } catch (error) {
+      console.error("Error deleting video:", error);
+      toast.error("Failed to delete video");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Функция для удаления товара
   const deleteProduct = async () => {
@@ -80,6 +156,13 @@ const DashboardProductDetails = ({
 
     setIsLoading(true);
     try {
+      if (product?.videoName) {
+        try {
+          await axios.delete(`/apiv3/videos/${product.videoName}`);
+        } catch (error) {
+          console.error("Error deleting video:", error);
+        }
+      }
       await axios.delete(`/apiv3/products/${id}`);
       toast.success("Product deleted successfully");
       router.push("/admin/products");
@@ -388,7 +471,52 @@ const DashboardProductDetails = ({
           </label>
         </div>
         {/* Product category select input div - end */}
-
+        {/* Video upload section - start */}
+        <div>
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Product video:</span>
+            </div>
+            <div className="space-y-4">
+              {!product.videoName ? (
+                <div>
+                  <input
+                    ref={videoInputRef}
+                    type="file"
+                    accept="video/mp4,video/mpeg,video/quicktime,video/x-msvideo,video/x-ms-wmv,video/webm"
+                    onChange={handleVideoUpload}
+                    className="file-input file-input-bordered w-full max-w-xs"
+                    disabled={uploadingVideo || isLoading}
+                  />
+                  {uploadingVideo && (
+                    <p className="text-blue-500 mt-2">Uploading video...</p>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <p className="font-medium">Video uploaded successfully!</p>
+                  <p>Filename: {product.videoFilename}</p>
+                  <video
+                    controls
+                    className="max-w-md rounded-lg shadow-lg"
+                    src={`/uploads/videos/${product.videoFilename}`}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                  <button
+                    type="button"
+                    onClick={handleVideoDelete}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
+                    disabled={isLoading}
+                  >
+                    Delete Video
+                  </button>
+                </div>
+              )}
+            </div>
+          </label>
+        </div>
+        {/* Video upload section - end */}
         {/* Загрузка изображений в альбом */}
         <div>
           <label className="form-control w-full">
