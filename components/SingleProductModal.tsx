@@ -7,6 +7,7 @@ import {
   FaChevronDown,
   FaChevronLeft,
   FaChevronRight,
+  FaPlay,
   FaTimes,
 } from "react-icons/fa"; // Added FaTimes for close button
 import { IoShareSocialOutline } from "react-icons/io5";
@@ -304,13 +305,20 @@ export default function SingleProductModal({
   function ProductCarousel({
     albumGroupId,
     albumFileUUIDs,
+    videoFilename,
   }: {
     albumGroupId: string | null;
     albumFileUUIDs: string[];
+    videoFilename?: string;
   }) {
-    const OPTIONS: EmblaOptionsType = { loop: albumFileUUIDs.length > 1 };
+    const hasVideo = videoFilename && videoFilename !== "empty";
+    const totalSlides = (hasVideo ? 1 : 0) + albumFileUUIDs.length;
+
+    const OPTIONS: EmblaOptionsType = { loop: totalSlides > 1 };
     const [emblaRef, emblaApi] = useEmblaCarousel(OPTIONS);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     const scrollPrev = useCallback(
       () => emblaApi && emblaApi.scrollPrev(),
@@ -327,7 +335,16 @@ export default function SingleProductModal({
 
     useEffect(() => {
       if (!emblaApi) return;
-      const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+      const onSelect = () => {
+        const newIndex = emblaApi.selectedScrollSnap();
+        setSelectedIndex(newIndex);
+
+        // Pause video when navigating away from it
+        if (hasVideo && newIndex !== 0 && videoRef.current) {
+          videoRef.current.pause();
+          setIsVideoPlaying(false);
+        }
+      };
       emblaApi.on("select", onSelect);
       emblaApi.on("reInit", onSelect);
       onSelect(); // Initial sync
@@ -335,8 +352,18 @@ export default function SingleProductModal({
         emblaApi.off("select", onSelect);
         emblaApi.off("reInit", onSelect);
       };
-    }, [emblaApi]);
+    }, [emblaApi, hasVideo]);
 
+    const handleVideoClick = () => {
+      if (videoRef.current) {
+        if (isVideoPlaying) {
+          videoRef.current.pause();
+        } else {
+          videoRef.current.play();
+        }
+        setIsVideoPlaying(!isVideoPlaying);
+      }
+    };
     if (!albumGroupId || albumFileUUIDs.length === 0) {
       return (
         <div
@@ -359,6 +386,84 @@ export default function SingleProductModal({
       <div className={modalStyles.emblaCarouselWrapper}>
         <div className={modalStyles.emblaViewport} ref={emblaRef}>
           <div className={modalStyles.emblaContainer}>
+            {/* Video slide (if exists) */}
+            {hasVideo && (
+              <div className={modalStyles.emblaSlide}>
+                <div
+                  className={modalStyles.videoWrapper}
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    aspectRatio: "3/4",
+                    maxHeight: "calc(100vh - 250px)",
+                    backgroundColor: "#000",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                  }}
+                  onClick={handleVideoClick}
+                >
+                  <video
+                    ref={videoRef}
+                    className={modalStyles.productVideo}
+                    src={`/apiv3/videos/stream/${videoFilename}`}
+                    poster=""
+                    playsInline
+                    muted
+                    loop
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                    onPlay={() => setIsVideoPlaying(true)}
+                    onPause={() => setIsVideoPlaying(false)}
+                  />
+
+                  {/* Play/Pause overlay */}
+                  <div
+                    className={modalStyles.videoOverlay}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: isVideoPlaying
+                        ? "transparent"
+                        : "rgba(0, 0, 0, 0.3)",
+                      transition: "background-color 0.3s ease",
+                      pointerEvents: "none",
+                    }}
+                  >
+                    {!isVideoPlaying && (
+                      <div
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          borderRadius: "50%",
+                          backgroundColor: "rgba(255, 255, 255, 0.9)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+                        }}
+                      >
+                        <FaPlay
+                          size={20}
+                          style={{ marginLeft: "4px", color: "#000" }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Image slides */}
             {albumFileUUIDs.map((uuid, index) => (
               <div
                 className={modalStyles.emblaSlide}
@@ -381,7 +486,7 @@ export default function SingleProductModal({
           </div>
         </div>
 
-        {albumFileUUIDs.length > 1 && (
+        {totalSlides > 1 && (
           <>
             <button
               className={`${modalStyles.emblaButton} ${modalStyles.emblaButtonPrev}`}
@@ -404,27 +509,80 @@ export default function SingleProductModal({
           </>
         )}
 
-        {albumFileUUIDs.length > 1 && (
+        {totalSlides > 1 && (
           <div className={modalStyles.emblaThumbnails}>
-            {albumFileUUIDs.map((uuid, idx) => (
+            {/* Video thumbnail */}
+            {hasVideo && (
               <button
-                key={albumGroupId + uuid + idx + "-thumb"}
                 className={`${modalStyles.emblaThumbBtn} ${
-                  idx === selectedIndex ? modalStyles.emblaThumbActive : ""
+                  0 === selectedIndex ? modalStyles.emblaThumbActive : ""
                 }`}
-                onClick={() => scrollTo(idx)}
-                aria-label={`Фото ${idx + 1}`}
+                onClick={() => scrollTo(0)}
+                aria-label="Видео товара"
                 type="button"
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                }}
               >
-                <img
-                  alt={`Thumbnail ${idx + 1}`}
-                  src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/-/preview/100x131/`}
+                <video
+                  src={`/apiv3/videos/stream/${videoFilename}`}
                   width="50"
                   height="67"
-                  style={{ objectFit: "cover" }}
+                  style={{
+                    objectFit: "cover",
+                    pointerEvents: "none",
+                  }}
+                  muted
                 />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <FaPlay
+                    size={8}
+                    style={{ marginLeft: "2px", color: "#000" }}
+                  />
+                </div>
               </button>
-            ))}
+            )}
+
+            {/* Image thumbnails */}
+            {albumFileUUIDs.map((uuid, idx) => {
+              const actualIndex = hasVideo ? idx + 1 : idx;
+              return (
+                <button
+                  key={albumGroupId + uuid + idx + "-thumb"}
+                  className={`${modalStyles.emblaThumbBtn} ${
+                    actualIndex === selectedIndex
+                      ? modalStyles.emblaThumbActive
+                      : ""
+                  }`}
+                  onClick={() => scrollTo(actualIndex)}
+                  aria-label={`Фото ${idx + 1}`}
+                  type="button"
+                >
+                  <img
+                    alt={`Thumbnail ${idx + 1}`}
+                    src={`https://ucarecdn.com/${albumGroupId}/nth/${idx}/-/preview/100x131/`}
+                    width="50"
+                    height="67"
+                    style={{ objectFit: "cover" }}
+                  />
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
@@ -528,6 +686,7 @@ export default function SingleProductModal({
                 <ProductCarousel
                   albumGroupId={albumGroupId}
                   albumFileUUIDs={albumImages}
+                  videoFilename={product?.videoName}
                 />
               </div>
 
