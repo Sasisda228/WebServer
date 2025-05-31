@@ -4,7 +4,7 @@ const {
   uploadVideo,
   deleteVideo,
   streamVideo,
-} = require("../controllers/videoController");
+} = require("../controllers/video");
 
 // Загрузка видео
 router.post("/upload", uploadVideo);
