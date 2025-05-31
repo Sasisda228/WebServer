@@ -137,8 +137,9 @@ const DashboardProductDetails = ({
 
     setIsLoading(true);
     try {
+      setProduct({ ...product, videoName: "empty" });
       await axios.delete(`/apiv3/videos/${product.videoName}`);
-      setProduct({ ...product, videoName: undefined });
+
       toast.success("Video deleted successfully");
     } catch (error) {
       console.error("Error deleting video:", error);
