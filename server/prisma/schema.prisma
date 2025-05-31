@@ -29,7 +29,7 @@ model Product {
   slug           String                   @unique
   title          String
   images         Json
-  videoName      String
+  videoName      String                   @default("empty")
   price          Int                      @default(0)
   rating         Int                      @default(0)
   description    String                   @db.Text
