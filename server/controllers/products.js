@@ -59,6 +59,7 @@ async function createProduct(request, response) {
       categoryId,
       inStock,
       images,
+      videoName,
     } = request.body;
     const product = await prisma.product.create({
       data: {
@@ -71,6 +72,7 @@ async function createProduct(request, response) {
         categoryId,
         inStock,
         images,
+        videoName,
       },
     });
     return response.status(201).json(product);
@@ -104,6 +106,7 @@ async function changePositionProduct(request, response) {
     return response.status(500).json({ error: "Error updating product" });
   }
 }
+
 // Method for updating existing product
 async function updateProduct(request, response) {
   try {
@@ -118,6 +121,7 @@ async function updateProduct(request, response) {
       manufacturer,
       categoryId,
       inStock,
+      videoName,
     } = request.body;
     // Finding a product by slug
     const existingProduct = await prisma.product.findUnique({
@@ -145,6 +149,7 @@ async function updateProduct(request, response) {
         manufacturer: manufacturer,
         categoryId: categoryId,
         inStock: inStock,
+        videoName: videoName,
       },
     });
 
