@@ -16,7 +16,7 @@ interface OrderProduct {
     id: string;
     slug: string;
     title: string;
-    mainImage: string;
+    images: string[];
     price: number;
     rating: number;
     description: string;
@@ -335,16 +335,18 @@ const AdminSingleOrder = () => {
           {orderProducts?.map((product) => (
             <div className="flex items-center gap-x-4" key={product?.id}>
               <Image
+                width={48}
+                height={48}
                 src={
-                  product?.product?.mainImage
-                    ? `/${product?.product?.mainImage}`
+                  product?.product.images[0]
+                    ? `${product?.product.images[0]}/nth/0/
+              -/preview/751x1000/`
                     : "/product_placeholder.jpg"
                 }
-                alt={product?.product?.title}
-                width={50}
-                height={50}
+                alt="Avatar Tailwind CSS Component"
                 className="w-auto h-auto"
               />
+
               <div>
                 <Link href={`/product/${product?.product?.slug}`}>
                   {product?.product?.title}
@@ -356,12 +358,7 @@ const AdminSingleOrder = () => {
             </div>
           ))}
           <div className="flex flex-col gap-y-2 mt-10">
-            <p className="text-2xl">Subtotal: ${order?.total}</p>
-            <p className="text-2xl">Tax 20%: ${order?.total / 5}</p>
-            <p className="text-2xl">Shipping: $5</p>
-            <p className="text-3xl font-semibold">
-              Total: ${order?.total + order?.total / 5 + 5}
-            </p>
+            <p className="text-2xl">Итог: {order?.total} Руб.</p>
           </div>
           <div className="flex gap-x-2 max-sm:flex-col mt-5">
             <button
