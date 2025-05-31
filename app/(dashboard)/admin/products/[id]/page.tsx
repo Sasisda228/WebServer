@@ -477,9 +477,9 @@ const DashboardProductDetails = ({
             <div className="label">
               <span className="label-text">Product video:</span>
             </div>
-            <p>${product.videoName}</p>
+            <p>{product.videoName}</p>
             <div className="space-y-4">
-              {!(product.videoName === "empty") ? (
+              {product.videoName === "empty" ? (
                 <div>
                   <input
                     ref={videoInputRef}
