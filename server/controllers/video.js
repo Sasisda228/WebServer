@@ -95,7 +95,65 @@ async function deleteVideo(request, response) {
   }
 }
 
+// Новая функция для стриминга видео
+async function streamVideo(request, response) {
+  try {
+    const { filename } = request.params;
+
+    if (!filename) {
+      return response.status(400).json({ error: "Filename is required" });
+    }
+
+    // Защита от path traversal
+    if (
+      filename.includes("/") ||
+      filename.includes("\\") ||
+      filename.includes("..")
+    ) {
+      return response.status(400).json({ error: "Invalid filename" });
+    }
+
+    const filePath = path.join(__dirname, "../uploads/videos", filename);
+
+    // Проверяем существование файла
+    if (!fs.existsSync(filePath)) {
+      return response.status(404).json({ error: "Video file not found" });
+    }
+
+    const stat = fs.statSync(filePath);
+    const fileSize = stat.size;
+    const range = request.headers.range;
+
+    if (range) {
+      // Поддержка частичного контента для видео стриминга
+      const parts = range.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+      const chunksize = end - start + 1;
+      const file = fs.createReadStream(filePath, { start, end });
+      const head = {
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunksize,
+        "Content-Type": "video/mp4",
+      };
+      response.writeHead(206, head);
+      file.pipe(response);
+    } else {
+      const head = {
+        "Content-Length": fileSize,
+        "Content-Type": "video/mp4",
+      };
+      response.writeHead(200, head);
+      fs.createReadStream(filePath).pipe(response);
+    }
+  } catch (error) {
+    return response.status(500).json({ error: "Error streaming video" });
+  }
+}
+
 module.exports = {
   uploadVideo,
   deleteVideo,
+  streamVideo,
 };

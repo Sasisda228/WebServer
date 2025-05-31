@@ -477,9 +477,8 @@ const DashboardProductDetails = ({
             <div className="label">
               <span className="label-text">Product video:</span>
             </div>
-            <p>{product.videoName}</p>
             <div className="space-y-4">
-              {product.videoName === "empty" ? (
+              {!product.videoName || product.videoName === "empty" ? (
                 <div>
                   <input
                     ref={videoInputRef}
@@ -500,7 +499,7 @@ const DashboardProductDetails = ({
                   <video
                     controls
                     className="max-w-md rounded-lg shadow-lg"
-                    src={`server/uploads/videos/${product.videoName}`}
+                    src={`/apiv3/videos/stream/${product.videoName}`}
                   >
                     Your browser does not support the video tag.
                   </video>
