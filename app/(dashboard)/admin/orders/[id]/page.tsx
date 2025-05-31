@@ -334,7 +334,6 @@ const AdminSingleOrder = () => {
         <div>
           {orderProducts?.map((product) => (
             <div className="flex items-center gap-x-4" key={product?.id}>
-              <p>${product?.product.images[0]}/nth/0/-/preview/751x1000/</p>
               <Image
                 width={48}
                 height={48}

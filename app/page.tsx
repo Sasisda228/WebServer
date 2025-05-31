@@ -5,15 +5,18 @@ import SloganSection from "@/components/SloganSection";
 import TeamAdvantages from "@/components/TeamAdvantages";
 import { useEffect, useState } from "react";
 
-// Главная страница теперь не async
 export default function Home() {
-  // Получаем данные синхронно для статической генерации
   const [scrollPosition, setScrollPosition] = useState(0);
   const [windowWidth, setWindowWidth] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const fullText = "Добро пожаловать!";
   const [showCursor, setShowCursor] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
+
   useEffect(() => {
+    // Mark component as mounted
+    setHasMounted(true);
+
     // Set initial window width
     setWindowWidth(window.innerWidth);
 
@@ -24,6 +27,7 @@ export default function Home() {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
+
     // Typing animation
     let currentIndex = 0;
     const typingInterval = setInterval(() => {
@@ -33,7 +37,7 @@ export default function Home() {
       } else {
         clearInterval(typingInterval);
       }
-    }, 200); // Adjust typing speed here (milliseconds)
+    }, 200);
 
     // Blinking cursor animation
     const cursorInterval = setInterval(() => {
@@ -44,7 +48,7 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleResize);
 
-    // Clean up event listeners
+    // Clean up
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
@@ -52,7 +56,12 @@ export default function Home() {
       clearInterval(cursorInterval);
     };
   }, []);
-  const isDesktop = windowWidth >= 1024;
+
+  // Use safe default values for server-side rendering
+  const isDesktop = hasMounted ? windowWidth >= 1024 : false;
+  const safeScrollPosition = hasMounted ? scrollPosition : 0;
+  const safeDisplayText = hasMounted ? displayText : fullText;
+  const safeCursorShow = hasMounted ? showCursor : true;
 
   return (
     <main>
@@ -64,7 +73,7 @@ export default function Home() {
             backgroundImage: "url('/background.jpg')",
             backgroundPositionY: isDesktop ? "-10rem" : "top",
             transform: isDesktop
-              ? `translateY(${-scrollPosition * 0.5}px)`
+              ? `translateY(${-safeScrollPosition * 0.5}px)`
               : "none",
           }}
         />
@@ -84,10 +93,10 @@ export default function Home() {
 
             {/* Text content */}
             <h1 className="relative text-4xl font-bold text-white drop-shadow-lg text-center lg:text-6xl">
-              {displayText}
+              {safeDisplayText}
               <span
                 className={`${
-                  showCursor ? "opacity-100" : "opacity-0"
+                  safeCursorShow ? "opacity-100" : "opacity-0"
                 } ml-1 animate-pulse`}
               >
                 |
@@ -107,7 +116,7 @@ export default function Home() {
             id: 1,
             question: "Это что вообще — оружие или игрушка? Это безопасно?",
             answer: [
-              "Это игрушка, но не “лёгкая поделка”. Э��о орбизный автомат — стреляет мягкими водяными шариками, которые при попадании просто лопаются.",
+              "Это игрушка, но не «лёгкая поделка». Это орбизный автомат — стреляет мягкими водяными шариками, которые при попадании просто лопаются.",
               "",
               "Не травмирует, не пачкает, не требует разрешения.",
               "",
@@ -131,7 +140,7 @@ export default function Home() {
             answer: [
               "Да. Почти все наши модели оснащены системой Blowback — это значит, затвор двигается, и ощущается отдача, как у настоящего.",
               "",
-              "Это главный кайф — ты не просто “жмёшь кнопку”, а реально чувствуешь стрельбу.",
+              "Это главный кайф — ты не просто «жмёшь кнопку», а реально чувствуешь стрельбу.",
             ].join("\n"),
           },
           {
@@ -140,7 +149,7 @@ export default function Home() {
             answer: [
               "Конечно. На большинстве моделей есть резьба 14 мм под глушитель/трассер и крепления для прицелов.",
               "",
-              "Многие идут с планкой Пикатинни или “ласточкиным хвостом”, а некоторые можно доработать — и у нас сразу есть такие крышки.",
+              "Многие идут с планкой Пикатинни или «ласточкиным хвостом», а некоторые можно доработать — и у нас сразу есть такие крышки.",
             ].join("\n"),
           },
           {
@@ -163,7 +172,7 @@ export default function Home() {
               "",
               "Дарят на дни рождения, Новый год, выпускной, 23 февраля.",
               "",
-              "Дети в восторге, взрослые удивляются, насколько всё “по-настоящему”.",
+              "Дети в восторге, взрослые удивляются, насколько всё «по-настоящему».",
               "",
               "Плюс: идёт в подарочной упаковке, готов к вручению.",
             ].join("\n"),
@@ -174,7 +183,7 @@ export default function Home() {
             answer: [
               "Нет. Мы на связи, работаем честно, и если вдруг что-то пошло не так — в течение 14 дней разбираемся, помогаем, решаем.",
               "",
-              "Не пропадаем. У нас шоурум в Москве и свои каналы связи. Мы не “однодневка”.",
+              "Не пропадаем. У нас шоурум в Москве и свои каналы связи. Мы не «однодневка».",
             ].join("\n"),
           },
           {
@@ -201,7 +210,6 @@ export default function Home() {
           },
         ]}
       />
-
       <LegalInfo />
     </main>
   );
