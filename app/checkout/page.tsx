@@ -460,7 +460,9 @@ const CheckoutPage = () => {
 
                 {/* <h3 className={styles.formSectionTitle}>Дополнительно</h3> */}
                 <div className={styles.formGroup}>
-                  <label htmlFor="orderNotice">Комментарий к заказу</label>
+                  <label htmlFor="orderNotice">
+                    Ваш ник в телеграм и комментарий к заказу
+                  </label>
                   <textarea
                     id="orderNotice"
                     name="orderNotice"
@@ -471,23 +473,10 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className={styles.orderSummary}>
-                  <div className={styles.summaryRow}>
-                    <span>Товары:</span>
-                    <span>{subTotal} ₽</span> {/* Используем subTotal */}
-                  </div>
-                  <div className={styles.summaryRow}>
-                    <span>Доставка:</span>
-                    <span>{SHIPPING_COST} ₽</span>
-                  </div>
-                  <div className={styles.summaryRow}>
-                    <span>Налог ({Math.round(TAX_RATE * 100)}%):</span>
-                    {/* Отображаем округленный налог */}
-                    <span>{Math.round(calculatedTax)} ₽</span>
-                  </div>
                   <div className={styles.summaryTotal}>
                     <span>Итого:</span>
                     {/* Отображаем итоговую сумму */}
-                    <span>{finalTotal} ₽</span>
+                    <span>{subTotal} ₽</span>
                   </div>
                 </div>
 
