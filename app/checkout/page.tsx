@@ -9,12 +9,12 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { FaCheck, FaCircleQuestion, FaXmark } from "react-icons/fa6"
-import { useProductStore } from "../_zustand/store"
-import styles from "./CheckoutPage.module.css"
+import { FaCheck, FaXmark } from "react-icons/fa6";
+import { useProductStore } from "../_zustand/store";
+import styles from "./CheckoutPage.module.css";
 
 const SHIPPING_COST = 5;
-const TAX_RATE = 0.20; // 20% налог, вынесен в константу
+const TAX_RATE = 0.2; // 20% налог, вынесен в константу
 const API_BASE_URL = "/apiv3/";
 
 // Helper function to get the correct product image URL (без изменений)
@@ -57,9 +57,11 @@ const addOrderProduct = async (
     });
     // Axios по умолчанию считает успешными только 2xx статусы,
     // поэтому отдельная проверка response.ok не нужна.
-  } catch (error: any) { // Используем any или AxiosError
+  } catch (error: any) {
+    // Используем any или AxiosError
     // Axios помещает детали ошибки в error.response
-    const errorMsg = error.response?.data?.message || error.message || "Неизвестная ошибка";
+    const errorMsg =
+      error.response?.data?.message || error.message || "Неизвестная ошибка";
     console.error(
       `Error adding product ${productId} to order ${orderId}:`,
       error.response?.data || error
@@ -351,29 +353,10 @@ const CheckoutPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <div className={styles.summaryRow}>
-                    <span>Товары:</span>
-                    <span>{subTotal} ₽</span> {/* Используем subTotal */}
-                  </div>
-                  <div className={styles.summaryRow}>
-                    <span>
-                      Доставка
-                      <FaCircleQuestion
-                        className={styles.infoIcon}
-                        title="Стоимость доставки по РФ"
-                      />
-                    </span>
-                    <span>{SHIPPING_COST} ₽</span>
-                  </div>
-                  <div className={styles.summaryRow}>
-                    <span>Налог ({Math.round(TAX_RATE * 100)}%):</span>
-                    {/* Отображаем округленный налог */}
-                    <span>{Math.round(calculatedTax)} ₽</span>
-                  </div>
                   <div className={styles.summaryTotal}>
                     <span>Итого:</span>
                     {/* Отображаем итоговую сумму */}
-                    <span>{finalTotal} ₽</span>
+                    <span>{subTotal} ₽</span>
                   </div>
                   <button
                     className={styles.nextBtn}
